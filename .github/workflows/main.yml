@@ -54,27 +54,6 @@ jobs:
           path: "${{ github.repository }}"
       - name: Molecule for Ansible
         uses: MonolithProjects/action-molecule@v1.4.3
-        env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
           molecule_command: test
           scenario: cluster
-
-  ha_cluster:
-    name: Test RKE2 Ansible Role - HA cluster
-    runs-on: ubuntu-20.04
-    needs: cluster
-    strategy:
-      fail-fast: false
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-        with:
-          path: "${{ github.repository }}"
-      - name: Molecule for Ansible
-        uses: MonolithProjects/action-molecule@v1.4.3
-        env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        with:
-          molecule_command: test
-          scenario: ha_cluster
