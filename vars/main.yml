@@ -1,2 +1,4 @@
 ---
-# vars file for rke2
+
+# RKE2 installation method (do not change this option)
+rke2_method: tar
