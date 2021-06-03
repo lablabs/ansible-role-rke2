@@ -14,9 +14,9 @@ The Role can install the RKE2 in 3 modes.
 
 - RKE2 single node
 
-- RKE2 Cluster with one Server(Master) node and zero or more Agent(Worker) nodes
+- RKE2 Cluster with one Server(Master) node and one or more Agent(Worker) nodes
 
-- RKE2 Cluster with Server(Master) High Availability mode and one or more Agent(Worker) nodes. In HA mode you should have an odd number (three recommended) of server(master) nodes that will run etcd, the Kubernetes API, and other control plane services.
+- RKE2 Cluster with Server(Master) in High Availability mode and zero or more Agent(Worker) nodes. In HA mode you should have an odd number (three recommended) of server(master) nodes that will run etcd, the Kubernetes API (Keepalived VIP address), and other control plane services.
 
 ## Requirements
 
@@ -37,14 +37,14 @@ rke2_type: server
 # Deploy the cluster in HA mode
 rke2_ha_mode: false
 
-# Kubernetes API and registration RKE2 IP address. The default Address is the IPv4 of the Server/Master node.
+# Kubernetes API and RKE2 node registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in keepalived.
 rke2_api_ip: "{{ hostvars[groups.masters.0]['ansible_default_ipv4']['address'] }}"
 
 # API Server destination port
 rke2_apiserver_dest_port: 6443
 
-# If false, server node(s) will be schedulable and thus your workloads can get launched on them
+# If false, server(master) node(s) will be schedulable and thus your workloads can get launched on them
 rke2_server_taint: false
 
 # Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
@@ -58,9 +58,6 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 
 # RKE2 channel
 rke2_channel: stable
-
-# RKE2 installation method (do not change this option)
-rke2_method: tar
 
 # Download Kubernetes config file to the Ansible controller 
 rke2_download_kubeconf: false

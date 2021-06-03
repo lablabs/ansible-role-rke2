@@ -28,9 +28,6 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 # RKE2 channel
 rke2_channel: stable
 
-# RKE2 installation method (do not change this option)
-rke2_method: tar
-
 # Download Kubernetes config file to the Ansible controller 
 rke2_download_kubeconf: false
 
