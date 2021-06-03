@@ -1,0 +1,14 @@
+---
+
+- name: Populate services facts
+  ansible.builtin.service_facts:
+
+- name: Set the Active Server variable
+  ansible.builtin.set_fact:
+    active_server: "{{ inventory_hostname }}"
+  delegate_facts: true
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['k8s_cluster'] }}"
+  when:
+    - inventory_hostname in groups['masters']
+    - ansible_facts.services["rke2-server.service"].state == "running"

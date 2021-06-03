@@ -1,0 +1,37 @@
+---
+
+- name: Install Keepalived when HA mode is enabled
+  include_tasks: keepalived.yml
+  when:
+    - rke2_api_ip is defined
+    - inventory_hostname is in groups.masters
+    - rke2_ha_mode
+
+- name: Download and install RKE2
+  include_tasks: rke2.yml
+
+- name: Prepare nodes of the K8s cluster in no-HA mode (one server)
+  include_tasks: no_ha.yml
+  when:
+    - not rke2_ha_mode
+
+- name: Find Active Server
+  include_tasks: find_active_server.yml
+  when:
+    - rke2_ha_mode
+
+- name: Prepare very first server node in cluster
+  include_tasks: ha_first_server.yml
+  when:
+    - inventory_hostname == groups.masters.0
+    - active_server is not defined
+    - rke2_ha_mode
+
+- name: Prepare and join remaining K8s nodes to the cluster in HA mode
+  include_tasks: ha_ramaining_nodes.yml
+  when:
+    - active_server is defined
+    - rke2_ha_mode
+
+- name: Final steps
+  include_tasks: summary.yml

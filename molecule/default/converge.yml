@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+  vars:
+    rke2_version: v1.20.7+rke2r2
+    rke2_snapshooter: native
+  roles:
+     - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"

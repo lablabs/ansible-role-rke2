@@ -1,0 +1,17 @@
+---
+- name: Dependency
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: python3
+  tasks:
+    - name: "Create docker network"
+      docker_network:
+        name: "rke2net"
+        ipam_config:
+          - subnet: "192.168.123.0/24"
+            gateway: "192.168.123.254"
+        state: present
+        labels:
+          owner: molecule
