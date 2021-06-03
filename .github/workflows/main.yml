@@ -1,0 +1,80 @@
+name: molecule test
+
+on:
+    pull_request:
+        branches:
+            - master
+        types: [opened, synchronize, reopened]
+
+jobs:
+  standalone:
+    name: Test RKE2 Ansible Role - standalone
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # - os: "centos7"
+          #   tag: "latest"
+          # - os: "centos8"
+          #   tag: "latest"
+          # - os: "debian9"
+          #   tag: "latest"
+          # - os: "debian10"
+          #   tag: "latest"
+          # - os: "fedora34"
+          #   tag: "latest"
+          # - os: "ubuntu18"
+          #   tag: "latest"
+          - os: "ubuntu20"
+            tag: "latest"
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          path: "${{ github.repository }}"
+      - name: Molecule for Ansible
+        uses: MonolithProjects/action-molecule@v1.4.3
+        with:
+          os: ${{ matrix.config.os }}
+          tag: ${{ matrix.config.tag }}
+          molecule_command: test
+          scenario: repo
+
+  cluster:
+    name: Test RKE2 Ansible Role - cluster
+    runs-on: ubuntu-20.04
+    needs: standalone
+    strategy:
+      fail-fast: false
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          path: "${{ github.repository }}"
+      - name: Molecule for Ansible
+        uses: MonolithProjects/action-molecule@v1.4.2
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        with:
+          molecule_command: test
+          scenario: cluster
+
+  ha_cluster:
+    name: Test RKE2 Ansible Role - HA cluster
+    runs-on: ubuntu-20.04
+    needs: cluster
+    strategy:
+      fail-fast: false
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          path: "${{ github.repository }}"
+      - name: Molecule for Ansible
+        uses: MonolithProjects/action-molecule@v1.4.2
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        with:
+          molecule_command: test
+          scenario: ha_cluster
