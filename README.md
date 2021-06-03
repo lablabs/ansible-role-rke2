@@ -90,13 +90,14 @@ rke2_token: defaultSecret12345
 
 ## Playbook example
 
+```yaml
 - name: Deploy RKE2
   hosts: all
   become: yes
   roles:
      - role: lablabs.rke2
 
-...
+```
 
 ## License
 
