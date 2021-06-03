@@ -6,8 +6,21 @@ rke2_type: server
 # Deploy the cluster in HA mode
 rke2_ha_mode: false
 
+# Kubernetes API and registration RKE2 IP address. The default Address is the IPv4 of the Server/Master node.
+# In HA mode choose a static IP which will be set as VIP in keepalived.
+rke2_api_ip: "{{ hostvars[groups.masters.0]['ansible_default_ipv4']['address'] }}"
+
+# API Server destination port
+rke2_apiserver_dest_port: 6443
+
+# If false, server node(s) will be schedulable and thus your workloads can get launched on them
+rke2_server_taint: false
+
+# Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
+rke2_token: defaultSecret12345
+
 # RKE2 version
-rke2_version: v1.20.4+rke2r1
+rke2_version: v1.20.7+rke2r1
 
 # URL to RKE2 repository
 rke2_channel_url: https://update.rke2.io/v1-release/channels
@@ -15,12 +28,8 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 # RKE2 channel
 rke2_channel: stable
 
-# RKE2 installation method (tar or rpm)
+# RKE2 installation method (do not change this option)
 rke2_method: tar
-
-# RKE2 Kubernetes API IP address. The default Address is the IPv4 of the Server/Master node.
-# In HA mode choose the a static IP which will be set as VIP in keepalived.
-rke2_api_ip: "{{ hostvars[groups.masters.0]['ansible_default_ipv4']['address'] }} "
 
 # Download Kubernetes config file to the Ansible controller 
 rke2_download_kubeconf: false
@@ -39,14 +48,5 @@ rke2_custom_registry: false
 # All flags can be found here https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver
 #rke2_kube_apiserver_args: []
 
-# API Server destination port
-rke2_apiserver_dest_port: 6443
-
 # Override default containerd snapshotter
 rke2_snapshooter: overlayfs
-
-# If false, server node(s) will be schedulable and thus your workloads can get launched on them
-rke2_server_taint: false
-
-# Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
-rke2_token: defaultSecret12345
