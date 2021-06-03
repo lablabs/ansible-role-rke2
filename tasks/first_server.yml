@@ -25,15 +25,31 @@
     mode: 0644
   when: rke2_custom_registry is true
 
-- name: Start RKE2 service on the rest of the nodes
+- name: Start RKE2 service on the first server
   ansible.builtin.systemd:
-    name: "rke2-{{ rke2_type }}.service"
+    name: "rke2-server.service"
     state: started
     enabled: true
   environment:
     RKE2_TOKEN: "{{ rke2_token }}"
 
-- name: Wait for the RKE2 server to be ready
+# - name: Wait until the file /var/lib/rancher/rke2/server/node-token is present
+#   ansible.builtin.wait_for:
+#     path: /var/lib/rancher/rke2/server/node-token
+
+# - name: Read node-token file
+#   ansible.builtin.shell: cat /var/lib/rancher/rke2/server/node-token
+#   register: node_token_file
+#   when: rke2_token is not defined
+
+# - name: Read node token
+#   set_fact:
+#     rke2_token: "{{ rke2_token | default(node_token_file.stdout) }}"
+#   delegate_to: "{{ item }}"
+#   with_items: "{{ play_hosts }}"
+#   run_once: true
+
+- name: Wait for the first server be ready
   shell: |
    set -o pipefail
    /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ inventory_hostname }}"
@@ -45,3 +61,8 @@
     - '" Ready "  in first_server.stdout'
   retries: 40
   delay: 15
+
+- name: Set an Active Server variable
+  ansible.builtin.set_fact:
+    active_server: "{{ inventory_hostname }}"
+  run_once: yes
