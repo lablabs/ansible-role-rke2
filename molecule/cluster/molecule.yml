@@ -46,10 +46,10 @@ verifier:
 scenario:
   name: cluster
   test_sequence:
-    - dependency
     - lint
     - destroy
     - syntax
+    - dependency
     - create
     - prepare
     - converge

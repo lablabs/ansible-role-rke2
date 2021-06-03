@@ -70,10 +70,10 @@ verifier:
 scenario:
   name: ha_cluster
   test_sequence:
-    - dependency
     - lint
     - destroy
     - syntax
+    - dependency
     - create
     - prepare
     - converge
