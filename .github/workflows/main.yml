@@ -3,7 +3,7 @@ name: molecule test
 on:
     pull_request:
         branches:
-            - master
+            - main
         types: [opened, synchronize, reopened]
 
 jobs:
