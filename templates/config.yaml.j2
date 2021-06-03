@@ -1,13 +1,13 @@
 
-{% if rke2_ha_mode and active_server is defined %}
+{% if active_server is defined %}
 server: https://{{ rke2_api_ip }}:9345
 {% endif %}
-{% if rke2_ha_mode and (rke2_token is defined) %}
 token: {{ rke2_token }}
-{% endif %}
 {% if ansible_fqdn in groups['masters'] %}
+{% if rke2_server_taint %}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
+{% endif %}
 tls-san:
   - cluster.local
   - {{ rke2_api_ip }}
