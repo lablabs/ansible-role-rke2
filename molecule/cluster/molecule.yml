@@ -1,0 +1,59 @@
+---
+dependency:
+  name: 'shell'
+  command: ansible-playbook ${MOLECULE_PROJECT_DIRECTORY}/molecule/default/dependency.yml -i localhost,
+driver:
+  name: docker
+lint: |
+  yamllint -s .
+  ansible-lint --exclude molecule/
+platforms:
+  - name: node1
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    networks:
+      - name: rke2net
+    groups:
+      - masters
+      - k8s_cluster
+  - name: node2
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    networks:
+      - name: rke2net
+    groups:
+      - workers
+      - k8s_cluster
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      masters:
+        rke2_type: server
+      workers:
+        rke2_type: agent
+
+verifier:
+  name: ansible
+scenario:
+  name: cluster
+  test_sequence:
+    - dependency
+    - lint
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - verify
+    - cleanup
+    - destroy
