@@ -18,4 +18,3 @@
         that:
           - groups.all | length == nodes.stdout | int
         quiet: true
-
