@@ -26,7 +26,15 @@ Install [molecule](https://molecule.readthedocs.io/en/stable/) and run the test:
 ```bash
 pip install molecule molecule-docker ansible-lint docker
 cd ansible-github_actions_runner
+
+# Test of single node RKE2 deployment
 molecule test
+
+# Test of 2 node cluster (one server, one agent)
+molecule test --scenario-name cluster
+
+# Test of 4 node cluster (3 tained server nodes in HA, one agent)
+molecule test --scenario-name ha_cluster
 ```
 
 ## 5. Create a pull request

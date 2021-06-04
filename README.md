@@ -1,9 +1,9 @@
 # RKE2 Ansible Role
 
-[![Galaxy Quality](https://img.shields.io/ansible/quality/XXXXX?style=flat&logo=ansible)](https://galaxy.ansible.com/lablabs/XXXXX)
-[![Role version](https://img.shields.io/github/v/release/lablabs/ansible-role-rke2)](https://galaxy.ansible.com/lablabs/XXXXX)
-[![Role downloads](https://img.shields.io/ansible/role/d/XXXXX)](https://galaxy.ansible.com/lablabs/XXXXX)
-[![GitHub Actions](https://github.com/lablabs/ansible-role-rke2/workflows/molecule%20test/badge.svg?branch=main)](https://github.com/lablabs/ansible-role-rke2/actions)
+[![Galaxy Quality](https://img.shields.io/ansible/quality/55229?style=flat&logo=ansible)](https://galaxy.ansible.com/lablabs/55229)
+[![Role version](https://img.shields.io/github/v/release/lablabs/ansible-role-rke2)](https://galaxy.ansible.com/lablabs/55229)
+[![Role downloads](https://img.shields.io/ansible/role/d/55229)](https://galaxy.ansible.com/lablabs/55229)
+[![GitHub Actions](https://github.com/lablabs/ansible-role-rke2/workflows/molecule%20test/badge.svg)](https://github.com/lablabs/ansible-role-rke2/actions)
 [![License](https://img.shields.io/github/license/lablabs/ansible-role-rke2)](https://github.com/lablabs/ansible-role-rke2/blob/main/LICENSE)
 
 [<img src="ll-logo.png">](https://lablabs.io/)
