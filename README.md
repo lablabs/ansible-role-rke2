@@ -10,7 +10,7 @@
 
 This Ansible role will deploy [RKE2](https://docs.rke2.io/) Kubernetes Cluster. RKE2 will be installed using the tarball method.  
 
-The Role can install the RKE2 in 3 modes.
+The Role can install the RKE2 in 3 modes:
 
 - RKE2 single node
 
@@ -24,6 +24,7 @@ The Role can install the RKE2 in 3 modes.
 
 ## Tested on
 
+* CentOS 8
 * Ubuntu 20.04 TLS
 
 ## Role Variables
@@ -51,7 +52,7 @@ rke2_server_taint: false
 rke2_token: defaultSecret12345
 
 # RKE2 version
-rke2_version: v1.20.7+rke2r1
+rke2_version: v1.21.2+rke2r1
 
 # URL to RKE2 repository
 rke2_channel_url: https://update.rke2.io/v1-release/channels
