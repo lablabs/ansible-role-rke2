@@ -10,11 +10,13 @@ galaxy_info:
   min_ansible_version: 2.10.0
 
   platforms:
+  - name: EL
+    versions:
+      - 8
   - name: Ubuntu
     versions:
     - bionic
     - focal
-
 
   galaxy_tags:
     - kubernetes
