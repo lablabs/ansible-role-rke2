@@ -88,14 +88,14 @@ The RKE2 Kubernetes master/server nodes must belong to `masters` group and worke
 
 ```ini
 [masters]
-master-01 ansible_host=192.168.123.1
-master-02 ansible_host=192.168.123.2
-master-03 ansible_host=192.168.123.3
+master-01 ansible_host=192.168.123.1 rke2_type=server
+master-02 ansible_host=192.168.123.2 rke2_type=server
+master-03 ansible_host=192.168.123.3 rke2_type=server
 
 [workers]
-worker-01 ansible_host=192.168.123.11
-worker-02 ansible_host=192.168.123.12
-worker-03 ansible_host=192.168.123.13
+worker-01 ansible_host=192.168.123.11 rke2_type=agent
+worker-02 ansible_host=192.168.123.12 rke2_type=agent
+worker-03 ansible_host=192.168.123.13 rke2_type=agent
 
 [k8s_cluster:children]
 masters
