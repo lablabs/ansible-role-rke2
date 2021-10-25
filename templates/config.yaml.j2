@@ -11,7 +11,7 @@ node-taint:
 tls-san:
   - cluster.local
   - {{ rke2_api_ip }}
-{% for san in additional_sans %}
+{% for san in rke2_additional_sans %}
   - {{ san }}
 {% endfor %}
 

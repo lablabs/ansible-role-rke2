@@ -43,7 +43,7 @@ rke2_ha_mode: false
 rke2_api_ip: "{{ hostvars[groups.masters.0]['ansible_default_ipv4']['address'] }}"
 
 # Add additional SANs in k8s API TLS cert
-additional_sans:
+rke2_additional_sans:
   - api.rke.foo.bar
   - api.k8s.foo.bar
 
