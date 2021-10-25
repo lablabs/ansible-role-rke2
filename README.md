@@ -8,7 +8,7 @@
 
 [<img src="ll-logo.png">](https://lablabs.io/)
 
-This Ansible role will deploy [RKE2](https://docs.rke2.io/) Kubernetes Cluster. RKE2 will be installed using the tarball method.  
+This Ansible role will deploy [RKE2](https://docs.rke2.io/) Kubernetes Cluster. RKE2 will be installed using the tarball method.
 
 The Role can install the RKE2 in 3 modes:
 
@@ -42,6 +42,11 @@ rke2_ha_mode: false
 # In HA mode choose a static IP which will be set as VIP in keepalived.
 rke2_api_ip: "{{ hostvars[groups.masters.0]['ansible_default_ipv4']['address'] }}"
 
+# Add additional SANs in k8s API TLS cert
+additional_sans:
+  - api.rke.foo.bar
+  - api.k8s.foo.bar
+
 # API Server destination port
 rke2_apiserver_dest_port: 6443
 
@@ -60,7 +65,7 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 # RKE2 channel
 rke2_channel: stable
 
-# Download Kubernetes config file to the Ansible controller 
+# Download Kubernetes config file to the Ansible controller
 rke2_download_kubeconf: false
 
 # Do not deploy packaged components and delete any deployed components
@@ -83,7 +88,7 @@ rke2_snapshooter: overlayfs
 
 ## Inventory file example
 
-This role relies on nodes distribution to `masters` and `workers` inventory groups. 
+This role relies on nodes distribution to `masters` and `workers` inventory groups.
 The RKE2 Kubernetes master/server nodes must belong to `masters` group and worker/agent nodes must be the members of `workers` group. Both groups has to be the children of `k8s_cluster` group.
 
 ```ini

@@ -11,6 +11,10 @@ node-taint:
 tls-san:
   - cluster.local
   - {{ rke2_api_ip }}
+{% for san in additional_sans %}
+  - {{ san }}
+{% endfor %}
+
 {% endif %}
 {% if rke2_disable and ( inventory_hostname|string() in groups['masters'] ) %}
 disable: {{ rke2_disable }}
@@ -19,7 +23,7 @@ disable: {{ rke2_disable }}
 kube-apiserver-arg: {{ rke2_kube_apiserver_args}}
 {% endif %}
 {% if ( k8s_node_label is defined ) %}
-node-label: 
+node-label:
 {% for label in k8s_node_label %}
   - {{ label }}
 {% endfor %}
