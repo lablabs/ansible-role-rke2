@@ -24,7 +24,7 @@
   when: '"rke2-server.service" in ansible_facts.services'
 
 - name: Run RKE2 script
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: /tmp/rke2.sh
   environment:
     INSTALL_RKE2_VERSION: "{{ rke2_version }}"
