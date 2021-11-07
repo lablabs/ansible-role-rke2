@@ -52,7 +52,7 @@ rke2_server_taint: false
 rke2_token: defaultSecret12345
 
 # RKE2 version
-rke2_version: v1.21.2+rke2r1
+rke2_version: v1.21.6+rke2r1
 
 # URL to RKE2 repository
 rke2_channel_url: https://update.rke2.io/v1-release/channels
