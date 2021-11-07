@@ -14,7 +14,7 @@
   service_facts:
 
 - name: Check RKE2 version
-  ansible.builtin.shell: |
+  ansible.builtin.command: |
     set -o pipefail
     rke2 --version | grep -E "rke2 version" | awk '{print $3}'
   args:
@@ -24,7 +24,7 @@
   when: '"rke2-server.service" in ansible_facts.services'
 
 - name: Run RKE2 script
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: /tmp/rke2.sh
   environment:
     INSTALL_RKE2_VERSION: "{{ rke2_version }}"
