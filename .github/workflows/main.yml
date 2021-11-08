@@ -20,7 +20,7 @@ jobs:
         config:
           - os: "centos8"
             tag: "latest"
-          - os: "ubuntu20"
+          - os: "ubuntu2004"
             tag: "latest"
     steps:
       - name: checkout

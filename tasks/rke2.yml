@@ -14,7 +14,7 @@
   service_facts:
 
 - name: Check RKE2 version
-  ansible.builtin.command: |
+  ansible.builtin.shell: |
     set -o pipefail
     rke2 --version | grep -E "rke2 version" | awk '{print $3}'
   args:
