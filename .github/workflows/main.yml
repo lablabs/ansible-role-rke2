@@ -28,7 +28,7 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: Molecule for Ansible
-        uses: MonolithProjects/action-molecule@v1.4.3
+        uses: MonolithProjects/action-molecule@v1.4.5
         with:
           os: ${{ matrix.config.os }}
           tag: ${{ matrix.config.tag }}
@@ -47,7 +47,7 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: Molecule for Ansible
-        uses: MonolithProjects/action-molecule@v1.4.3
+        uses: MonolithProjects/action-molecule@v1.4.5
         with:
           molecule_command: test
           scenario: cluster
