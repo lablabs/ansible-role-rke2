@@ -9,7 +9,7 @@ lint: |
   ansible-lint --exclude molecule/
 platforms:
   - name: node1
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    image: "geerlingguy/docker-${os:-ubuntu2004}-ansible:${tag:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -21,7 +21,7 @@ platforms:
       - masters
       - k8s_cluster
   - name: node2
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    image: "geerlingguy/docker-${os:-ubuntu2004}-ansible:${tag:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -33,7 +33,7 @@ platforms:
       - masters
       - k8s_cluster
   - name: node3
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    image: "geerlingguy/docker-${os:-ubuntu2004}-ansible:${tag:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -45,7 +45,7 @@ platforms:
       - masters
       - k8s_cluster
   - name: node4
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    image: "geerlingguy/docker-${os:-ubuntu2004}-ansible:${tag:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
