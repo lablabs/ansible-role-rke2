@@ -39,6 +39,11 @@ jobs:
     needs: standalone
     strategy:
       fail-fast: false
+      max-parallel: 1
+      matrix:
+        config:
+          - image: "ubuntu2004"
+            tag: "latest"
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -47,4 +52,6 @@ jobs:
       - name: Molecule for Ansible
         uses: robertdebock/molecule-action@2.7.2
         with:
+          image: ${{ matrix.config.image }}
+          tag: ${{ matrix.config.tag }}
           scenario: cluster
