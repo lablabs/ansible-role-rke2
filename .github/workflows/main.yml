@@ -28,9 +28,12 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: Molecule for Ansible
-        uses: robertdebock/molecule-action@2.7.2
+        uses: MonolithProjects/action-molecule@v1.4.5
         with:
-          command: test
+          os: ${{ matrix.config.os }}
+          tag: ${{ matrix.config.tag }}
+          molecule_command: test
+          scenario: default
 
   cluster:
     name: Test RKE2 Ansible Role - cluster
@@ -44,7 +47,7 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: Molecule for Ansible
-        uses: robertdebock/molecule-action@2.7.2
+        uses: MonolithProjects/action-molecule@v1.4.5
         with:
-          command: test
+          molecule_command: test
           scenario: cluster
