@@ -2,8 +2,8 @@ name: molecule test
 
 on:
     pull_request:
-        branches:
-            - main
+        # branches:
+        #     - main
         types: [opened, synchronize, reopened]
     schedule:
         - cron: '0 1 1 * *'
