@@ -9,7 +9,7 @@ lint: |
   ansible-lint --exclude molecule/
 platforms:
   - name: node1
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    image: "geerlingguy/docker-${image:-centos8}-ansible:${tag:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -34,7 +34,7 @@ scenario:
     - create
     - prepare
     - converge
-    - idempotence
+    # - idempotence
     - verify
     - cleanup
     - destroy

@@ -18,9 +18,9 @@ jobs:
       max-parallel: 1
       matrix:
         config:
-          - os: "centos8"
+          - image: "centos8"
             tag: "latest"
-          - os: "ubuntu20"
+          - image: "ubuntu2004"
             tag: "latest"
     steps:
       - name: checkout
@@ -28,12 +28,10 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: Molecule for Ansible
-        uses: MonolithProjects/action-molecule@v1.4.3
+        uses: robertdebock/molecule-action@2.7.2
         with:
-          os: ${{ matrix.config.os }}
+          image: ${{ matrix.config.image }}
           tag: ${{ matrix.config.tag }}
-          molecule_command: test
-          scenario: default
 
   cluster:
     name: Test RKE2 Ansible Role - cluster
@@ -41,13 +39,19 @@ jobs:
     needs: standalone
     strategy:
       fail-fast: false
+      max-parallel: 1
+      matrix:
+        config:
+          - image: "ubuntu2004"
+            tag: "latest"
     steps:
       - name: checkout
         uses: actions/checkout@v2
         with:
           path: "${{ github.repository }}"
       - name: Molecule for Ansible
-        uses: MonolithProjects/action-molecule@v1.4.3
+        uses: robertdebock/molecule-action@2.7.2
         with:
-          molecule_command: test
+          image: ${{ matrix.config.image }}
+          tag: ${{ matrix.config.tag }}
           scenario: cluster
