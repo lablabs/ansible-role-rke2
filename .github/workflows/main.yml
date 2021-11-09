@@ -32,7 +32,6 @@ jobs:
         with:
           image: ${{ matrix.config.image }}
           tag: ${{ matrix.config.tag }}
-          command: test
 
   cluster:
     name: Test RKE2 Ansible Role - cluster
@@ -48,5 +47,4 @@ jobs:
       - name: Molecule for Ansible
         uses: robertdebock/molecule-action@2.7.2
         with:
-          command: test
           scenario: cluster
