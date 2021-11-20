@@ -40,7 +40,7 @@ rke2_type: server
 # Deploy the cluster in HA mode
 rke2_ha_mode: false
 
-# Kubernetes API and registration RKE2 IP address. The default Address is the IPv4 of the Server/Master node.
+# Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in keepalived.
 rke2_api_ip: "{{ hostvars[groups.masters.0]['ansible_default_ipv4']['address'] }}"
 
