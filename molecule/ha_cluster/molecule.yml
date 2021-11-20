@@ -62,8 +62,12 @@ provisioner:
     group_vars:
       masters:
         rke2_type: server
+        k8s_node_label:
+          - controlplane=true
       workers:
         rke2_type: agent
+        k8s_node_label:
+          - worker=true
 
 verifier:
   name: ansible

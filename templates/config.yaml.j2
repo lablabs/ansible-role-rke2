@@ -11,6 +11,9 @@ node-taint:
 tls-san:
   - cluster.local
   - {{ rke2_api_ip }}
+{% for san in rke2_additional_sans %}
+  - {{ san }}
+{% endfor %}
 {% endif %}
 {% if rke2_disable and ( inventory_hostname|string() in groups['masters'] ) %}
 disable: {{ rke2_disable }}

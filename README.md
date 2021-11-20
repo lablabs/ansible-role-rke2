@@ -32,36 +32,38 @@ The Role can install the RKE2 in 3 modes:
 This is a copy of `defaults/main.yml`
 
 ```yaml
+---
+
 # The node type - server or agent
 rke2_type: server
 
 # Deploy the cluster in HA mode
 rke2_ha_mode: false
 
-# Kubernetes API and RKE2 node registration IP address. The default Address is the IPv4 of the Server/Master node.
+# Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in keepalived.
 rke2_api_ip: "{{ hostvars[groups.masters.0]['ansible_default_ipv4']['address'] }}"
+
+# Add additional SANs in k8s API TLS cert
+rke2_additional_sans: []
 
 # API Server destination port
 rke2_apiserver_dest_port: 6443
 
-# If false, server(master) node(s) will be schedulable and thus your workloads can get launched on them
+# If false, server node(s) will be schedulable and thus your workloads can get launched on them
 rke2_server_taint: false
 
 # Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
 rke2_token: defaultSecret12345
 
 # RKE2 version
-rke2_version: v1.21.6+rke2r1
+rke2_version: v1.22.3+rke2r1
 
 # URL to RKE2 repository
 rke2_channel_url: https://update.rke2.io/v1-release/channels
 
 # RKE2 channel
 rke2_channel: stable
-
-# Download Kubernetes config file to the Ansible controller 
-rke2_download_kubeconf: false
 
 # Do not deploy packaged components and delete any deployed components
 # Valid items: rke2-canal, rke2-coredns, rke2-ingress-nginx, rke2-kube-proxy, rke2-metrics-server
@@ -73,12 +75,27 @@ rke2_custom_manifests:
 # Deploy RKE2 and set the custom containerd images registries
 rke2_custom_registry: false
 
+# Path to Container registry config file template
+rke2_custom_registry_path: templates/registries.yaml.j2
+
+# Override default containerd snapshotter
+rke2_snapshooter: overlayfs
+
+# Download Kubernetes config file to the Ansible controller 
+rke2_download_kubeconf: false
+
+# Name of the Kubernetes config file will be downloaded to the Ansible controller
+rke2_download_kubeconf_file_name: rke2.yaml
+
+# Destination directory where the Kubernetes config file will be downloaded to the Ansible controller 
+rke2_download_kubeconf_path: /tmp
+
 # (Optional) A list of Kubernetes API server flags
 # All flags can be found here https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver
 #rke2_kube_apiserver_args: []
 
-# Override default containerd snapshotter
-rke2_snapshooter: overlayfs
+# (Optional) List of Node labels
+# k8s_node_label: []
 ```
 
 ## Inventory file example

@@ -16,7 +16,7 @@
 - name: Check RKE2 version
   ansible.builtin.shell: |
     set -o pipefail
-    rke2 --version | grep -E "rke2 version" | awk '{print $3}'
+    /usr/local/bin/rke2 --version | grep -E "rke2 version" | awk '{print $3}'
   args:
     executable: /bin/bash
   changed_when: false
