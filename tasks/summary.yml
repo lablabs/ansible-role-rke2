@@ -3,7 +3,7 @@
 - name: Download RKE2 kubeconfig to localhost
   ansible.builtin.fetch:
     src: /etc/rancher/rke2/rke2.yaml
-    dest: ../../rke2.yaml
+    dest: "{{ rke2_download_kubeconf_path }}/{{ rke2_download_kubeconf_file_name }}"
     flat: yes
   delegate_to: "{{ groups.masters.0 }}"
   run_once: true
@@ -12,7 +12,7 @@
 
 - name: Replace loopback IP by master server IP
   ansible.builtin.replace:
-    path: ../../rke2.yaml
+    path: "{{ rke2_download_kubeconf_path }}/{{ rke2_download_kubeconf_file_name }}"
     regexp: '127.0.0.1'
     replace: "{{ rke2_api_ip | default(hostvars[groups.masters.0]['ansible_default_ipv4']['address']) }}"
   delegate_to: localhost
@@ -24,7 +24,7 @@
     - name: Prepare summary
       shell: |
         set -e
-        /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes -o wide
+        /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes -o wide --show-labels
       args:
         executable: /bin/bash
       changed_when: false
