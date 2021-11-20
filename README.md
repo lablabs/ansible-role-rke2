@@ -65,9 +65,6 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 # RKE2 channel
 rke2_channel: stable
 
-# Download Kubernetes config file to the Ansible controller 
-rke2_download_kubeconf: false
-
 # Do not deploy packaged components and delete any deployed components
 # Valid items: rke2-canal, rke2-coredns, rke2-ingress-nginx, rke2-kube-proxy, rke2-metrics-server
 rke2_disable:
@@ -83,6 +80,9 @@ rke2_custom_registry_path: templates/registries.yaml.j2
 
 # Override default containerd snapshotter
 rke2_snapshooter: overlayfs
+
+# Download Kubernetes config file to the Ansible controller 
+rke2_download_kubeconf: false
 
 # Name of the Kubernetes config file will be downloaded to the Ansible controller
 rke2_download_kubeconf_file_name: rke2.yaml
