@@ -4,7 +4,7 @@
   include_tasks: keepalived.yml
   when:
     - rke2_api_ip is defined
-    - inventory_hostname is in groups.masters
+    - inventory_hostname in groups.masters
     - rke2_ha_mode
 
 - name: Download and install RKE2
