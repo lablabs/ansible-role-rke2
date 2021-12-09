@@ -8,7 +8,7 @@
   delegate_to: "{{ groups.masters.0 }}"
   run_once: true
   when:
-  - rke2_download_kubeconf
+  - rke2_download_kubeconf | bool
 
 - name: Replace loopback IP by master server IP
   ansible.builtin.replace:
@@ -18,7 +18,7 @@
   delegate_to: localhost
   become: false
   when:
-  - rke2_download_kubeconf
+  - rke2_download_kubeconf | bool
 
 - block:
     - name: Prepare summary
