@@ -23,7 +23,7 @@
     owner: root
     group: root
     mode: 0644
-  when: rke2_custom_registry is true
+  when: rke2_custom_registry | bool
 
 - name: Start RKE2 service on the rest of the nodes
   ansible.builtin.systemd:

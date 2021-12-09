@@ -37,7 +37,7 @@ This is a copy of `defaults/main.yml`
 # The node type - server or agent
 rke2_type: server
 
-# Deploy the cluster in HA mode
+# Deploy the control plane in HA mode
 rke2_ha_mode: false
 
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
@@ -57,7 +57,7 @@ rke2_server_taint: false
 rke2_token: defaultSecret12345
 
 # RKE2 version
-rke2_version: v1.22.3+rke2r1
+rke2_version: v1.22.4+rke2r2
 
 # URL to RKE2 repository
 rke2_channel_url: https://update.rke2.io/v1-release/channels
