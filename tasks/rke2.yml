@@ -2,7 +2,7 @@
 
 - name: Download RKE2 installation script
   ansible.builtin.get_url:
-    url: https://get.rke2.io
+    url: "{{ rke2_install_bash_url }}"
     dest: /tmp/rke2.sh
 
 - name: Set the permissions for the file
