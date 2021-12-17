@@ -23,7 +23,8 @@
     owner: root
     group: root
     mode: 0644
-  when: rke2_custom_registry is true
+  when:
+    - rke2_custom_registry is defined and rke2_custom_registry | bool
 
 - name: Start RKE2 service on the first server
   ansible.builtin.systemd:
