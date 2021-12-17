@@ -28,6 +28,10 @@ rke2_version: v1.22.4+rke2r2
 # URL to RKE2 repository
 rke2_channel_url: https://update.rke2.io/v1-release/channels
 
+# URL to RKE2 install bash script
+# e.g. rancher chinase mirror http://rancher-mirror.rancher.cn/rke2/install.sh
+rke2_install_bash_url: https://get.rke2.io
+
 # RKE2 channel
 rke2_channel: stable
 
