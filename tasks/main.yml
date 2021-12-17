@@ -13,7 +13,7 @@
 - name: Find Active Server
   include_tasks: find_active_server.yml
   when:
-    - rke2_ha_mode
+    - rke2_ha_mode | bool
 
 - name: Prepare very first server node in the cluster
   include_tasks: first_server.yml

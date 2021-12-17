@@ -23,8 +23,7 @@
     owner: root
     group: root
     mode: 0644
-  when:
-    - rke2_custom_registry is defined and rke2_custom_registry | bool
+  when: rke2_custom_registry | bool
 
 - name: Start RKE2 service on the first server
   ansible.builtin.systemd:
@@ -34,26 +33,10 @@
   environment:
     RKE2_TOKEN: "{{ rke2_token }}"
 
-# - name: Wait until the file /var/lib/rancher/rke2/server/node-token is present
-#   ansible.builtin.wait_for:
-#     path: /var/lib/rancher/rke2/server/node-token
-
-# - name: Read node-token file
-#   ansible.builtin.shell: cat /var/lib/rancher/rke2/server/node-token
-#   register: node_token_file
-#   when: rke2_token is not defined
-
-# - name: Read node token
-#   set_fact:
-#     rke2_token: "{{ rke2_token | default(node_token_file.stdout) }}"
-#   delegate_to: "{{ item }}"
-#   with_items: "{{ play_hosts }}"
-#   run_once: true
-
 - name: Wait for the first server be ready
   shell: |
    set -o pipefail
-   /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ inventory_hostname }}"
+   /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ ansible_hostname }}"
   args:
     executable: /bin/bash
   changed_when: false

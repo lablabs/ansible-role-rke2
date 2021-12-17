@@ -23,8 +23,7 @@
     owner: root
     group: root
     mode: 0644
-  when:
-    - rke2_custom_registry is defined and rke2_custom_registry | bool
+  when: rke2_custom_registry | bool
 
 - name: Start RKE2 service on the server node
   ansible.builtin.systemd:
@@ -37,7 +36,7 @@
 - name: Wait for the RKE2 server to be ready
   shell: |
    set -o pipefail
-   /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ inventory_hostname }}"
+   /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ ansible_hostname }}"
   args:
     executable: /bin/bash
   changed_when: false
