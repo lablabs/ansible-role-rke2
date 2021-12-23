@@ -13,12 +13,12 @@ vrrp_script chk_apiserver {
 vrrp_instance VI_1 {
     interface {{ ansible_default_ipv4.interface }}
     virtual_router_id 11
-{% if groups.masters.0 == inventory_hostname|string() %}
+{% if groups[rke2_servers_group_name].0 == inventory_hostname|string() %}
     state MASTER
 {% else %}
     state BACKUP
 {% endif %}
-{% for host in groups.masters %}
+{% for host in groups[rke2_servers_group_name] %}
     {%- if host|string() == inventory_hostname|string() %}
     priority {{ 150 - loop.index0 }}
     {% endif -%}
