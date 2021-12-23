@@ -8,7 +8,7 @@
     active_server: "{{ inventory_hostname }}"
   delegate_facts: true
   delegate_to: "{{ item }}"
-  with_items: "{{ groups[rke2_group_name_cluster] }}"
+  with_items: "{{ groups[rke2_cluster_group_name] }}"
   when:
-    - inventory_hostname in groups[rke2_group_name_master]
+    - inventory_hostname in groups[rke2_servers_group_name]
     - ansible_facts.services["rke2-server.service"].state == "running"
