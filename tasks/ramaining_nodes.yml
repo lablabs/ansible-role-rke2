@@ -45,5 +45,5 @@
     - groups.k8s_cluster | length == all_ready_nodes.stdout | int
   retries: 100
   delay: 15
-  delegate_to: "{{ active_server | default(groups.masters.0) }}"
+  delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true

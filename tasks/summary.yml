@@ -5,7 +5,7 @@
     src: /etc/rancher/rke2/rke2.yaml
     dest: "{{ rke2_download_kubeconf_path }}/{{ rke2_download_kubeconf_file_name }}"
     flat: yes
-  delegate_to: "{{ groups.masters.0 }}"
+  delegate_to: "{{ groups[rke2_servers_group_name].0 }}"
   run_once: true
   when:
   - rke2_download_kubeconf | bool
@@ -14,7 +14,7 @@
   ansible.builtin.replace:
     path: "{{ rke2_download_kubeconf_path }}/{{ rke2_download_kubeconf_file_name }}"
     regexp: '127.0.0.1'
-    replace: "{{ rke2_api_ip | default(hostvars[groups.masters.0]['ansible_default_ipv4']['address']) }}"
+    replace: "{{ rke2_api_ip | default(hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address']) }}"
   delegate_to: localhost
   become: false
   when:
@@ -36,4 +36,4 @@
       debug:
         var: nodes_summary.stdout_lines
       run_once: true
-  when: inventory_hostname == groups.masters.0
+  when: inventory_hostname == groups[rke2_servers_group_name].0
