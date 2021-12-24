@@ -85,7 +85,10 @@ rke2_custom_registry_path: templates/registries.yaml.j2
 # Override default containerd snapshotter
 rke2_snapshooter: overlayfs
 
-# Download Kubernetes config file to the Ansible controller
+# Deploy RKE2 with default CNI canal
+rke2_cni: canal
+
+# Download Kubernetes config file to the Ansible controller 
 rke2_download_kubeconf: false
 
 # Name of the Kubernetes config file will be downloaded to the Ansible controller
