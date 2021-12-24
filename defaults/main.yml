@@ -1,10 +1,7 @@
 ---
 
-rke2_cluster_group_name: k8s_cluster
-rke2_servers_group_name: masters
-
 # The node type - server or agent
-rke2_type: server
+rke_type: server
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -72,3 +69,9 @@ rke2_download_kubeconf_path: /tmp
 
 # (Optional) List of Node labels
 # k8s_node_label: []
+
+# Default Ansible Inventory Group name for RKE2 cluster
+rke2_cluster_group_name: k8s_cluster
+
+# Default Ansible Inventory Group name for RKE2 Servers
+rke2_servers_group_name: masters

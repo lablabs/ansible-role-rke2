@@ -35,7 +35,7 @@ This is a copy of `defaults/main.yml`
 ---
 
 # The node type - server or agent
-rke2_type: server
+rke_type: server
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -88,7 +88,7 @@ rke2_snapshooter: overlayfs
 # Deploy RKE2 with default CNI canal
 rke2_cni: canal
 
-# Download Kubernetes config file to the Ansible controller 
+# Download Kubernetes config file to the Ansible controller
 rke2_download_kubeconf: false
 
 # Name of the Kubernetes config file will be downloaded to the Ansible controller
@@ -103,6 +103,12 @@ rke2_download_kubeconf_path: /tmp
 
 # (Optional) List of Node labels
 # k8s_node_label: []
+
+# Default Ansible Inventory Group name for RKE2 cluster
+rke2_cluster_group_name: k8s_cluster
+
+# Default Ansible Inventory Group name for RKE2 Servers
+rke2_servers_group_name: masters
 ```
 
 ## Inventory file example
