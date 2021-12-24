@@ -8,7 +8,7 @@
 
 [<img src="ll-logo.png">](https://lablabs.io/)
 
-This Ansible role will deploy [RKE2](https://docs.rke2.io/) Kubernetes Cluster. RKE2 will be installed using the tarball method.  
+This Ansible role will deploy [RKE2](https://docs.rke2.io/) Kubernetes Cluster. RKE2 will be installed using the tarball method.
 
 The Role can install the RKE2 in 3 modes:
 
@@ -35,14 +35,14 @@ This is a copy of `defaults/main.yml`
 ---
 
 # The node type - server or agent
-rke2_type: server
+rke_type: server
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
 
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in keepalived.
-rke2_api_ip: "{{ hostvars[groups.masters.0]['ansible_default_ipv4']['address'] }}"
+rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
 
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
@@ -85,13 +85,16 @@ rke2_custom_registry_path: templates/registries.yaml.j2
 # Override default containerd snapshotter
 rke2_snapshooter: overlayfs
 
-# Download Kubernetes config file to the Ansible controller 
+# Deploy RKE2 with default CNI canal
+rke2_cni: canal
+
+# Download Kubernetes config file to the Ansible controller
 rke2_download_kubeconf: false
 
 # Name of the Kubernetes config file will be downloaded to the Ansible controller
 rke2_download_kubeconf_file_name: rke2.yaml
 
-# Destination directory where the Kubernetes config file will be downloaded to the Ansible controller 
+# Destination directory where the Kubernetes config file will be downloaded to the Ansible controller
 rke2_download_kubeconf_path: /tmp
 
 # (Optional) A list of Kubernetes API server flags
@@ -100,11 +103,17 @@ rke2_download_kubeconf_path: /tmp
 
 # (Optional) List of Node labels
 # k8s_node_label: []
+
+# Default Ansible Inventory Group name for RKE2 cluster
+rke2_cluster_group_name: k8s_cluster
+
+# Default Ansible Inventory Group name for RKE2 Servers
+rke2_servers_group_name: masters
 ```
 
 ## Inventory file example
 
-This role relies on nodes distribution to `masters` and `workers` inventory groups. 
+This role relies on nodes distribution to `masters` and `workers` inventory groups.
 The RKE2 Kubernetes master/server nodes must belong to `masters` group and worker/agent nodes must be the members of `workers` group. Both groups has to be the children of `k8s_cluster` group.
 
 ```ini

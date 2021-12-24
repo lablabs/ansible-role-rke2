@@ -40,5 +40,12 @@
     mode: 0644
   notify: restart keepalived
 
+- name: Enable keepalived and make sure it is not masked
+  systemd:
+    name: keepalived
+    enabled: yes
+    masked: no
+  notify: restart keepalived
+
 - name: Flush handlers
   meta: flush_handlers
