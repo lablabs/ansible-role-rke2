@@ -1,5 +1,8 @@
 ---
 
+rke2_cluster_group_name: k8s_cluster
+rke2_servers_group_name: masters
+
 # The node type - server or agent
 rke2_type: server
 
@@ -8,7 +11,7 @@ rke2_ha_mode: false
 
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in keepalived.
-rke2_api_ip: "{{ hostvars[groups.masters.0]['ansible_default_ipv4']['address'] }}"
+rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
 
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
@@ -54,13 +57,13 @@ rke2_snapshooter: overlayfs
 # Deploy RKE2 with default CNI canal
 rke2_cni: canal
 
-# Download Kubernetes config file to the Ansible controller 
+# Download Kubernetes config file to the Ansible controller
 rke2_download_kubeconf: false
 
 # Name of the Kubernetes config file will be downloaded to the Ansible controller
 rke2_download_kubeconf_file_name: rke2.yaml
 
-# Destination directory where the Kubernetes config file will be downloaded to the Ansible controller 
+# Destination directory where the Kubernetes config file will be downloaded to the Ansible controller
 rke2_download_kubeconf_path: /tmp
 
 # (Optional) A list of Kubernetes API server flags
