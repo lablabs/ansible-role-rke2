@@ -4,6 +4,7 @@ server: https://{{ rke2_api_ip }}:9345
 {% endif %}
 token: {{ rke2_token }}
 {% if inventory_hostname in groups[rke2_servers_group_name] %}
+cni: {{ rke2_cni }}
 {% if rke2_server_taint %}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
@@ -29,4 +30,3 @@ node-label:
 {% endif %}
 snapshotter: {{ rke2_snapshooter }}
 node-name: {{ inventory_hostname }}
-cni: {{ rke2_cni }}
