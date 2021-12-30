@@ -25,7 +25,7 @@
   include_tasks: ramaining_nodes.yml
   when:
     - active_server is defined
-    - groups.k8s_cluster | length | int >= 2
+    - groups[rke2_cluster_group_name] | length | int >= 2
 
 - name: Final steps
   include_tasks: summary.yml
