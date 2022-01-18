@@ -8,7 +8,7 @@
     group: root
     mode: 0755
 
-- name: Copy kubeconfig
+- name: Copy RKE2 config
   ansible.builtin.template:
     src: templates/config.yaml.j2
     dest: /etc/rancher/rke2/config.yaml
