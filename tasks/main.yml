@@ -22,7 +22,7 @@
     - active_server is not defined
 
 - name: Prepare and join remaining nodes of the cluster
-  include_tasks: ramaining_nodes.yml
+  include_tasks: remaining_nodes.yml
   when:
     - active_server is defined
     - groups[rke2_cluster_group_name] | length | int >= 2
