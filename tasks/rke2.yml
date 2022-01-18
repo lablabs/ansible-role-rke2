@@ -3,11 +3,11 @@
 - name: Download RKE2 installation script
   ansible.builtin.get_url:
     url: "{{ rke2_install_bash_url }}"
-    dest: /tmp/rke2.sh
+    dest: "{{ rke2_install_script_dir }}/rke2.sh"
 
 - name: Set the permissions for the file
   file:
-    dest: /tmp/rke2.sh
+    dest: "{{ rke2_install_script_dir }}/rke2.sh"
     mode: 0700
 
 - name: Populate service facts
@@ -25,7 +25,7 @@
 
 - name: Run RKE2 script
   ansible.builtin.command:
-    cmd: /tmp/rke2.sh
+    cmd: "{{ rke2_install_script_dir }}/rke2.sh"
   environment:
     INSTALL_RKE2_VERSION: "{{ rke2_version }}"
     INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
