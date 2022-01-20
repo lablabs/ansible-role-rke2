@@ -30,3 +30,13 @@ node-label:
 {% endif %}
 snapshotter: {{ rke2_snapshooter }}
 node-name: {{ inventory_hostname }}
+{% if rke2_server_options is defined and inventory_hostname in groups[rke2_servers_group_name] %}
+{% for option in rke2_server_options %}
+{{ option }}
+{% endfor %}
+{% endif %}
+{% if rke2_worker_options is defined and inventory_hostname in groups['workers'] %}
+{% for option in rke2_worker_options %}
+{{ option }}
+{% endfor %}
+{% endif %}

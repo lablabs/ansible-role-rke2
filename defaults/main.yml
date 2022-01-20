@@ -78,3 +78,13 @@ rke2_cluster_group_name: k8s_cluster
 
 # Default Ansible Inventory Group name for RKE2 Servers
 rke2_servers_group_name: masters
+
+# (Optional) RKE2 server configuration options
+# You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-rke2-server-nodes
+# rke2_server_options:
+#   - "option: value"
+
+# (Optional) RKE2 agent configuration options
+# You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-linux-rke2-agent-nodes
+# rke2_agent_options:
+#   - "option: value"
