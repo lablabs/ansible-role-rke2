@@ -35,8 +35,8 @@ node-name: {{ inventory_hostname }}
 {{ option }}
 {% endfor %}
 {% endif %}
-{% if rke2_worker_options is defined and inventory_hostname in groups['workers'] %}
-{% for option in rke2_worker_options %}
+{% if rke2_agent_options is defined and inventory_hostname in groups[rke2_agents_group_name] %}
+{% for option in rke2_agent_options %}
 {{ option }}
 {% endfor %}
 {% endif %}
