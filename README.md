@@ -100,18 +100,31 @@ rke2_download_kubeconf_file_name: rke2.yaml
 # Destination directory where the Kubernetes config file will be downloaded to the Ansible controller
 rke2_download_kubeconf_path: /tmp
 
-# (Optional) A list of Kubernetes API server flags
-# All flags can be found here https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver
-#rke2_kube_apiserver_args: []
-
-# (Optional) List of Node labels
-# k8s_node_label: []
-
 # Default Ansible Inventory Group name for RKE2 cluster
 rke2_cluster_group_name: k8s_cluster
 
 # Default Ansible Inventory Group name for RKE2 Servers
 rke2_servers_group_name: masters
+
+# Default Ansible Inventory Group name for RKE2 Agents
+rke2_agents_group_name: workers
+
+# (Optional) A list of Kubernetes API server flags
+# All flags can be found here https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver
+# rke2_kube_apiserver_args: []
+
+# (Optional) List of Node labels
+# k8s_node_label: []
+
+# (Optional) Additional RKE2 server configuration options
+# You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-rke2-server-nodes
+# rke2_server_options:
+#   - "option: value"
+
+# (Optional) Additional RKE2 agent configuration options
+# You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-linux-rke2-agent-nodes
+# rke2_agent_options:
+#   - "option: value"
 ```
 
 ## Inventory file example
