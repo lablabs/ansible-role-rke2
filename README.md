@@ -25,7 +25,7 @@ The Role can install the RKE2 in 3 modes:
 ## Tested on
 
 * CentOS 8
-* Ubuntu 20.04 TLS
+* Ubuntu 20.04 LTS
 
 ## Role Variables
 
