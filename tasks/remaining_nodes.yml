@@ -30,6 +30,10 @@
     name: "rke2-{{ rke2_type }}.service"
     state: started
     enabled: true
+  retries: 10
+  delay: 3
+  register: result
+  until: result is not failed
   environment:
     RKE2_TOKEN: "{{ rke2_token }}"
 
