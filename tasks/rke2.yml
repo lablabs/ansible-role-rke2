@@ -43,3 +43,13 @@
     mode: 0644
   with_items: "{{ rke2_custom_manifests }}"
   when: rke2_custom_manifests
+
+- name: Copy Static Pods
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /var/lib/rancher/rke2/agent/pod-manifests/
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ rke2_static_pods }}"
+  when: rke2_static_pods
