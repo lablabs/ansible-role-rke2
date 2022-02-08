@@ -5,8 +5,8 @@
   when:
     - rke2_api_ip is defined
     - inventory_hostname in groups[rke2_servers_group_name]
-    - rke2_ha_mode
-    - rke2_ha_mode_keepalived
+    - rke2_ha_mode | bool
+    - rke2_ha_mode_keepalived | bool
 
 - name: Download and install RKE2
   include_tasks: rke2.yml
