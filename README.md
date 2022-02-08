@@ -84,6 +84,9 @@ rke2_disable:
 # Path to custom manifests deployed during the RKE2 installation
 rke2_custom_manifests:
 
+# Path to static pods deployed during the RKE2 installation
+rke2_static_pods:
+
 # Deploy RKE2 and set the custom containerd images registries
 rke2_custom_registry: false
 
