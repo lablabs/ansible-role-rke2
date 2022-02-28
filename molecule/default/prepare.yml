@@ -6,8 +6,13 @@
     - name: Install packages
       ansible.builtin.package:
         update_cache: true
-        name: "{{ item }}"
-      loop:
-        - wget
-        - curl
-        - iproute
+        name:
+          - wget
+          - curl
+
+    - name: Install special packages for RockyLinux
+      ansible.builtin.package:
+        update_cache: true
+        name:
+          - iproute
+      when: ansible_distribution == "Rocky"
