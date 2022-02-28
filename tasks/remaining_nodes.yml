@@ -10,7 +10,7 @@
 
 - name: Copy RKE2 config
   ansible.builtin.template:
-    src: "{{ rke2_custom_config }}"
+    src: "{{ rke2_config }}"
     dest: /etc/rancher/rke2/config.yaml
     owner: root
     group: root
