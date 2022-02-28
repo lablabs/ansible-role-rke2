@@ -10,7 +10,7 @@
 
 - name: Copy RKE2 config
   ansible.builtin.template:
-    src: templates/config.yaml.j2
+    src: "{{ rke2_custom_config }}"
     dest: /etc/rancher/rke2/config.yaml
     owner: root
     group: root
@@ -23,7 +23,7 @@
     owner: root
     group: root
     mode: 0644
-  when: rke2_custom_registry | bool
+  when: rke2_custom_registry_mirrors.0.endpoint | length > 0
 
 - name: Start RKE2 service on the rest of the nodes
   ansible.builtin.systemd:

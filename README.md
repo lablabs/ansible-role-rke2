@@ -87,11 +87,16 @@ rke2_custom_manifests:
 # Path to static pods deployed during the RKE2 installation
 rke2_static_pods:
 
-# Deploy RKE2 and set the custom containerd images registries
-rke2_custom_registry: false
+# Configure custom Containerd Registry
+rke2_custom_registry_mirrors:
+  - name:
+    endpoint: {}
 
 # Path to Container registry config file template
 rke2_custom_registry_path: templates/registries.yaml.j2
+
+# Path to RKE2 config file template
+rke2_config: templates/config.yaml.j2
 
 # Override default containerd snapshotter
 rke2_snapshooter: overlayfs
@@ -133,6 +138,7 @@ rke2_agents_group_name: workers
 # You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-linux-rke2-agent-nodes
 # rke2_agent_options:
 #   - "option: value"
+
 ```
 
 ## Inventory file example
