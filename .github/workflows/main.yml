@@ -20,6 +20,8 @@ jobs:
         config:
           - image: "centos8"
             tag: "latest"
+          - image: "rockylinux8"
+            tag: "latest"
           - image: "ubuntu2004"
             tag: "latest"
     steps:
