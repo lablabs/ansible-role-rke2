@@ -10,3 +10,4 @@
       loop:
         - wget
         - curl
+        - iproute
