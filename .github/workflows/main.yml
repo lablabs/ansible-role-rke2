@@ -18,7 +18,7 @@ jobs:
       max-parallel: 1
       matrix:
         config:
-          - image: "centos8"
+          - image: "rockylinux8"
             tag: "latest"
           - image: "ubuntu2004"
             tag: "latest"
