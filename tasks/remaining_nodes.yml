@@ -8,9 +8,9 @@
     group: root
     mode: 0755
 
-- name: Copy kubeconfig
+- name: Copy RKE2 config
   ansible.builtin.template:
-    src: templates/config.yaml.j2
+    src: "{{ rke2_config }}"
     dest: /etc/rancher/rke2/config.yaml
     owner: root
     group: root
@@ -23,13 +23,17 @@
     owner: root
     group: root
     mode: 0644
-  when: rke2_custom_registry | bool
+  when: rke2_custom_registry_mirrors.0.endpoint | length > 0
 
 - name: Start RKE2 service on the rest of the nodes
   ansible.builtin.systemd:
     name: "rke2-{{ rke2_type }}.service"
     state: started
     enabled: true
+  retries: 10
+  delay: 3
+  register: result
+  until: result is not failed
   environment:
     RKE2_TOKEN: "{{ rke2_token }}"
 
@@ -42,8 +46,8 @@
   changed_when: false
   register: all_ready_nodes
   until:
-    - groups.k8s_cluster | length == all_ready_nodes.stdout | int
+    - groups[rke2_cluster_group_name] | length == all_ready_nodes.stdout | int
   retries: 100
   delay: 15
-  delegate_to: "{{ active_server | default(groups.masters.0) }}"
+  delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true

@@ -1,14 +1,19 @@
 ---
 
 # The node type - server or agent
-rke2_type: server
+rke_type: server
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
 
+# Install and configure Keepalived on Server nodes
+# Can be disabled if you are using pre-configured Load Blancer
+rke2_ha_mode_keepalived: true
+
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in keepalived.
-rke2_api_ip: "{{ hostvars[groups.masters.0]['ansible_default_ipv4']['address'] }}"
+# Or if the keepalived is disabled, use IP address of your LB.
+rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
 
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
@@ -23,7 +28,7 @@ rke2_server_taint: false
 rke2_token: defaultSecret12345
 
 # RKE2 version
-rke2_version: v1.22.4+rke2r2
+rke2_version: v1.22.6+rke2r1
 
 # URL to RKE2 repository
 rke2_channel_url: https://update.rke2.io/v1-release/channels
@@ -31,6 +36,9 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 # URL to RKE2 install bash script
 # e.g. rancher chinase mirror http://rancher-mirror.rancher.cn/rke2/install.sh
 rke2_install_bash_url: https://get.rke2.io
+
+# Destination directory for RKE2 installation script
+rke2_install_script_dir: /var/tmp
 
 # RKE2 channel
 rke2_channel: stable
@@ -42,11 +50,19 @@ rke2_disable:
 # Path to custom manifests deployed during the RKE2 installation
 rke2_custom_manifests:
 
-# Deploy RKE2 and set the custom containerd images registries
-rke2_custom_registry: false
+# Path to static pods deployed during the RKE2 installation
+rke2_static_pods:
+
+# Configure custom Containerd Registry
+rke2_custom_registry_mirrors:
+  - name:
+    endpoint: {}
 
 # Path to Container registry config file template
 rke2_custom_registry_path: templates/registries.yaml.j2
+
+# Path to RKE2 config file template
+rke2_config: templates/config.yaml.j2
 
 # Override default containerd snapshotter
 rke2_snapshooter: overlayfs
@@ -54,18 +70,37 @@ rke2_snapshooter: overlayfs
 # Deploy RKE2 with default CNI canal
 rke2_cni: canal
 
-# Download Kubernetes config file to the Ansible controller 
+# Download Kubernetes config file to the Ansible controller
 rke2_download_kubeconf: false
 
 # Name of the Kubernetes config file will be downloaded to the Ansible controller
 rke2_download_kubeconf_file_name: rke2.yaml
 
-# Destination directory where the Kubernetes config file will be downloaded to the Ansible controller 
+# Destination directory where the Kubernetes config file will be downloaded to the Ansible controller
 rke2_download_kubeconf_path: /tmp
+
+# Default Ansible Inventory Group name for RKE2 cluster
+rke2_cluster_group_name: k8s_cluster
+
+# Default Ansible Inventory Group name for RKE2 Servers
+rke2_servers_group_name: masters
+
+# Default Ansible Inventory Group name for RKE2 Agents
+rke2_agents_group_name: workers
 
 # (Optional) A list of Kubernetes API server flags
 # All flags can be found here https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver
-#rke2_kube_apiserver_args: []
+# rke2_kube_apiserver_args: []
 
 # (Optional) List of Node labels
 # k8s_node_label: []
+
+# (Optional) Additional RKE2 server configuration options
+# You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-rke2-server-nodes
+# rke2_server_options:
+#   - "option: value"
+
+# (Optional) Additional RKE2 agent configuration options
+# You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-linux-rke2-agent-nodes
+# rke2_agent_options:
+#   - "option: value"

@@ -4,8 +4,9 @@
   include_tasks: keepalived.yml
   when:
     - rke2_api_ip is defined
-    - inventory_hostname in groups.masters
-    - rke2_ha_mode
+    - inventory_hostname in groups[rke2_servers_group_name]
+    - rke2_ha_mode | bool
+    - rke2_ha_mode_keepalived | bool
 
 - name: Download and install RKE2
   include_tasks: rke2.yml
@@ -18,14 +19,14 @@
 - name: Prepare very first server node in the cluster
   include_tasks: first_server.yml
   when:
-    - inventory_hostname == groups.masters.0
+    - inventory_hostname == groups[rke2_servers_group_name].0
     - active_server is not defined
 
 - name: Prepare and join remaining nodes of the cluster
-  include_tasks: ramaining_nodes.yml
+  include_tasks: remaining_nodes.yml
   when:
     - active_server is defined
-    - groups.k8s_cluster | length | int >= 2
+    - groups[rke2_cluster_group_name] | length | int >= 2
 
 - name: Final steps
   include_tasks: summary.yml

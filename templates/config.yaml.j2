@@ -3,7 +3,8 @@
 server: https://{{ rke2_api_ip }}:9345
 {% endif %}
 token: {{ rke2_token }}
-{% if inventory_hostname in groups['masters'] %}
+{% if inventory_hostname in groups[rke2_servers_group_name] %}
+cni: {{ rke2_cni }}
 {% if rke2_server_taint %}
 node-taint:
   - "CriticalAddonsOnly=true:NoExecute"
@@ -15,18 +16,27 @@ tls-san:
   - {{ san }}
 {% endfor %}
 {% endif %}
-{% if rke2_disable and ( inventory_hostname|string() in groups['masters'] ) %}
+{% if rke2_disable and ( inventory_hostname|string() in groups[rke2_servers_group_name] ) %}
 disable: {{ rke2_disable }}
 {% endif %}
-{% if rke2_kube_apiserver_args is defined and inventory_hostname in groups['masters'] %}
+{% if rke2_kube_apiserver_args is defined and inventory_hostname in groups[rke2_servers_group_name] %}
 kube-apiserver-arg: {{ rke2_kube_apiserver_args}}
 {% endif %}
 {% if ( k8s_node_label is defined ) %}
-node-label: 
+node-label:
 {% for label in k8s_node_label %}
   - {{ label }}
 {% endfor %}
 {% endif %}
 snapshotter: {{ rke2_snapshooter }}
 node-name: {{ inventory_hostname }}
-cni: {{ rke2_cni }}
+{% if rke2_server_options is defined and inventory_hostname in groups[rke2_servers_group_name] %}
+{% for option in rke2_server_options %}
+{{ option }}
+{% endfor %}
+{% endif %}
+{% if rke2_agent_options is defined and inventory_hostname in groups[rke2_agents_group_name] %}
+{% for option in rke2_agent_options %}
+{{ option }}
+{% endfor %}
+{% endif %}
