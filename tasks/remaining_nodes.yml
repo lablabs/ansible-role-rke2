@@ -37,6 +37,14 @@
   environment:
     RKE2_TOKEN: "{{ rke2_token }}"
 
+- name: Mask other RKE2 service on the rest of the nodes
+  ansible.builtin.systemd:
+    name: "rke2-{{ item }}.service"
+    enabled: false
+    masked: true
+  with_items:
+    - "{{ ([ 'agent', 'server' ] | reject('match', rke2_type) | list) }}"
+
 - name: Wait for remaining nodes to be ready
   shell: |
    set -o pipefail

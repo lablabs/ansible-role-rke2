@@ -33,6 +33,12 @@
   environment:
     RKE2_TOKEN: "{{ rke2_token }}"
 
+- name: Mask RKE2 agent service on the first server
+  ansible.builtin.systemd:
+    name: "rke2-agent.service"
+    state: masked
+    enabled: false
+
 - name: Wait for the first server be ready
   shell: |
    set -o pipefail
