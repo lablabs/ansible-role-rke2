@@ -36,8 +36,8 @@
 - name: Mask RKE2 agent service on the first server
   ansible.builtin.systemd:
     name: "rke2-agent.service"
-    state: masked
     enabled: false
+    masked: true
 
 - name: Wait for the first server be ready
   shell: |
