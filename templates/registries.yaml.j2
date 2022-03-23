@@ -1,14 +1,15 @@
 mirrors:
-  docker.io:
+{% for mirror in rke2_custom_registry_mirrors %}
+  {{ mirror.name }}:
     endpoint:
-      - "https://registry.example.com:5000"
+{% for endpoint in mirror.endpoint %}
+      - "{{ endpoint }}"
+{% endfor %}
+{% endfor %}
+{% if rke2_custom_registry_configs is defined %}
 configs:
-  "registry.example.com:5000":
-    auth:
-      username: xxxxxx # this is the registry username
-      password: xxxxxx # this is the registry password
-    tls:
-      cert_file:            # path to the cert file used to authenticate to the registry
-      key_file:             # path to the key file for the certificate used to authenticate to the registry
-      ca_file:              # path to the ca file used to verify the registry's certificate
-      insecure_skip_verify: # may be set to true to skip verifying the registry's certificate
+{% for config in rke2_custom_registry_configs %}
+  {{ config.endpoint }}:
+    {{ config.config | to_nice_yaml(indent=6) }}
+{%- endfor %}
+{% endif %}
