@@ -42,8 +42,8 @@
     cmd: "{{ rke2_install_script_dir }}/rke2.sh"
   environment:
     INSTALL_RKE2_ARTIFACT_PATH: "{{rke2_artifact_path }}"
-  when: (rke2_version != ( installed_rke2_version.stdout | default({})))
-        or (installed_rke2_version is not defined) and (rke2_airgap_mode)
+  when: (rke2_version != ( installed_rke2_version.stdout | default({})) and (rke2_airgap_mode))
+        or ((installed_rke2_version is not defined) and rke2_airgap_mode)
 
 - name: Run RKE2 script
   ansible.builtin.command:
@@ -53,8 +53,8 @@
     INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
     INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
     INSTALL_RKE2_METHOD: "{{ rke2_method }}"
-  when: (rke2_version != ( installed_rke2_version.stdout | default({})))
-        or installed_rke2_version is not defined and (rke2_airgap_mode == false)
+  when: (rke2_version != ( installed_rke2_version.stdout | default({})) and (rke2_airgap_mode == false))
+        or ((installed_rke2_version is not defined) and (rke2_airgap_mode == false))
 
 - name: Copy Custom Manifests
   ansible.builtin.copy:
