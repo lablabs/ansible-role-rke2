@@ -10,11 +10,13 @@
 
 This Ansible role will deploy [RKE2](https://docs.rke2.io/) Kubernetes Cluster. RKE2 will be installed using the tarball method.
 
-The Role can install the RKE2 in 3 modes:
+The Role can install the RKE2 in 4 modes:
 
 - RKE2 single node
 
 - RKE2 Cluster with one Server(Master) node and one or more Agent(Worker) nodes
+
+- RKE2 Cluster using Air-Gapped functionality with the use of artifacts
 
 - RKE2 Cluster with Server(Master) in High Availability mode and zero or more Agent(Worker) nodes. In HA mode you should have an odd number (three recommended) of server(master) nodes that will run etcd, the Kubernetes API (Keepalived VIP address), and other control plane services.
 
@@ -186,7 +188,7 @@ This playbook will deploy RKE2 to a cluster with one server(master) and several 
 
 ```
 
-This playbook will deploy RKE2 to a cluster with one server(master) and several agent(worker) nodes in air-gapped mode.
+This playbook will deploy RKE2 to a cluster with one server(master) and several agent(worker) nodes in air-gapped mode. This works from downloading artifacts. When the RKE2 script installs, it will use the artifacts instead of using online resources. 
 
 ```yaml
 - name: Deploy RKE2
