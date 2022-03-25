@@ -14,7 +14,7 @@
   file:
     path: "{{rke2_artifact_path}}"
     state: directory
-  when: rle2-airgap-mode
+  when: rke2_airgap_mode
 
 - name: Download RKE2 artifact's
   ansible.builtin.get_url:
@@ -22,7 +22,7 @@
     dest: "{{ rke2_artifact_path }}/{{ item }}"
     mode: 0644
   with_items: "{{ rke2_artifact }}"
-  when: rle2-airgap-mode
+  when: rke2_airgap_mode
 
 - name: Populate service facts
   service_facts:
@@ -43,7 +43,7 @@
   environment:
     INSTALL_RKE2_ARTIFACT_PATH: "{{rke2_artifact_path }}"
   when: (rke2_version != ( installed_rke2_version.stdout | default({})))
-        or (installed_rke2_version is not defined) and (rle2-airgap-mode)
+        or (installed_rke2_version is not defined) and (rke2_airgap_mode)
 
 - name: Run RKE2 script
   ansible.builtin.command:
@@ -54,7 +54,7 @@
     INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
     INSTALL_RKE2_METHOD: "{{ rke2_method }}"
   when: (rke2_version != ( installed_rke2_version.stdout | default({})))
-        or installed_rke2_version is not defined and (rle2-airgap-mode == false)
+        or installed_rke2_version is not defined and (rke2_airgap_mode == false)
 
 - name: Copy Custom Manifests
   ansible.builtin.copy:
