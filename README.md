@@ -186,6 +186,19 @@ This playbook will deploy RKE2 to a cluster with one server(master) and several 
 
 ```
 
+This playbook will deploy RKE2 to a cluster with one server(master) and several agent(worker) nodes in air-gapped mode.
+
+```yaml
+- name: Deploy RKE2
+  hosts: all
+  become: yes
+  vars:
+    rke_airgap_mode: true
+  roles:
+     - role: lablabs.rke2
+
+```
+
 This playbook will deploy RKE2 to a cluster with HA server(master) control-plane and several  agent(worker) nodes. The server(master) nodes will be tainted so the workload will be distributed only on worker/agent nodes. The role will install also keepalived on the control-plane nodes and setup VIP address where the Kubernetes API will be reachable. it will also download the Kubernetes config file to the local machine.
 
 ```yaml
