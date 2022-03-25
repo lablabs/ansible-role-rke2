@@ -7,7 +7,7 @@ rke_type: server
 rke2_ha_mode: false
 
 # Changes the deploy strategy to install based on local artifacts
-rle2-airgap-mode: false
+rke2_airgap_mode: false
 
 # Install and configure Keepalived on Server nodes
 # Can be disabled if you are using pre-configured Load Blancer
