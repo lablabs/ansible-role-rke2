@@ -193,7 +193,7 @@ This playbook will deploy RKE2 to a cluster with one server(master) and several 
   hosts: all
   become: yes
   vars:
-    rke_airgap_mode: true
+    rke2_airgap_mode: true
   roles:
      - role: lablabs.rke2
 
