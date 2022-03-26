@@ -58,6 +58,11 @@ rke2_custom_registry_mirrors:
   - name:
     endpoint: {}
 
+# Configure custom Containerd Registry additional configuration
+# rke2_custom_registry_configs:
+#   - endpoint:
+#     config:
+
 # Path to Container registry config file template
 rke2_custom_registry_path: templates/registries.yaml.j2
 
