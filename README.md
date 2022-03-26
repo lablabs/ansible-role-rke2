@@ -10,15 +10,16 @@
 
 This Ansible role will deploy [RKE2](https://docs.rke2.io/) Kubernetes Cluster. RKE2 will be installed using the tarball method.
 
-The Role can install the RKE2 in 4 modes:
+The Role can install the RKE2 in 3 modes:
 
 - RKE2 single node
 
 - RKE2 Cluster with one Server(Master) node and one or more Agent(Worker) nodes
 
-- RKE2 Cluster using Air-Gapped functionality with the use of artifacts
-
 - RKE2 Cluster with Server(Master) in High Availability mode and zero or more Agent(Worker) nodes. In HA mode you should have an odd number (three recommended) of server(master) nodes that will run etcd, the Kubernetes API (Keepalived VIP address), and other control plane services.
+
+---
+- Additionaly it is possible to install the RKE2 Cluster (all 3 modes) in Air-Gapped functionality with the use of local artifacts.
 
 ## Requirements
 
@@ -41,6 +42,9 @@ rke_type: server
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
+
+# Changes the deploy strategy to install based on local artifacts
+rke2_airgap_mode: false
 
 # Install and configure Keepalived on Server nodes
 # Can be disabled if you are using pre-configured Load Blancer
@@ -73,6 +77,18 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 # e.g. rancher chinase mirror http://rancher-mirror.rancher.cn/rke2/install.sh
 rke2_install_bash_url: https://get.rke2.io
 
+# Default URL to fetch artifacts
+rke2_artifact_url: https://github.com/rancher/rke2/releases/download/
+
+# Local path to store artifacts
+rke2_artifact_path: /rke2/artifact
+
+# Airgap required artifacts
+rke2_artifact:
+  - sha256sum-amd64.txt
+  - rke2.linux-amd64.tar.gz
+  - rke2-images.linux-amd64.tar.zst
+
 # Destination directory for RKE2 installation script
 rke2_install_script_dir: /var/tmp
 
@@ -93,6 +109,11 @@ rke2_static_pods:
 rke2_custom_registry_mirrors:
   - name:
     endpoint: {}
+
+# Configure custom Containerd Registry additional configuration
+# rke2_custom_registry_configs:
+#   - endpoint:
+#     config:
 
 # Path to Container registry config file template
 rke2_custom_registry_path: templates/registries.yaml.j2
@@ -188,7 +209,7 @@ This playbook will deploy RKE2 to a cluster with one server(master) and several 
 
 ```
 
-This playbook will deploy RKE2 to a cluster with one server(master) and several agent(worker) nodes in air-gapped mode. This works from downloading artifacts. When the RKE2 script installs, it will use the artifacts instead of using online resources. 
+This playbook will deploy RKE2 to a cluster with one server(master) and several agent(worker) nodes in air-gapped mode. This works from downloading artifacts. When the RKE2 script installs, it will use the artifacts instead of using online resources.
 
 ```yaml
 - name: Deploy RKE2

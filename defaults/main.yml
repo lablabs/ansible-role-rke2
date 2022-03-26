@@ -40,6 +40,18 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 # e.g. rancher chinase mirror http://rancher-mirror.rancher.cn/rke2/install.sh
 rke2_install_bash_url: https://get.rke2.io
 
+# Default URL to fetch artifacts
+rke2_artifact_url: https://github.com/rancher/rke2/releases/download/
+
+# Local path to store artifacts
+rke2_artifact_path: /rke2/artifact
+
+# Airgap required artifacts
+rke2_artifact:
+  - sha256sum-amd64.txt
+  - rke2.linux-amd64.tar.gz
+  - rke2-images.linux-amd64.tar.zst
+
 # Destination directory for RKE2 installation script
 rke2_install_script_dir: /var/tmp
 
@@ -112,15 +124,3 @@ rke2_agents_group_name: workers
 # You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-linux-rke2-agent-nodes
 # rke2_agent_options:
 #   - "option: value"
-
-# Default URL to fetch artifacts
-rke2_artifact_url: https://github.com/rancher/rke2/releases/download/
-
-# Local path to store artifacts
-rke2_artifact_path: /rke2/artifact
-
-# Airgap required artifacts
-rke2_artifact: 
-  - sha256sum-amd64.txt
-  - rke2.linux-amd64.tar.gz
-  - rke2-images.linux-amd64.tar.zst
