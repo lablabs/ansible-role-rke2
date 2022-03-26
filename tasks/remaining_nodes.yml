@@ -46,7 +46,7 @@
     - "{{ ([ 'agent', 'server' ] | reject('match', rke2_type) | list) }}"
 
 - name: Wait for remaining nodes to be ready
-  shell: |
+  ansible.builtin.shell: |
    set -o pipefail
    /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep " Ready" | wc -l
   args:

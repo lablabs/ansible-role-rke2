@@ -1,7 +1,7 @@
 ---
 
 - name: Install Keepalived when HA mode is enabled
-  include_tasks: keepalived.yml
+  ansible.builtin.include_tasks: keepalived.yml
   when:
     - rke2_api_ip is defined
     - inventory_hostname in groups[rke2_servers_group_name]
@@ -9,24 +9,24 @@
     - rke2_ha_mode_keepalived | bool
 
 - name: Download and install RKE2
-  include_tasks: rke2.yml
+  ansible.builtin.include_tasks: rke2.yml
 
 - name: Find Active Server
-  include_tasks: find_active_server.yml
+  ansible.builtin.include_tasks: find_active_server.yml
   when:
     - rke2_ha_mode | bool
 
 - name: Prepare very first server node in the cluster
-  include_tasks: first_server.yml
+  ansible.builtin.include_tasks: first_server.yml
   when:
     - inventory_hostname == groups[rke2_servers_group_name].0
     - active_server is not defined
 
 - name: Prepare and join remaining nodes of the cluster
-  include_tasks: remaining_nodes.yml
+  ansible.builtin.include_tasks: remaining_nodes.yml
   when:
     - active_server is defined
     - groups[rke2_cluster_group_name] | length | int >= 2
 
 - name: Final steps
-  include_tasks: summary.yml
+  ansible.builtin.include_tasks: summary.yml

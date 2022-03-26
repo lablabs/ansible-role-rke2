@@ -7,7 +7,7 @@
     mode: 0700
 
 - name: Create RKE2 artifact's folder
-  file:
+  ansible.builtin.file:
     path: "{{ rke2_artifact_path }}"
     state: directory
     mode: 0700
@@ -22,7 +22,7 @@
   when: rke2_airgap_mode
 
 - name: Populate service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Check RKE2 version
   ansible.builtin.shell: |

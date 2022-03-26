@@ -15,7 +15,7 @@
     name: keepalived
 
 - name: Create directory for keepalived
-  file:
+  ansible.builtin.file:
     path: /etc/keepalived
     state: directory
     owner: root
@@ -23,7 +23,7 @@
     mode: 0755
 
 - name: Create Kubernetes API health check script
-  template:
+  ansible.builtin.template:
     src: templates/check_apiserver.sh.j2
     dest: /etc/keepalived/check_apiserver.sh
     owner: root
@@ -32,7 +32,7 @@
   notify: restart keepalived
 
 - name: Create keepalived config file
-  template:
+  ansible.builtin.template:
     src: templates/keepalived.conf.j2
     dest: /etc/keepalived/keepalived.conf
     owner: root
@@ -41,11 +41,11 @@
   notify: restart keepalived
 
 - name: Enable keepalived and make sure it is not masked
-  systemd:
+  ansible.builtin.systemd:
     name: keepalived
     enabled: yes
     masked: no
   notify: restart keepalived
 
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
