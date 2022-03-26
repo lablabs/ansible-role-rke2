@@ -4,16 +4,13 @@
   ansible.builtin.get_url:
     url: "{{ rke2_install_bash_url }}"
     dest: "{{ rke2_install_script_dir }}/rke2.sh"
-
-- name: Set the permissions for the file
-  file:
-    dest: "{{ rke2_install_script_dir }}/rke2.sh"
     mode: 0700
 
 - name: Create RKE2 artifact's folder
   file:
     path: "{{ rke2_artifact_path }}"
     state: directory
+    mode: 0700
   when: rke2_airgap_mode
 
 - name: Download RKE2 artifact's
