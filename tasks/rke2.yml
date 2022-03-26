@@ -12,7 +12,7 @@
 
 - name: Create RKE2 artifact's folder
   file:
-    path: "{{rke2_artifact_path}}"
+    path: "{{ rke2_artifact_path }}"
     state: directory
   when: rke2_airgap_mode
 
@@ -41,7 +41,7 @@
   ansible.builtin.command:
     cmd: "{{ rke2_install_script_dir }}/rke2.sh"
   environment:
-    INSTALL_RKE2_ARTIFACT_PATH: "{{rke2_artifact_path }}"
+    INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
   when: (rke2_version != ( installed_rke2_version.stdout | default({})) and (rke2_airgap_mode))
         or ((installed_rke2_version is not defined) and rke2_airgap_mode)
 
