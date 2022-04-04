@@ -39,6 +39,7 @@
     cmd: "{{ rke2_install_script_dir }}/rke2.sh"
   environment:
     INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
+    INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
   when: (rke2_version != ( installed_rke2_version.stdout | default({})) and (rke2_airgap_mode))
         or ((installed_rke2_version is not defined) and rke2_airgap_mode)
 
@@ -56,7 +57,7 @@
 - name: Copy Custom Manifests
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: /var/lib/rancher/rke2/server/manifests/
+    dest: "{{ rke2_data_path }}/server/manifests/"
     owner: root
     group: root
     mode: 0644
@@ -66,7 +67,7 @@
 - name: Copy Static Pods
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: /var/lib/rancher/rke2/agent/pod-manifests/
+    dest: "{{ rke2_data_path }}/agent/pod-manifests/"
     owner: root
     group: root
     mode: 0644

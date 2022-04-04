@@ -77,6 +77,9 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 # e.g. rancher chinase mirror http://rancher-mirror.rancher.cn/rke2/install.sh
 rke2_install_bash_url: https://get.rke2.io
 
+# Local data directory for RKE2
+rke2_data_path: /var/lib/rancher/rke2
+
 # Default URL to fetch artifacts
 rke2_artifact_url: https://github.com/rancher/rke2/releases/download/
 

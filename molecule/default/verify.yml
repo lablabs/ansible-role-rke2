@@ -8,7 +8,7 @@
       shell: |
         set -e
         set -o pipefail
-        /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep " Ready" | wc -l
+        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep " Ready" | wc -l
       args:
         executable: /bin/bash
       register: nodes
