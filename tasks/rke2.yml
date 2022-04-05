@@ -5,6 +5,14 @@
     url: "{{ rke2_install_bash_url }}"
     dest: "{{ rke2_install_script_dir }}/rke2.sh"
     mode: 0700
+  when: (not rke2_airgap_mode) or rke2_airgap_implementation == 'download'
+
+- name: Copy local RKE2 installation script
+  ansible.builtin.copy:
+    src: "{{ rke2_airgap_copy_sourcepath }}/rke2.sh"
+    dest: "{{ rke2_install_script_dir }}/rke2.sh"
+    mode: 0700
+  when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
 
 - name: Create RKE2 artifacts folder
   ansible.builtin.file:
@@ -19,7 +27,15 @@
     dest: "{{ rke2_artifact_path }}/{{ item }}"
     mode: 0644
   with_items: "{{ rke2_artifact }}"
-  when: rke2_airgap_mode
+  when: rke2_airgap_mode and rke2_airgap_implementation == 'download'
+
+- name: Copy local RKE2 artifacts
+  ansible.builtin.copy:
+    src: "{{ rke2_airgap_copy_sourcepath }}/{{ item }}"
+    dest: "{{ rke2_artifact_path }}/{{ item }}"
+    mode: 0644
+  with_items: "{{ rke2_artifact }}"
+  when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
 
 - name: Populate service facts
   ansible.builtin.service_facts:
