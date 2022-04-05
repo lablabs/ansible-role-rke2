@@ -46,6 +46,15 @@ rke2_ha_mode: false
 # Changes the deploy strategy to install based on local artifacts
 rke2_airgap_mode: false
 
+# Airgap implementation type - download, copy or exists
+# - 'download' will fetch the artifacts on each node,
+# - 'copy' will transfer local files in 'rke2_artifact' to the nodes,
+# - 'exists' assumes 'rke2_artifact' files are already stored in 'rke2_artifact_path'
+rke2_airgap_implementation: download
+
+# Local source path where artifacts are stored
+rke2_airgap_copy_sourcepath: local_artifacts
+
 # Install and configure Keepalived on Server nodes
 # Can be disabled if you are using pre-configured Load Blancer
 rke2_ha_mode_keepalived: true
@@ -76,6 +85,9 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 # URL to RKE2 install bash script
 # e.g. rancher chinase mirror http://rancher-mirror.rancher.cn/rke2/install.sh
 rke2_install_bash_url: https://get.rke2.io
+
+# Local data directory for RKE2
+rke2_data_path: /var/lib/rancher/rke2
 
 # Default URL to fetch artifacts
 rke2_artifact_url: https://github.com/rancher/rke2/releases/download/

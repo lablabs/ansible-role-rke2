@@ -1,10 +1,10 @@
 # Description
 
+<!---
 Please include a summary of the change and which issue is fixed.
+--->
 
 ## Type of change
-
-Please delete options that are not relevant.
 
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
@@ -13,9 +13,7 @@ Please delete options that are not relevant.
 - [ ] Small minor change not affecting the Ansible Role code (Github Actions Workflow, Documentation etc.)
 
 ## How Has This Been Tested?
-
-Please describe the tests that you ran to verify your changes.
-
 <!---
-Create a PR into `develop` branch
+Please describe the tests that you ran to verify your changes.
+Create a PR into `develop` branch.
 --->
