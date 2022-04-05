@@ -24,7 +24,7 @@
     - name: Prepare summary
       ansible.builtin.shell: |
         set -e
-        /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes -o wide --show-labels
+        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes -o wide --show-labels
       args:
         executable: /bin/bash
       changed_when: false
