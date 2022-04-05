@@ -3,6 +3,8 @@
 - name: Verify
   hosts: node1
   gather_facts: false
+  vars:
+    rke2_data_path: /var/lib/rancher/rke2
   tasks:
     - name: Verify RKE2
       shell: |
