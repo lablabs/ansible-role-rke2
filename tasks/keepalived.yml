@@ -31,6 +31,15 @@
     mode: 0755
   notify: restart keepalived
 
+- name: Create RKE2 Server health check script
+  ansible.builtin.template:
+    src: templates/check_rke2server.sh.j2
+    dest: /etc/keepalived/check_rke2server.sh
+    owner: root
+    group: root
+    mode: 0755
+  notify: restart keepalived
+
 - name: Create keepalived config file
   ansible.builtin.template:
     src: templates/keepalived.conf.j2

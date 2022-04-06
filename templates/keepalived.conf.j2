@@ -10,6 +10,14 @@ vrrp_script chk_apiserver {
     rise 2
 }
 
+vrrp_script chk_rke2server {
+    script "/etc/keepalived/check_rke2server.sh"
+    interval 2
+    weight -5
+    fall 3
+    rise 2
+}
+
 vrrp_instance VI_1 {
     interface {{ ansible_default_ipv4.interface }}
     virtual_router_id 11
@@ -43,5 +51,6 @@ vrrp_instance VI_1 {
     }
         track_script {
        chk_apiserver
+       chk_rke2server
     }
 }
