@@ -19,7 +19,7 @@ rke2_airgap_implementation: download
 rke2_airgap_copy_sourcepath: local_artifacts
 
 # Install and configure Keepalived on Server nodes
-# Can be disabled if you are using pre-configured Load Blancer
+# Can be disabled if you are using pre-configured Load Balancer
 rke2_ha_mode_keepalived: true
 
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
