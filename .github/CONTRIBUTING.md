@@ -17,7 +17,7 @@ Click on `fork` on the top-right corner and fork the repository.
 
 ## 3. Make the changes
 
-Do dthe changes in your own GitHub namespace.
+Do the changes in your own GitHub namespace.
 
 ## 4. Test the changes
 

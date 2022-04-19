@@ -34,9 +34,9 @@
     RKE2_TOKEN: "{{ rke2_token }}"
 
 - name: Wait for the RKE2 server to be ready
-  shell: |
+  ansible.builtin.shell: |
    set -o pipefail
-   /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ ansible_hostname }}"
+   {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ ansible_hostname }}"
   args:
     executable: /bin/bash
   changed_when: false

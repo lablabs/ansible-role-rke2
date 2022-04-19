@@ -4,14 +4,41 @@
   ansible.builtin.get_url:
     url: "{{ rke2_install_bash_url }}"
     dest: "{{ rke2_install_script_dir }}/rke2.sh"
+    mode: 0700
+  when: (not rke2_airgap_mode) or rke2_airgap_implementation == 'download'
 
-- name: Set the permissions for the file
-  file:
+- name: Copy local RKE2 installation script
+  ansible.builtin.copy:
+    src: "{{ rke2_airgap_copy_sourcepath }}/rke2.sh"
     dest: "{{ rke2_install_script_dir }}/rke2.sh"
     mode: 0700
+  when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
+
+- name: Create RKE2 artifacts folder
+  ansible.builtin.file:
+    path: "{{ rke2_artifact_path }}"
+    state: directory
+    mode: 0700
+  when: rke2_airgap_mode
+
+- name: Download RKE2 artifacts
+  ansible.builtin.get_url:
+    url: "{{ rke2_artifact_url }}/{{ rke2_version }}/{{ item }}"
+    dest: "{{ rke2_artifact_path }}/{{ item }}"
+    mode: 0644
+  with_items: "{{ rke2_artifact }}"
+  when: rke2_airgap_mode and rke2_airgap_implementation == 'download'
+
+- name: Copy local RKE2 artifacts
+  ansible.builtin.copy:
+    src: "{{ rke2_airgap_copy_sourcepath }}/{{ item }}"
+    dest: "{{ rke2_artifact_path }}/{{ item }}"
+    mode: 0644
+  with_items: "{{ rke2_artifact }}"
+  when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
 
 - name: Populate service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Check RKE2 version
   ansible.builtin.shell: |
@@ -23,6 +50,15 @@
   register: installed_rke2_version
   when: '"rke2-server.service" in ansible_facts.services'
 
+- name: Run AirGap RKE2 script
+  ansible.builtin.command:
+    cmd: "{{ rke2_install_script_dir }}/rke2.sh"
+  environment:
+    INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
+    INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
+  when: (rke2_version != ( installed_rke2_version.stdout | default({})) and (rke2_airgap_mode))
+        or ((installed_rke2_version is not defined) and rke2_airgap_mode)
+
 - name: Run RKE2 script
   ansible.builtin.command:
     cmd: "{{ rke2_install_script_dir }}/rke2.sh"
@@ -31,13 +67,13 @@
     INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
     INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
     INSTALL_RKE2_METHOD: "{{ rke2_method }}"
-  when: (rke2_version != ( installed_rke2_version.stdout | default({})))
-        or installed_rke2_version is not defined
+  when: (rke2_version != ( installed_rke2_version.stdout | default({})) and (not rke2_airgap_mode))
+        or ((installed_rke2_version is not defined) and (not rke2_airgap_mode))
 
 - name: Copy Custom Manifests
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: /var/lib/rancher/rke2/server/manifests/
+    dest: "{{ rke2_data_path }}/server/manifests/"
     owner: root
     group: root
     mode: 0644
@@ -47,7 +83,7 @@
 - name: Copy Static Pods
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: /var/lib/rancher/rke2/agent/pod-manifests/
+    dest: "{{ rke2_data_path }}/agent/pod-manifests/"
     owner: root
     group: root
     mode: 0644

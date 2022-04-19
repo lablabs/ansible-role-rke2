@@ -6,6 +6,18 @@ rke_type: server
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
 
+# Changes the deploy strategy to install based on local artifacts
+rke2_airgap_mode: false
+
+# Airgap implementation type - download, copy or exists
+# - 'download' will fetch the artifacts on each node,
+# - 'copy' will transfer local files in 'rke2_artifact' to the nodes,
+# - 'exists' assumes 'rke2_artifact' files are already stored in 'rke2_artifact_path'
+rke2_airgap_implementation: download
+
+# Local source path where artifacts are stored
+rke2_airgap_copy_sourcepath: local_artifacts
+
 # Install and configure Keepalived on Server nodes
 # Can be disabled if you are using pre-configured Load Blancer
 rke2_ha_mode_keepalived: true
@@ -37,6 +49,21 @@ rke2_channel_url: https://update.rke2.io/v1-release/channels
 # e.g. rancher chinase mirror http://rancher-mirror.rancher.cn/rke2/install.sh
 rke2_install_bash_url: https://get.rke2.io
 
+# Local data directory for RKE2
+rke2_data_path: /var/lib/rancher/rke2
+
+# Default URL to fetch artifacts
+rke2_artifact_url: https://github.com/rancher/rke2/releases/download/
+
+# Local path to store artifacts
+rke2_artifact_path: /rke2/artifact
+
+# Airgap required artifacts
+rke2_artifact:
+  - sha256sum-amd64.txt
+  - rke2.linux-amd64.tar.gz
+  - rke2-images.linux-amd64.tar.zst
+
 # Destination directory for RKE2 installation script
 rke2_install_script_dir: /var/tmp
 
@@ -57,6 +84,11 @@ rke2_static_pods:
 rke2_custom_registry_mirrors:
   - name:
     endpoint: {}
+
+# Configure custom Containerd Registry additional configuration
+# rke2_custom_registry_configs:
+#   - endpoint:
+#     config:
 
 # Path to Container registry config file template
 rke2_custom_registry_path: templates/registries.yaml.j2
