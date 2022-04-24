@@ -4,7 +4,7 @@
 
     - name: Restart RKE2 service
       service:
-        name: rke2-server
+        name: "rke2-{{ rke2_type }}.service"
         state: restarted
 
     - name: Wait for all nodes to be ready again

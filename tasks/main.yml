@@ -30,7 +30,7 @@
 
 - name: Rolling restart
   ansible.builtin.include_tasks: rolling_restart.yml
-  when: installed_rke2_version != rke2_version
+  when: installed_rke2_version.stdout is defined and rke2_version != ( installed_rke2_version.stdout | default({}) )
 
 - name: Final steps
   ansible.builtin.include_tasks: summary.yml
