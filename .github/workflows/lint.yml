@@ -2,12 +2,9 @@ name: molecule lint
 
 on:
     push:
-        branches:
-            - develop
-    pull_request:
-        branches:
-            - develop
-        types: [opened, synchronize, reopened]
+      branches-ignore:
+        - 'main'
+
 jobs:
   lint:
     runs-on: ubuntu-20.04
