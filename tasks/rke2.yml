@@ -12,6 +12,7 @@
     src: "{{ rke2_airgap_copy_sourcepath }}/rke2.sh"
     dest: "{{ rke2_install_script_dir }}/rke2.sh"
     mode: 0700
+    force: yes
   when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
 
 - name: Create RKE2 artifacts folder
@@ -21,12 +22,21 @@
     mode: 0700
   when: rke2_airgap_mode
 
-- name: Download RKE2 artifacts
-  ansible.builtin.get_url:
-    url: "{{ rke2_artifact_url }}/{{ rke2_version }}/{{ item }}"
-    dest: "{{ rke2_artifact_path }}/{{ item }}"
-    mode: 0644
-  with_items: "{{ rke2_artifact }}"
+- name: Download RKE2 checksum and artifacts
+  block:
+  - name: Download sha256 checksum file
+    ansible.builtin.get_url:
+      url: "{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
+      dest: "{{ rke2_artifact_path }}/sha256sum-{{ rke2_architecture }}.txt"
+      force: yes
+      mode: 0644
+  - name: Download RKE2 artifacts and compare with checksums
+    ansible.builtin.get_url:
+      url: "{{ rke2_artifact_url }}/{{ rke2_version }}/{{ item }}"
+      dest: "{{ rke2_artifact_path }}/{{ item }}"
+      mode: 0644
+      checksum: "sha256:{{ rke2_artifact_url }}{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
+    with_items: "{{ rke2_artifact | reject('search','sha256sum') | list }}"
   when: rke2_airgap_mode and rke2_airgap_implementation == 'download'
 
 - name: Copy local RKE2 artifacts
@@ -34,6 +44,7 @@
     src: "{{ rke2_airgap_copy_sourcepath }}/{{ item }}"
     dest: "{{ rke2_artifact_path }}/{{ item }}"
     mode: 0644
+    force: yes
   with_items: "{{ rke2_artifact }}"
   when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
 
