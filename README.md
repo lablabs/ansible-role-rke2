@@ -39,7 +39,7 @@ This is a copy of `defaults/main.yml`
 ---
 
 # The node type - server or agent
-rke_type: server
+rke2_type: server
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
