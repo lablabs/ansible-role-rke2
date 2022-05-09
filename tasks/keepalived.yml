@@ -23,7 +23,7 @@
     mode: 0755
     
 - name: Create Kubernetes API health check script for Debian OS family
-  template:
+  ansible.builtin.template:
     src: templates/check_apiserver.sh.j2
     dest: /etc/keepalived/check_apiserver.sh
     owner: root
@@ -33,7 +33,7 @@
   notify: restart keepalived
 
 - name: Create Kubernetes API health check script for RedHat OS famliy
-  template:
+  ansible.builtin.template:
     src: templates/check_apiserver.sh.j2
     dest: /usr/libexec/keepalived/check_apiserver.sh
     owner: root
