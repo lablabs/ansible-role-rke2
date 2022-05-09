@@ -21,6 +21,8 @@ The Role can install the RKE2 in 3 modes:
 ---
 - Additionaly it is possible to install the RKE2 Cluster (all 3 modes) in Air-Gapped functionality with the use of local artifacts.
 
+> It is possible to upgrade RKE2 by changing `rke2_version` variable and re-running the playbook with this role. During the upgrade process the RKE2 service on the nodes wil be restarted one by one. The Ansible Role will check if the node on which the service was restarted is in Ready state and only then procede with restarting service on another Kubernetes node.
+
 ## Requirements
 
 * Ansible 2.10+
