@@ -1,5 +1,5 @@
 ---
-- name: Restart RKE2 service on {{inventory_hostname}}
+- name: Restart RKE2 service on {{ inventory_hostname }}
   service:
     name: "rke2-{{ rke2_type }}.service"
     state: restarted

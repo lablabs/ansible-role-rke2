@@ -8,7 +8,7 @@
     - rke2_ha_mode | bool
     - rke2_ha_mode_keepalived | bool
 
-- name: Download and install RKE2 {{rke2_version}}
+- name: Download and install RKE2 {{ rke2_version }}
   ansible.builtin.include_tasks: rke2.yml
 
 - name: Find Active Server
