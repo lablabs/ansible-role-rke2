@@ -8,7 +8,7 @@
     - rke2_ha_mode | bool
     - rke2_ha_mode_keepalived | bool
 
-- name: Download and install RKE2
+- name: Download and install RKE2 {{rke2_version}}
   ansible.builtin.include_tasks: rke2.yml
 
 - name: Find Active Server
@@ -30,7 +30,10 @@
 
 - name: Rolling restart
   ansible.builtin.include_tasks: rolling_restart.yml
-  when: installed_rke2_version.stdout is defined and rke2_version != ( installed_rke2_version.stdout | default({}) )
+  with_items: "{{ groups.k8s_cluster }}"
+  loop_control:
+    loop_var: _host_item
+  when: ( hostvars[_host_item].inventory_hostname == inventory_hostname ) and installed_rke2_version.stdout is defined and rke2_version != ( installed_rke2_version.stdout | default({}) )
 
 - name: Final steps
   ansible.builtin.include_tasks: summary.yml
