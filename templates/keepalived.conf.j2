@@ -16,7 +16,11 @@ vrrp_script chk_apiserver {
 
 
 vrrp_script chk_rke2server {
+{% if ansible_facts['os_family'] == "RedHat" %}
+    script "/usr/libexec/keepalived/check_rke2server.sh"
+{% else %}
     script "/etc/keepalived/check_rke2server.sh"
+{% endif %}
     interval 2
     weight -5
     fall 3
