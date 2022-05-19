@@ -1,8 +1,30 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v4.0.1
     hooks:
       - id: check-yaml
         args: [--allow-multiple-documents]
       - id: end-of-file-fixer
       - id: trailing-whitespace
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.26.3
+    hooks:
+      - id: yamllint
+        args: [-c=.yamllint]
+
+  - repo: https://github.com/robertdebock/pre-commit
+    rev: v1.4.5
+    hooks:
+      - id: ansible_role_find_unused_variable
+      - id: ansible_role_find_empty_files
+      - id: ansible_role_find_empty_directories
+      - id: ansible_role_fix_readability
+      - id: ansible_role_find_undefined_handlers
+
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v8.0.0
+    hooks:
+      - id: commitlint
+        stages: [commit-msg]
+        additional_dependencies: ['@commitlint/config-conventional']
