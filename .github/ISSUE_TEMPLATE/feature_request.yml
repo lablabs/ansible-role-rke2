@@ -1,0 +1,51 @@
+---
+name: Feature request
+description: Suggest an idea for this project
+title: "feature: "
+labels: enhancement
+
+body:
+- type: markdown
+  attributes:
+    value: >
+      **Thank you for wanting to suggest a feature!**
+
+      Please verify first that your idea is not [already requested on [GitHub][issue search].
+
+- type: textarea
+  attributes:
+    label: Summary
+    description: >
+      Describe the new feature/improvement you would like briefly below.
+
+      What's the problem this feature will solve?
+      What are you trying to do, that you are unable to achieve?
+
+    placeholder: >-
+      The new feature will improve...
+  validations:
+    required: true
+
+- type: dropdown
+  attributes:
+    label: Issue Type
+    description: >
+      Please select the single available option in the drop-down.
+
+      <details>
+        <summary>
+          <em>Why?</em>
+        </summary>
+
+        We would do it by ourselves but unfortunatelly, the curent
+        edition of GitHub Issue Forms Alpha does not support this yet 🤷
+
+
+        _We will make it easier in the future, once GitHub
+        supports dropdown defaults. Promise!_
+
+      </details>
+    options:
+    - Feature Idea
+  validations:
+    required: true
