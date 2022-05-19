@@ -16,4 +16,4 @@ jobs:
         with:
           config-name: RELEASE_DRAFTER.yml
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
