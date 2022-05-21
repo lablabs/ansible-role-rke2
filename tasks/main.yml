@@ -22,6 +22,14 @@
     - inventory_hostname == groups[rke2_servers_group_name].0
     - active_server is not defined
 
+- name: copy kube-vip manifests to the masternode
+  ansible.builtin.include_tasks: kubevip.yml
+  when: 
+    - inventory_hostname == groups[rke2_servers_group_name].0
+    - rke2_ha_mode | bool
+    - rke2_ha_mode_kubevip | bool
+    - not rke2_ha_mode_keepalived | bool
+
 - name: Prepare and join remaining nodes of the cluster
   ansible.builtin.include_tasks: remaining_nodes.yml
   when:
