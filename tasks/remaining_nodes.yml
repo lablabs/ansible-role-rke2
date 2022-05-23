@@ -54,7 +54,7 @@
   changed_when: false
   register: all_ready_nodes
   until:
-    - groups[rke2_cluster_group_name] | length == all_ready_nodes.stdout | int
+    "groups[rke2_cluster_group_name] | length == all_ready_nodes.stdout | int"
   retries: 100
   delay: 15
   delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"

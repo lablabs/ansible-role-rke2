@@ -8,7 +8,7 @@
     group: root
     mode: 0755
 
-- name: Copy kubeconfig
+- name: Copy rke2 config
   ansible.builtin.template:
     src: "{{ rke2_config }}"
     dest: /etc/rancher/rke2/config.yaml
@@ -48,11 +48,11 @@
   changed_when: false
   register: first_server
   until:
-    - '" Ready "  in first_server.stdout'
+    '" Ready "  in first_server.stdout'
   retries: 40
   delay: 15
 
 - name: Set an Active Server variable
   ansible.builtin.set_fact:
     active_server: "{{ inventory_hostname }}"
-  run_once: yes
+  run_once: true
