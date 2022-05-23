@@ -60,7 +60,7 @@
   set_fact:
     rke2_bin_path: "{{ '/usr/local/bin/rke2' if  usr_local.stat.writeable == True else ' /opt/rke2/bin/rke2' }}"
 
-- name: Check RKE2 version usr local location
+- name: Check RKE2 version
   ansible.builtin.shell: |
     set -o pipefail
     {{ rke2_bin_path }} --version | grep -E "rke2 version" | awk '{print $3}'
