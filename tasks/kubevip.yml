@@ -1,6 +1,6 @@
 ---
 - name: Copy kube-vip files to first server
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ rke2_data_path }}/server/manifests/{{ item | basename | regex_replace('.j2$', '') }}"
     owner: root

@@ -75,7 +75,7 @@ rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ip
 # optional option for kubevip IP subnet
 # rke2_api_cidr: 24
 
-# optional option for kubevip 
+# optional option for kubevip
 # rke2_interface: eth0
 
 # optiononal option for kubevip load balancer IP range

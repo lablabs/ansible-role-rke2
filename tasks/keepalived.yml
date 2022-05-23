@@ -21,7 +21,7 @@
     owner: root
     group: root
     mode: 0755
-    
+
 - name: Create Kubernetes API health check script for Debian OS family
   ansible.builtin.template:
     src: templates/check_apiserver.sh.j2
@@ -61,7 +61,7 @@
     mode: 0755
   when:  ansible_facts['os_family'] == "RedHat"
   notify: restart keepalived
-  
+
 - name: Create keepalived config file
   ansible.builtin.template:
     src: templates/keepalived.conf.j2
