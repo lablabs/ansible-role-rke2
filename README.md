@@ -16,10 +16,12 @@ The Role can install the RKE2 in 3 modes:
 
 - RKE2 Cluster with one Server(Master) node and one or more Agent(Worker) nodes
 
-- RKE2 Cluster with Server(Master) in High Availability mode and zero or more Agent(Worker) nodes. In HA mode you should have an odd number (three recommended) of server(master) nodes that will run etcd, the Kubernetes API (Keepalived VIP address), and other control plane services.
+- RKE2 Cluster with Server(Master) in High Availability mode and zero or more Agent(Worker) nodes. In HA mode you should have an odd number (three recommended) of server(master) nodes that will run etcd, the Kubernetes API (Keepalived VIP or Kube-VIP address), and other control plane services.
 
 ---
 - Additionaly it is possible to install the RKE2 Cluster (all 3 modes) in Air-Gapped functionality with the use of local artifacts.
+
+> It is possible to upgrade RKE2 by changing `rke2_version` variable and re-running the playbook with this role. During the upgrade process the RKE2 service on the nodes wil be restarted one by one. The Ansible Role will check if the node on which the service was restarted is in Ready state and only then procede with restarting service on another Kubernetes node.
 
 ## Requirements
 
@@ -29,6 +31,7 @@ The Role can install the RKE2 in 3 modes:
 
 * Rocky Linux 8
 * Ubuntu 20.04 LTS
+- Ubuntu 22.04 LTS
 
 ## Role Variables
 
@@ -38,7 +41,7 @@ This is a copy of `defaults/main.yml`
 ---
 
 # The node type - server or agent
-rke_type: server
+rke2_type: server
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -56,13 +59,27 @@ rke2_airgap_implementation: download
 rke2_airgap_copy_sourcepath: local_artifacts
 
 # Install and configure Keepalived on Server nodes
-# Can be disabled if you are using pre-configured Load Blancer
+# Can be disabled if you are using pre-configured Load Balancer
 rke2_ha_mode_keepalived: true
 
+# Install and configure kube-vip LB and VIP for cluster
+# rke2_ha_mode_keepalived needs to be false
+rke2_ha_mode_kubevip: false
+
+
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
-# In HA mode choose a static IP which will be set as VIP in keepalived.
-# Or if the keepalived is disabled, use IP address of your LB.
+# In HA mode choose a static IP which will be set as VIP in Keepalived or Kube-VIP.
+# Or if the keepalived and Kube-VIP in this role are disabled, use IP address of your LB.
 rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
+
+# optional option for kubevip IP subnet
+# rke2_api_cidr: 24
+
+# optional option for kubevip
+# rke2_interface: eth0
+
+# optiononal option for kubevip load balancer IP range
+# rke2_loadbalancer_ip_range: 192.168.1.50-192.168.1.100
 
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
@@ -97,9 +114,12 @@ rke2_artifact_path: /rke2/artifact
 
 # Airgap required artifacts
 rke2_artifact:
-  - sha256sum-amd64.txt
-  - rke2.linux-amd64.tar.gz
-  - rke2-images.linux-amd64.tar.zst
+  - sha256sum-{{ rke2_architecture }}.txt
+  - rke2.linux-{{ rke2_architecture }}.tar.gz
+  - rke2-images.linux-{{ rke2_architecture }}.tar.zst
+
+# Architecture to be downloaded, currently there are releases for amd64 and s390x
+rke2_architecture: amd64
 
 # Destination directory for RKE2 installation script
 rke2_install_script_dir: /var/tmp

@@ -1,0 +1,20 @@
+---
+- name: Restart RKE2 service on {{ inventory_hostname }}
+  service:
+    name: "rke2-{{ rke2_type }}.service"
+    state: restarted
+
+- name: Wait for all nodes to be ready again
+  ansible.builtin.shell: |
+    set -o pipefail
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep " Ready" | wc -l
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: all_ready_nodes
+  until:
+    - groups[rke2_cluster_group_name] | length == all_ready_nodes.stdout | int
+  retries: 100
+  delay: 15
+  delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
+  run_once: true

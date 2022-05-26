@@ -1,7 +1,7 @@
 ---
 
 # The node type - server or agent
-rke_type: server
+rke2_type: server
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -19,13 +19,27 @@ rke2_airgap_implementation: download
 rke2_airgap_copy_sourcepath: local_artifacts
 
 # Install and configure Keepalived on Server nodes
-# Can be disabled if you are using pre-configured Load Blancer
+# Can be disabled if you are using pre-configured Load Balancer
 rke2_ha_mode_keepalived: true
+
+# Install and configure kube-vip LB and VIP for cluster
+# rke2_ha_mode_keepalived needs to be false
+rke2_ha_mode_kubevip: false
+
 
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in keepalived.
 # Or if the keepalived is disabled, use IP address of your LB.
 rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
+
+# optional option for kubevip IP subnet
+# rke2_api_cidr: 24
+
+# optional option for kubevip
+# rke2_interface: eth0
+
+# optiononal option for kubevip load balancer IP range
+# rke2_loadbalancer_ip_range: 192.168.1.50-192.168.1.100
 
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
@@ -60,9 +74,12 @@ rke2_artifact_path: /rke2/artifact
 
 # Airgap required artifacts
 rke2_artifact:
-  - sha256sum-amd64.txt
-  - rke2.linux-amd64.tar.gz
-  - rke2-images.linux-amd64.tar.zst
+  - sha256sum-{{ rke2_architecture }}.txt
+  - rke2.linux-{{ rke2_architecture }}.tar.gz
+  - rke2-images.linux-{{ rke2_architecture }}.tar.zst
+
+# Architecture to be downloaded, currently there are releases for amd64 and s390x
+rke2_architecture: amd64
 
 # Destination directory for RKE2 installation script
 rke2_install_script_dir: /var/tmp

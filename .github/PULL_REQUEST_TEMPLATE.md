@@ -15,5 +15,5 @@ Please include a summary of the change and which issue is fixed.
 ## How Has This Been Tested?
 <!---
 Please describe the tests that you ran to verify your changes.
-Create a PR into `develop` branch.
+Create a PR into `main` branch.
 --->

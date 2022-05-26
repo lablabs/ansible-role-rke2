@@ -3,15 +3,24 @@ global_defs {
 }
 
 vrrp_script chk_apiserver {
+{% if ansible_facts['os_family'] == "RedHat" %}
+       script "/usr/libexec/keepalived/check_apiserver.sh"
+{% else %}
     script "/etc/keepalived/check_apiserver.sh"
+{% endif %}
     interval 2
     weight -5
     fall 3
     rise 2
 }
 
+
 vrrp_script chk_rke2server {
+{% if ansible_facts['os_family'] == "RedHat" %}
+    script "/usr/libexec/keepalived/check_rke2server.sh"
+{% else %}
     script "/etc/keepalived/check_rke2server.sh"
+{% endif %}
     interval 2
     weight -5
     fall 3
@@ -44,7 +53,7 @@ vrrp_instance VI_1 {
         auth_type PASS
         auth_pass rke2servers
     }
-### The following entry is the VRRP config for the incomming interface ###
+### The following entry is the VRRP config for the incoming interface ###
 
         virtual_ipaddress {
             {{ rke2_api_ip }}

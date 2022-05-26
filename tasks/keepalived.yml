@@ -22,22 +22,44 @@
     group: root
     mode: 0755
 
-- name: Create Kubernetes API health check script
+- name: Create Kubernetes API health check script for Debian OS family
   ansible.builtin.template:
     src: templates/check_apiserver.sh.j2
     dest: /etc/keepalived/check_apiserver.sh
     owner: root
     group: root
     mode: 0755
+  when:  ansible_facts['os_family'] == "Debian"
   notify: restart keepalived
 
-- name: Create RKE2 Server health check script
+- name: Create Kubernetes API health check script for RedHat OS famliy
+  ansible.builtin.template:
+    src: templates/check_apiserver.sh.j2
+    dest: /usr/libexec/keepalived/check_apiserver.sh
+    owner: root
+    group: root
+    mode: 0755
+  when:  ansible_facts['os_family'] == "RedHat"
+  notify: restart keepalived
+
+- name: Create RKE2 Server health check script for Debian OS family
   ansible.builtin.template:
     src: templates/check_rke2server.sh.j2
     dest: /etc/keepalived/check_rke2server.sh
     owner: root
     group: root
     mode: 0755
+  when:  ansible_facts['os_family'] == "Debian"
+  notify: restart keepalived
+
+- name: Create RKE2 Server health check script for RedHat OS family
+  ansible.builtin.template:
+    src: templates/check_rke2server.sh.j2
+    dest: /usr/libexec/keepalived/check_rke2server.sh
+    owner: root
+    group: root
+    mode: 0755
+  when:  ansible_facts['os_family'] == "RedHat"
   notify: restart keepalived
 
 - name: Create keepalived config file

@@ -22,6 +22,8 @@ jobs:
             tag: "latest"
           - image: "ubuntu2004"
             tag: "latest"
+          - image: "ubuntu2204"
+            tag: "latest"
     steps:
       - name: checkout
         uses: actions/checkout@v2
