@@ -36,7 +36,7 @@
 - name: Wait for the RKE2 server to be ready
   ansible.builtin.shell: |
    set -o pipefail
-   {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ ansible_hostname }}"
+   {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ inventory_hostname }}"
   args:
     executable: /bin/bash
   changed_when: false
