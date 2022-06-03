@@ -38,7 +38,7 @@
 
 - name: Rolling restart
   ansible.builtin.include_tasks: rolling_restart.yml
-  with_items: "{{ groups.k8s_cluster }}"
+  with_items: "{{ groups[rke2_cluster_group_name] }}"
   loop_control:
     loop_var: _host_item
   when: ( hostvars[_host_item].inventory_hostname == inventory_hostname ) and installed_rke2_version.stdout is defined and rke2_version != ( installed_rke2_version.stdout | default({}) )
