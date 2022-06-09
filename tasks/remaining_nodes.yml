@@ -18,8 +18,6 @@
     combined_node_taints: "{{ node_taints }}"
   when: rke2_type == 'agent'
 
-- debug: "var=combined_node_taints"
-
 - name: Copy RKE2 config
   ansible.builtin.template:
     src: "{{ rke2_config }}"
