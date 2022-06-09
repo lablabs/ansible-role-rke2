@@ -81,6 +81,12 @@ rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ip
 # optiononal option for kubevip load balancer IP range
 # rke2_loadbalancer_ip_range: 192.168.1.50-192.168.1.100
 
+# Install kubevip cloud provider if rke2_ha_mode_kubevip is true
+rke2_kubevip_cloud_provider_enable: true
+
+# Enable kube-vip to watch Services of type LoadBalancer
+rke2_kubevip_svc_enable: true
+
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
 
