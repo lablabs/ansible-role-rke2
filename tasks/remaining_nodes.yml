@@ -8,6 +8,11 @@
     group: root
     mode: 0755
 
+- name: append "CriticalAddonsOnly=true:NoExecute" to node_taints if rke2_server_taint is set
+  set_fact:
+    ec2_security_group_names: "{{ node_taints }} + [ 'CriticalAddonsOnly=true:NoExecute' ]"
+  when: rke2_server_taint and rke2_type == 'server'
+
 - name: Copy RKE2 config
   ansible.builtin.template:
     src: "{{ rke2_config }}"

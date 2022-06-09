@@ -5,9 +5,13 @@ server: https://{{ rke2_api_ip }}:9345
 token: {{ rke2_token }}
 {% if inventory_hostname in groups[rke2_servers_group_name] %}
 cni: {{ rke2_cni }}
-{% if rke2_server_taint %}
+
+
+{% if ( node_taints is defined and node_taints|length > 0) %}
 node-taint:
-  - "CriticalAddonsOnly=true:NoExecute"
+{% for taint in node_taints %}
+  - {{ taint }}
+{% endfor %}
 {% endif %}
 tls-san:
   - cluster.local
