@@ -16,7 +16,7 @@
 - name: if agent set combined_node_taints to node_taints
   set_fact:
     combined_node_taints: "{{ node_taints }}"
-  when: rke2_type == 'agent' or rke2_server_taint == false
+  when: rke2_type == 'agent' or not rke2_server_taint
 
 - name: Copy rke2 config
   ansible.builtin.template:
