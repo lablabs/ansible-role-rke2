@@ -5,9 +5,9 @@ server: https://{{ rke2_api_ip }}:9345
 token: {{ rke2_token }}
 {% if inventory_hostname in groups[rke2_servers_group_name] %}
 cni: {{ rke2_cni }}
-{% if ( combined_node_taints is defined and combined_node_taints|length > 0) %}
+{% if ( node_taints is defined and node_taints|length > 0) %}
 node-taint:
-{% for taint in combined_node_taints %}
+{% for taint in node_taints %}
   - {{ taint }}
 {% endfor %}
 {% endif %}

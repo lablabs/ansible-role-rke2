@@ -10,7 +10,7 @@
 
 - name: append "CriticalAddonsOnly=true:NoExecute" to node_taints if rke2_server_taint is set
   set_fact:
-    combined_node_taints: "{{ node_taints }} + [ 'CriticalAddonsOnly=true:NoExecute' ]"
+    node_taints: "{{ node_taints }} + [ 'CriticalAddonsOnly=true:NoExecute' ]"
   when: rke2_server_taint and rke2_type == 'server'
 
 - name: Copy rke2 config
