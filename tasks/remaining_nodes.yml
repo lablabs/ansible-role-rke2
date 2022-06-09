@@ -13,7 +13,7 @@
     combined_node_taints: "{{ node_taints }} + [ 'CriticalAddonsOnly=true:NoExecute' ]"
   when: rke2_server_taint and rke2_type == 'server'
 
-- debug: "var=node_taints"
+- debug: "var=combined_node_taints"
 
 - name: Copy RKE2 config
   ansible.builtin.template:
