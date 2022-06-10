@@ -5,6 +5,13 @@ on:
         branches:
             - main
         types: [opened, synchronize, reopened]
+        paths:
+          - 'defaults/**'
+          - 'handlers/**'
+          - 'molecule/**'
+          - 'tasks/**'
+          - 'templates/**'
+          - 'vars/**'
     schedule:
         - cron: '0 1 1 * *'
     workflow_dispatch:
