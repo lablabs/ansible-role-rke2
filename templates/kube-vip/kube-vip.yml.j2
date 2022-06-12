@@ -35,7 +35,7 @@ spec:
         - name: enableUPNP
           value: "false"
         - name: svc_enable
-          value: "true"
+          value: "{{ rke2_kubevip_svc_enable }}"
         - name: vip_leaderelection
           value: "true"
         - name: vip_leaseduration
