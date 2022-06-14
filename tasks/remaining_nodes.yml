@@ -8,12 +8,12 @@
     group: root
     mode: 0755
 
-- name: append "CriticalAddonsOnly=true:NoExecute" to node_taints if rke2_server_taint is set
+- name: Set server taints
   set_fact:
     combined_node_taints: "{{ node_taints }} + [ 'CriticalAddonsOnly=true:NoExecute' ]"
   when: rke2_server_taint and rke2_type == 'server'
 
-- name: if agent set combined_node_taints to node_taints
+- name: Set agent taints
   set_fact:
     combined_node_taints: "{{ node_taints }}"
   when: rke2_type == 'agent' or not rke2_server_taint
