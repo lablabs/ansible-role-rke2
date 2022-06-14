@@ -1,4 +1,6 @@
 ---
+# Default nodetaints
+node_taints: []
 
 # The node type - server or agent
 rke2_type: server
