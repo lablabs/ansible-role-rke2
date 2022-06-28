@@ -5,6 +5,10 @@ mirrors:
 {% for endpoint in mirror.endpoint %}
       - "{{ endpoint }}"
 {% endfor %}
+{% if mirror.rewrite is defined %}
+    rewrite:
+      {{ mirror.rewrite }}
+{% endif %}
 {% endfor %}
 {% if rke2_custom_registry_configs is defined %}
 configs:
