@@ -109,6 +109,7 @@ rke2_static_pods:
 rke2_custom_registry_mirrors:
   - name:
     endpoint: {}
+#   rewrite: '"^rancher/(.*)": "mirrorproject/rancher-images/$1"'
 
 # Configure custom Containerd Registry additional configuration
 # rke2_custom_registry_configs:
