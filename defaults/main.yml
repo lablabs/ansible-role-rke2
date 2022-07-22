@@ -11,6 +11,9 @@ rke2_ha_mode: false
 # Changes the deploy strategy to install based on local artifacts
 rke2_airgap_mode: false
 
+# Crdon, drain and uncordon the node during the RKE2 upgrade
+# rke2_graceful_upgrade: false
+
 # Airgap implementation type - download, copy or exists
 # - 'download' will fetch the artifacts on each node,
 # - 'copy' will transfer local files in 'rke2_artifact' to the nodes,

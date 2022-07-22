@@ -1,4 +1,22 @@
 ---
+
+- name: Drain the node {{ inventory_hostname }}
+  shell: |
+    set -o pipefail
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+    drain "{{ drain_node }}" --ignore-daemonsets --delete-local-data
+  args:
+    executable: /bin/bash
+  register: drain
+  until:
+    - drain.stdout is search('drained')
+  retries: 100
+  delay: 15
+  changed_when: false
+  delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
+  run_once: true
+  when: rke2_drain_node
+
 - name: Restart RKE2 service on {{ inventory_hostname }}
   service:
     name: "rke2-{{ rke2_type }}.service"
