@@ -66,7 +66,6 @@ rke2_ha_mode_keepalived: true
 # rke2_ha_mode_keepalived needs to be false
 rke2_ha_mode_kubevip: false
 
-
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in Keepalived or Kube-VIP.
 # Or if the keepalived and Kube-VIP in this role are disabled, use IP address of your LB.
@@ -200,6 +199,9 @@ rke2_agents_group_name: workers
 # You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-linux-rke2-agent-nodes
 # rke2_agent_options:
 #   - "option: value"
+
+# Crdon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
+rke2_drain_node_during_upgrade: false
 
 ```
 
