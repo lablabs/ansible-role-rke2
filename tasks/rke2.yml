@@ -48,6 +48,22 @@
   with_items: "{{ rke2_artifact }}"
   when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
 
+- name: Airgap mode - additional images tarballs
+  block:
+  - name: Create additional images tarballs folder
+    ansible.builtin.file:
+      path: "{{ rke2_tarball_images_path }}"
+      state: directory
+      mode: 0700
+  - name: Copy additional tarball images RKE2 components
+    ansible.builtin.copy:
+      src: "{{ rke2_airgap_copy_sourcepath }}/{{ item }}"
+      dest: "{{ rke2_tarball_images_path }}/{{ item }}"
+      mode: 0644
+      force: yes
+    with_items: "{{ rke2_airgap_copy_additional_tarballs }}"
+  when: rke2_airgap_mode and ( rke2_airgap_copy_additional_tarballs | length > 0 )
+
 - name: Populate service facts
   ansible.builtin.service_facts:
 
