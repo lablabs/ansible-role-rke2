@@ -128,6 +128,18 @@ rke2_custom_registry_path: templates/registries.yaml.j2
 # Path to RKE2 config file template
 rke2_config: templates/config.yaml.j2
 
+# Etcd snapshot source directory
+rke2_etcd_snapshot_source_dir: etcd_snapshots
+
+# Etcd snapshot file name.
+# When the file name is defined, the etcd will be restored on initial deployment Ansible run.
+# The etcd will be restored only during the initial run, so even if you will leave the the file name specified,
+# the etcd will remain untouched during the next runs.
+rke2_etcd_snapshot_file:
+
+# Etcd snapshot location
+rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
+
 # Override default containerd snapshotter
 rke2_snapshooter: overlayfs
 
