@@ -40,7 +40,6 @@ This is a copy of `defaults/main.yml`
 ```yaml
 ---
 
----
 # Default nodetaints
 node_taints: []
 
@@ -91,7 +90,7 @@ rke2_server_taint: false
 rke2_token: defaultSecret12345
 
 # RKE2 version
-rke2_version: v1.22.6+rke2r1
+rke2_version: v1.24.3+rke2r1
 
 # URL to RKE2 repository
 rke2_channel_url: https://update.rke2.io/v1-release/channels
@@ -132,7 +131,7 @@ rke2_airgap_copy_sourcepath: local_artifacts
 rke2_airgap_copy_additional_tarballs: []
 
 # Destination for airgap additional images tarballs ( see https://docs.rke2.io/install/airgap/#tarball-method )
-rke2_tarball_images_path: "{{ rke2_data_path }}/rke2/agent/images"
+rke2_tarball_images_path: "{{ rke2_data_path }}/agent/images"
 
 # Architecture to be downloaded, currently there are releases for amd64 and s390x
 rke2_architecture: amd64
@@ -169,6 +168,18 @@ rke2_custom_registry_path: templates/registries.yaml.j2
 
 # Path to RKE2 config file template
 rke2_config: templates/config.yaml.j2
+
+# Etcd snapshot source directory
+rke2_etcd_snapshot_source_dir: etcd_snapshots
+
+# Etcd snapshot file name.
+# When the file name is defined, the etcd will be restored on initial deployment Ansible run.
+# The etcd will be restored only during the initial run, so even if you will leave the the file name specified,
+# the etcd will remain untouched during the next runs.
+rke2_etcd_snapshot_file:
+
+# Etcd snapshot location
+rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
 
 # Override default containerd snapshotter
 rke2_snapshooter: overlayfs
