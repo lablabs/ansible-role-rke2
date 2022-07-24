@@ -1,6 +1,4 @@
 ---
-- debug:
-    msg: "{{ active_server }} is active"
 
 - name: Cordon and Drain the node {{ inventory_hostname }}
   shell: |
