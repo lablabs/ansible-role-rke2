@@ -211,6 +211,9 @@ rke2_agents_group_name: workers
 # rke2_agent_options:
 #   - "option: value"
 
+# Crdon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
+rke2_drain_node_during_upgrade: false
+
 ```
 
 ## Inventory file example

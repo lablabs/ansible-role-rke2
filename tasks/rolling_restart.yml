@@ -1,4 +1,24 @@
 ---
+
+- name: Cordon and Drain the node {{ inventory_hostname }}
+  shell: |
+    set -o pipefail
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+    cordon "{{ inventory_hostname }}" && \
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+    drain "{{ inventory_hostname }}" --ignore-daemonsets --delete-local-data
+  args:
+    executable: /bin/bash
+  register: drain
+  until:
+    - drain.stdout is search('drained')
+  retries: 100
+  delay: 15
+  changed_when: false
+  delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
+  run_once: true
+  when: rke2_drain_node_during_upgrade
+
 - name: Restart RKE2 service on {{ inventory_hostname }}
   service:
     name: "rke2-{{ rke2_type }}.service"
@@ -18,3 +38,15 @@
   delay: 15
   delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true
+
+- name: Uncordon the node {{ inventory_hostname }}
+  shell: |
+    set -o pipefail
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+    uncordon "{{ inventory_hostname }}"
+  args:
+    executable: /bin/bash
+  changed_when: false
+  delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
+  run_once: true
+  when: rke2_drain_node_during_upgrade
