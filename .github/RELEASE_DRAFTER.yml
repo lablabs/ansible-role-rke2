@@ -12,6 +12,19 @@ categories:
       - 'bug'
   - title: 'Documentation'
     label: 'documentation'
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'enhancement'
+      - 'feature'
+  patch:
+    labels:
+      - 'ci'
+      - 'bug'
+  default: patch
 change-template: '- $TITLE, by @$AUTHOR (#$NUMBER)'
 template: |
   # What's changed
