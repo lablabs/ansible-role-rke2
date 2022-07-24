@@ -1,7 +1,7 @@
 ---
 
 - name: Cordon and Drain the node {{ inventory_hostname }}
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
     cordon "{{ inventory_hostname }}" && \
@@ -20,7 +20,7 @@
   when: rke2_drain_node_during_upgrade
 
 - name: Restart RKE2 service on {{ inventory_hostname }}
-  service:
+  ansible.builtin.service:
     name: "rke2-{{ rke2_type }}.service"
     state: restarted
 
@@ -40,7 +40,7 @@
   run_once: true
 
 - name: Uncordon the node {{ inventory_hostname }}
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
     uncordon "{{ inventory_hostname }}"
