@@ -312,6 +312,15 @@ This playbook will deploy RKE2 to a cluster with HA server(master) control-plane
 
 ```
 
+## Troubleshooting
+
+### Playbook stuck while starting the RKE2 service on agents
+
+If the playbook starts to hang at the `Start RKE2 service on the rest of the nodes` task and then fails at the `Wait for remaining nodes to be ready` task, you probably have some limitations on you nodes' network.
+
+Please check the required *Inbound Rules for RKE2 Server Nodes* at the following link: <https://docs.rke2.io/install/requirements/#networking>.
+
+
 ## License
 
 MIT
