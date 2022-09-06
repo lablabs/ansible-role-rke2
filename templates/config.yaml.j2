@@ -3,6 +3,7 @@
 server: https://{{ rke2_api_ip }}:9345
 {% endif %}
 token: {{ rke2_token }}
+data-dir: {{ rke2_data_path }}
 {% if inventory_hostname in groups[rke2_servers_group_name] %}
 cni: {{ rke2_cni }}
 tls-san:
