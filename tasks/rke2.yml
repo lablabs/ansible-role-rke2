@@ -75,7 +75,7 @@
   register: usr_local
 
 - name: Set RKE2 bin path
-  set_fact:
+  ansible.builtin.set_fact:
     rke2_bin_path: "{{ '/usr/local/bin/rke2' if  usr_local.stat.writeable == True else ' /opt/rke2/bin/rke2' }}"
 
 - name: Check RKE2 version
