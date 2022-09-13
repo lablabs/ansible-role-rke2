@@ -1,0 +1,16 @@
+---
+- name: Upgrade
+  hosts: all
+  become: yes
+  vars:
+    rke2_version: v1.24.4+rke2r1
+    rke2_ha_mode_keepalived: false
+    rke2_ha_mode: true
+    rke2_ha_mode_kubevip: true
+    rke2_kubevip_cloud_provider_enable: true
+    rke2_kubevip_svc_enable: true
+    rke2_loadbalancer_ip_range: 192.168.123.1-192.168.123.50
+    rke2_api_ip: 192.168.123.100
+    rke2_snapshooter: native
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"

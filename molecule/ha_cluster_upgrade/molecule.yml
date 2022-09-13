@@ -30,6 +30,30 @@ platforms:
     networks:
       - name: rke2net
     groups:
+      - masters
+      - k8s_cluster
+  - name: node3
+    image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    networks:
+      - name: rke2net
+    groups:
+      - masters
+      - k8s_cluster
+  - name: node4
+    image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    networks:
+      - name: rke2net
+    groups:
       - workers
       - k8s_cluster
 provisioner:
@@ -38,13 +62,17 @@ provisioner:
     group_vars:
       masters:
         rke2_type: server
+        k8s_node_label:
+          - controlplane=true
       workers:
         rke2_type: agent
+        k8s_node_label:
+          - worker=true
 
 verifier:
   name: ansible
 scenario:
-  name: cluster
+  name: ha_cluster_upgrade
   test_sequence:
     - lint
     - destroy
@@ -54,6 +82,8 @@ scenario:
     - prepare
     - converge
     # - idempotence
+    - verify
+    - upgrade
     - verify
     - cleanup
     - destroy
