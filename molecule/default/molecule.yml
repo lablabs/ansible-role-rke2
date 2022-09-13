@@ -5,8 +5,8 @@ dependency:
 driver:
   name: docker
 lint: |
-  yamllint -s .
-  ansible-lint --exclude molecule/
+  yamllint -f colored -s .
+  ansible-lint --exclude=molecule/ --exclude=.github/
 platforms:
   - name: node1
     image: "geerlingguy/docker-${image:-rockylinux8}-ansible:${tag:-latest}"
