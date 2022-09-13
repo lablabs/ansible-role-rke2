@@ -18,7 +18,7 @@ on:
 
 jobs:
   standalone:
-    name: Test RKE2 Ansible Role - standalone
+    name: Test RKE2 Ansible Role - provisioning of a standalone setup
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -42,8 +42,8 @@ jobs:
           image: ${{ matrix.config.image }}
           tag: ${{ matrix.config.tag }}
 
-  cluster:
-    name: Test RKE2 Ansible Role - cluster
+  cluster_keepalived:
+    name: Test RKE2 Ansible Role - provisioning of a cluster
     runs-on: ubuntu-20.04
     needs: standalone
     strategy:
@@ -51,7 +51,30 @@ jobs:
       max-parallel: 1
       matrix:
         config:
-          - image: "ubuntu2004"
+          - image: "ubuntu2204"
+            tag: "latest"
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          path: "${{ github.repository }}"
+      - name: Molecule for Ansible
+        uses: robertdebock/molecule-action@2.7.2
+        with:
+          image: ${{ matrix.config.image }}
+          tag: ${{ matrix.config.tag }}
+          scenario: cluster
+
+  cluster_kvip_upgrade:
+    name: Test RKE2 Ansible Role - upgrade of a cluster with kube-vip
+    runs-on: ubuntu-20.04
+    needs: standalone
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        config:
+          - image: "rockylinux8"
             tag: "latest"
     steps:
       - name: checkout
