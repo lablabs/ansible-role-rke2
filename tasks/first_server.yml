@@ -49,7 +49,7 @@
         dest: "{{ rke2_etcd_snapshot_destination_dir }}/{{ rke2_etcd_snapshot_file }}"
         mode: 0644
         force: true
-    - name: Restore etcd from a snapshot
+    - name: Restore etcd from a snapshot # noqa no-changed-when
       ansible.builtin.shell: |
         rke2 server \
         --cluster-reset \

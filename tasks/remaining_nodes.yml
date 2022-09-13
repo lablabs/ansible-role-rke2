@@ -9,12 +9,12 @@
     mode: 0755
 
 - name: Set server taints
-  set_fact:
+  ansible.builtin.set_fact:
     combined_node_taints: "{{ node_taints + [ 'CriticalAddonsOnly=true:NoExecute' ] }}"
   when: rke2_server_taint and rke2_type == 'server'
 
 - name: Set agent taints
-  set_fact:
+  ansible.builtin.set_fact:
     combined_node_taints: "{{ node_taints }}"
   when: rke2_type == 'agent' or not rke2_server_taint
 

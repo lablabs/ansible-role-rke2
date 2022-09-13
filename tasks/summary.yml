@@ -20,7 +20,8 @@
   when:
   - rke2_download_kubeconf | bool
 
-- block:
+- name: Summary
+  block:
     - name: Prepare summary
       ansible.builtin.shell: |
         set -e
