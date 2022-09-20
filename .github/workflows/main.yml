@@ -74,7 +74,7 @@ jobs:
       max-parallel: 1
       matrix:
         config:
-          - image: "rockylinux8"
+          - image: "ubuntu2204"
             tag: "latest"
     steps:
       - name: checkout
@@ -86,4 +86,4 @@ jobs:
         with:
           image: ${{ matrix.config.image }}
           tag: ${{ matrix.config.tag }}
-          scenario: cluster
+          scenario: ha_cluster_upgrade
