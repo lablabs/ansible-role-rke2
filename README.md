@@ -39,7 +39,6 @@ This is a copy of `defaults/main.yml`
 
 ```yaml
 ---
-
 # Default nodetaints
 node_taints: []
 
@@ -222,8 +221,17 @@ rke2_agents_group_name: workers
 # rke2_agent_options:
 #   - "option: value"
 
-# Crdon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
+# (Optional) Configure Proxy
+# All flags can be found here https://github.com/rancher/rke2/blob/master/docs/advanced.md#configuring-an-http-proxy
+# rke2_environment_options: []
+#   - "option=value"
+#   - "HTTP_PROXY=http://your-proxy.example.com:8888"
+
+# Cordon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
 rke2_drain_node_during_upgrade: false
+
+# Wait for all pods to be ready after rke2-service restart during rolling restart.
+rke2_wait_for_all_pods_to_be_ready: false
 
 ```
 
