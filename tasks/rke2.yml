@@ -127,3 +127,12 @@
     mode: 0644
   with_items: "{{ rke2_static_pods }}"
   when: rke2_static_pods
+
+- name: Copy RKE2 environment file
+  ansible.builtin.template:
+    src: rke2_environment.j2
+    dest: "/etc/default/rke2-{{ rke2_type }}"
+    owner: root
+    group: root
+    mode: 0644
+  when: rke2_environment_options is defined and rke2_environment_options|length > 0
