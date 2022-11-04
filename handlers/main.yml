@@ -4,3 +4,11 @@
   ansible.builtin.service:
     name: keepalived
     state: restarted
+
+- name: restart systemd-sysctl
+  ansible.builtin.service:
+    state: restarted
+    name: systemd-sysctl
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

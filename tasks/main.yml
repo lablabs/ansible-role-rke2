@@ -11,6 +11,11 @@
 - name: Download and install RKE2 {{ rke2_version }}
   ansible.builtin.include_tasks: rke2.yml
 
+- name: CIS Hardening
+  ansible.builtin.include_tasks: cis.yml
+  when:
+    - rke2_cis_profile != ""
+
 - name: Find Active Server
   ansible.builtin.include_tasks: find_active_server.yml
   when:
