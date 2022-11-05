@@ -33,6 +33,9 @@ node-label:
 {% endif %}
 snapshotter: {{ rke2_snapshooter }}
 node-name: {{ inventory_hostname }}
+{% if 'cis' in rke2_cis_profile %}
+profile: {{ rke2_cis_profile }}
+{%endif%}
 {% if rke2_server_options is defined and inventory_hostname in groups[rke2_servers_group_name] %}
 {% for option in rke2_server_options %}
 {{ option }}
