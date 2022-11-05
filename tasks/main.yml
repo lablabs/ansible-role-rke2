@@ -48,5 +48,15 @@
     loop_var: _host_item
   when: ( hostvars[_host_item].inventory_hostname == inventory_hostname ) and installed_rke2_version.stdout is defined and rke2_version != ( installed_rke2_version.stdout | default({}) )
 
+- name: Restart service when config file is changed
+  ansible.builtin.include_tasks: change_config.yml
+  with_items: "{{ groups[rke2_cluster_group_name] }}"
+  loop_control:
+    loop_var: _host_item
+  when:
+  - not rke2_drain_node_during_upgrade
+  - hostvars[_host_item].inventory_hostname == inventory_hostname
+  - config_file_is_changed.changed
+
 - name: Final steps
   ansible.builtin.include_tasks: summary.yml

@@ -25,6 +25,7 @@
     owner: root
     group: root
     mode: 0644
+  register: config_file_is_changed
 
 - name: Copy Containerd Registry Configuration file
   ansible.builtin.template:
