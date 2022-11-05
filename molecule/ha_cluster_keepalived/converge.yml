@@ -10,4 +10,4 @@
     rke2_api_ip: 192.168.123.100
     rke2_snapshooter: native
   roles:
-     - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"

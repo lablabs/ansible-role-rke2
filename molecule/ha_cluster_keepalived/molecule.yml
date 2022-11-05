@@ -72,7 +72,7 @@ provisioner:
 verifier:
   name: ansible
 scenario:
-  name: ha_cluster
+  name: ha_cluster_keepalived
   test_sequence:
     - lint
     - destroy

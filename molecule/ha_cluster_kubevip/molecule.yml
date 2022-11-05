@@ -1,0 +1,87 @@
+---
+dependency:
+  name: 'shell'
+  command: ansible-playbook ${MOLECULE_PROJECT_DIRECTORY}/molecule/default/dependency.yml -i localhost,
+driver:
+  name: docker
+lint: |
+  yamllint -f colored -s .
+  ansible-lint --exclude=molecule/ --exclude=.github/
+platforms:
+  - name: node1
+    image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    networks:
+      - name: rke2net
+    groups:
+      - masters
+      - k8s_cluster
+  - name: node2
+    image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    networks:
+      - name: rke2net
+    groups:
+      - masters
+      - k8s_cluster
+  - name: node3
+    image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    networks:
+      - name: rke2net
+    groups:
+      - masters
+      - k8s_cluster
+  - name: node4
+    image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    networks:
+      - name: rke2net
+    groups:
+      - workers
+      - k8s_cluster
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      masters:
+        rke2_type: server
+        k8s_node_label:
+          - controlplane=true
+      workers:
+        rke2_type: agent
+        k8s_node_label:
+          - worker=true
+
+verifier:
+  name: ansible
+scenario:
+  name: ha_cluster_kubevip
+  test_sequence:
+    - lint
+    - destroy
+    - syntax
+    - dependency
+    - create
+    - prepare
+    - converge
+    # - idempotence
+    - verify
+    - cleanup
+    - destroy

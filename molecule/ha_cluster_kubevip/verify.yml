@@ -1,0 +1,22 @@
+---
+
+- name: Verify
+  hosts: node1
+  gather_facts: false
+  vars:
+    rke2_data_path: /var/lib/rancher/rke2
+  tasks:
+    - name: Verify RKE2
+      shell: |
+        set -e
+        set -o pipefail
+        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep " Ready" | wc -l
+      args:
+        executable: /bin/bash
+      register: nodes
+
+    - name: Check Nodes
+      assert:
+        that:
+          - groups.all | length == nodes.stdout | int
+        quiet: true
