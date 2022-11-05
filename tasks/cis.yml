@@ -1,0 +1,22 @@
+---
+
+- name: Create etcd group
+  ansible.builtin.group:
+    name: etcd
+    state: present
+
+- name: Create etcd user
+  ansible.builtin.user:
+    name: etcd
+    shell: /bin/nologin
+    group: etcd
+    comment: etcd user
+    state: present
+
+- name: Copy systemctl config file for kernel hardening
+  ansible.builtin.copy:
+    src: /usr/local/share/rke2/rke2-cis-sysctl.conf
+    dest: /etc/sysctl.d/60-rke2-cis.conf
+    mode: 0600
+    remote_src: true
+  notify: restart systemd-sysctl

@@ -89,7 +89,7 @@ rke2_server_taint: false
 rke2_token: defaultSecret12345
 
 # RKE2 version
-rke2_version: v1.24.3+rke2r1
+rke2_version: v1.25.3+rke2r1
 
 # URL to RKE2 repository
 rke2_channel_url: https://update.rke2.io/v1-release/channels
@@ -185,6 +185,10 @@ rke2_snapshooter: overlayfs
 
 # Deploy RKE2 with default CNI canal
 rke2_cni: canal
+
+# Validate system configuration against the selected benchmark
+# (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25)
+rke2_cis_profile: ""
 
 # Download Kubernetes config file to the Ansible controller
 rke2_download_kubeconf: false
