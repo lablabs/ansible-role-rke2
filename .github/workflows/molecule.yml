@@ -86,4 +86,4 @@ jobs:
         with:
           image: ${{ matrix.config.image }}
           tag: ${{ matrix.config.tag }}
-          scenario: ha_cluster_upgrade
+          scenario: ha_cluster_kubevip
