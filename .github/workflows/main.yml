@@ -1,74 +1,74 @@
 name: molecule test
 
 on:
-    pull_request:
-        branches:
-            - main
-        types: [opened, synchronize, reopened]
-        paths:
-          - 'defaults/**'
-          - 'handlers/**'
-          - 'molecule/**'
-          - 'tasks/**'
-          - 'templates/**'
-          - 'vars/**'
-    schedule:
-        - cron: '0 1 1 * *'
-    workflow_dispatch:
+  pull_request:
+      branches:
+          - main
+      types: [opened, synchronize, reopened]
+      paths:
+        - 'defaults/**'
+        - 'handlers/**'
+        - 'molecule/**'
+        - 'tasks/**'
+        - 'templates/**'
+        - 'vars/**'
+  schedule:
+      - cron: '0 1 1 * *'
+  workflow_dispatch:
 
 jobs:
-  standalone:
-    name: Test RKE2 Ansible Role - provisioning of a standalone setup
-    runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        config:
-          - image: "rockylinux8"
-            tag: "latest"
-          - image: "ubuntu2004"
-            tag: "latest"
-          - image: "ubuntu2204"
-            tag: "latest"
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-        with:
-          path: "${{ github.repository }}"
-      - name: Molecule for Ansible
-        uses: robertdebock/molecule-action@2.7.2
-        with:
-          image: ${{ matrix.config.image }}
-          tag: ${{ matrix.config.tag }}
+  # standalone:
+  #   name: Test standalone setup
+  #   runs-on: ubuntu-20.04
+  #   strategy:
+  #     fail-fast: false
+  #     max-parallel: 3
+  #     matrix:
+  #       config:
+  #         - image: "rockylinux8"
+  #           tag: "latest"
+  #         - image: "ubuntu2004"
+  #           tag: "latest"
+  #         - image: "ubuntu2204"
+  #           tag: "latest"
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         path: "${{ github.repository }}"
+  #     - name: Molecule for Ansible
+  #       uses: robertdebock/molecule-action@4.0.9
+  #       with:
+  #         image: ${{ matrix.config.image }}
+  #         tag: ${{ matrix.config.tag }}
 
-  cluster_keepalived:
-    name: Test RKE2 Ansible Role - provisioning of a cluster
-    runs-on: ubuntu-20.04
-    needs: standalone
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        config:
-          - image: "ubuntu2204"
-            tag: "latest"
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-        with:
-          path: "${{ github.repository }}"
-      - name: Molecule for Ansible
-        uses: robertdebock/molecule-action@2.7.2
-        with:
-          image: ${{ matrix.config.image }}
-          tag: ${{ matrix.config.tag }}
-          scenario: cluster
+  # cluster_keepalived:
+  #   name: Test cluster with keepalived
+  #   runs-on: ubuntu-20.04
+  #   needs: standalone
+  #   strategy:
+  #     fail-fast: false
+  #     max-parallel: 1
+  #     matrix:
+  #       config:
+  #         - image: "ubuntu2204"
+  #           tag: "latest"
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         path: "${{ github.repository }}"
+  #     - name: Molecule for Ansible
+  #       uses: robertdebock/molecule-action@4.0.9
+  #       with:
+  #         image: ${{ matrix.config.image }}
+  #         tag: ${{ matrix.config.tag }}
+  #         scenario: cluster
 
   cluster_kvip_upgrade:
-    name: Test RKE2 Ansible Role - upgrade of a cluster with kube-vip
+    name: Test cluster with kube-vip + upgrade
     runs-on: ubuntu-20.04
-    needs: standalone
+    # needs: standalone
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -82,7 +82,7 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: Molecule for Ansible
-        uses: robertdebock/molecule-action@2.7.2
+        uses: robertdebock/molecule-action@4.0.9
         with:
           image: ${{ matrix.config.image }}
           tag: ${{ matrix.config.tag }}
