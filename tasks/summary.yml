@@ -21,6 +21,7 @@
   - rke2_download_kubeconf | bool
 
 - name: Summary
+  when: inventory_hostname == groups[rke2_servers_group_name].0
   block:
     - name: Prepare summary
       ansible.builtin.shell: |
@@ -37,4 +38,3 @@
       ansible.builtin.debug:
         var: nodes_summary.stdout_lines
       run_once: true
-  when: inventory_hostname == groups[rke2_servers_group_name].0

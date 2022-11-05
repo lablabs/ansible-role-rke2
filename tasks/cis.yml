@@ -19,4 +19,4 @@
     dest: /etc/sysctl.d/60-rke2-cis.conf
     mode: 0600
     remote_src: true
-  notify: restart systemd-sysctl
+  notify: Restart systemd-sysctl

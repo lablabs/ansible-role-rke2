@@ -10,7 +10,7 @@
 
 - name: Set server taints
   ansible.builtin.set_fact:
-    combined_node_taints: "{{ node_taints + [ 'CriticalAddonsOnly=true:NoExecute' ] }}"
+    combined_node_taints: "{{ node_taints + ['CriticalAddonsOnly=true:NoExecute'] }}"
   when: rke2_server_taint and rke2_type == 'server'
 
 - name: Set agent taints
@@ -54,7 +54,7 @@
     enabled: false
     masked: true
   with_items:
-    - "{{ ([ 'agent', 'server' ] | reject('match', rke2_type) | list) }}"
+    - "{{ (['agent', 'server'] | reject('match', rke2_type) | list) }}"
 
 - name: Wait for remaining nodes to be ready
   ansible.builtin.shell: |

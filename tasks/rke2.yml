@@ -23,6 +23,7 @@
   when: rke2_airgap_mode
 
 - name: Download RKE2 checksum and artifacts
+  when: rke2_airgap_mode and rke2_airgap_implementation == 'download'
   block:
   - name: Download sha256 checksum file
     ansible.builtin.get_url:
@@ -38,8 +39,7 @@
       mode: 0644
       checksum: "sha256:{{ rke2_artifact_url }}{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
       timeout: 30
-    with_items: "{{ rke2_artifact | reject('search','sha256sum') | list }}"
-  when: rke2_airgap_mode and rke2_airgap_implementation == 'download'
+    with_items: "{{ rke2_artifact | reject('search', 'sha256sum') | list }}"
 
 - name: Copy local RKE2 artifacts
   ansible.builtin.copy:
@@ -51,6 +51,7 @@
   when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
 
 - name: Airgap mode - additional images tarballs
+  when: rke2_airgap_mode and ( rke2_airgap_copy_additional_tarballs | length > 0 )
   block:
   - name: Create additional images tarballs folder
     ansible.builtin.file:
@@ -64,7 +65,6 @@
       mode: 0644
       force: yes
     with_items: "{{ rke2_airgap_copy_additional_tarballs }}"
-  when: rke2_airgap_mode and ( rke2_airgap_copy_additional_tarballs | length > 0 )
 
 - name: Populate service facts
   ansible.builtin.service_facts:
@@ -76,7 +76,7 @@
 
 - name: Set RKE2 bin path
   ansible.builtin.set_fact:
-    rke2_bin_path: "{{ '/usr/local/bin/rke2' if  usr_local.stat.writeable == True else ' /opt/rke2/bin/rke2' }}"
+    rke2_bin_path: "{{ '/usr/local/bin/rke2' if usr_local.stat.writeable == True else ' /opt/rke2/bin/rke2' }}"
 
 - name: Check RKE2 version
   ansible.builtin.shell: |
