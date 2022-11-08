@@ -13,11 +13,6 @@
     combined_node_taints: "{{ node_taints + [ 'CriticalAddonsOnly=true:NoExecute' ] }}"
   when: rke2_server_taint and rke2_type == 'server'
 
-- name: Set agent taints
-  ansible.builtin.set_fact:
-    combined_node_taints: "{{ node_taints }}"
-  when: rke2_type == 'agent' or not rke2_server_taint
-
 - name: Copy rke2 config
   ansible.builtin.template:
     src: "{{ rke2_config }}"
