@@ -36,7 +36,7 @@
       url: "{{ rke2_artifact_url }}/{{ rke2_version }}/{{ item }}"
       dest: "{{ rke2_artifact_path }}/{{ item }}"
       mode: 0644
-      checksum: "sha256:{{ rke2_artifact_url }}{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
+      checksum: "sha256:{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
       timeout: 30
     with_items: "{{ rke2_artifact | reject('search','sha256sum') | list }}"
   when: rke2_airgap_mode and rke2_airgap_implementation == 'download'
