@@ -20,3 +20,6 @@
     mode: 0600
     remote_src: true
   notify: restart systemd-sysctl
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
