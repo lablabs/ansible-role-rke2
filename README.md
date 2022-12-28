@@ -31,7 +31,7 @@ The Role can install the RKE2 in 3 modes:
 
 * Rocky Linux 8
 * Ubuntu 20.04 LTS
-- Ubuntu 22.04 LTS
+* Ubuntu 22.04 LTS
 
 ## Role Variables
 
@@ -146,6 +146,7 @@ rke2_channel: stable
 rke2_disable:
 
 # Path to custom manifests deployed during the RKE2 installation
+# It is possible to use Jinja2 templating in the manifests
 rke2_custom_manifests:
 
 # Path to static pods deployed during the RKE2 installation
