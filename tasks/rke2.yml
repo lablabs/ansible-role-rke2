@@ -109,7 +109,7 @@
         or ((installed_rke2_version is not defined) and (not rke2_airgap_mode))
 
 - name: Copy Custom Manifests
-  ansible.builtin.copy:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ rke2_data_path }}/server/manifests/"
     owner: root
