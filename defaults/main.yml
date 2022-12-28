@@ -106,6 +106,7 @@ rke2_channel: stable
 rke2_disable:
 
 # Path to custom manifests deployed during the RKE2 installation
+# It is possible to use Jinja2 templating in the manifests
 rke2_custom_manifests:
 
 # Path to static pods deployed during the RKE2 installation
