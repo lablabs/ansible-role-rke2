@@ -9,14 +9,14 @@
     mode: 0755
 
 - name: Set server taints
-  set_fact:
-    combined_node_taints: "{{ node_taints }}"
-  when: rke2_server_taint and rke2_type == 'server'
+  ansible.builtin.set_fact:
+    combined_node_taints: "{{ rke2_server_node_taints }}"
+  when: rke2_type == 'server'
 
 - name: Set agent taints
-  set_fact:
-    combined_node_taints: "{{ node_taints }}"
-  when: rke2_type == 'agent' or not rke2_server_taint
+  ansible.builtin.set_fact:
+    combined_node_taints: "{{ rke2_agent_node_taints }}"
+  when: rke2_type == 'agent'
 
 - name: Copy RKE2 config
   ansible.builtin.template:

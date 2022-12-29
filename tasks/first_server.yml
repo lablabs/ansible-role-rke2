@@ -10,13 +10,8 @@
 
 - name: Set server taints
   ansible.builtin.set_fact:
-    combined_node_taints: "{{ node_taints }}"
-  when: rke2_server_taint and rke2_type == 'server'
-
-- name: Set agent taints
-  ansible.builtin.set_fact:
-    combined_node_taints: "{{ node_taints }}"
-  when: rke2_type == 'agent' or not rke2_server_taint
+    combined_node_taints: "{{ rke2_server_node_taints }}"
+  when: rke2_type == 'server'
 
 - name: Copy rke2 config
   ansible.builtin.template:
@@ -37,6 +32,7 @@
   when: rke2_custom_registry_mirrors.0.endpoint | length > 0
 
 - name: Restore etcd
+  when: rke2_etcd_snapshot_file and ( "rke2-server.service" is not in ansible_facts.services )
   block:
     - name: Create the RKE2 etcd snapshot dir
       ansible.builtin.file:
@@ -56,7 +52,6 @@
         --cluster-reset \
         --cluster-reset-restore-path="{{ rke2_etcd_snapshot_destination_dir }}/{{ rke2_etcd_snapshot_file }}" \
         --token {{ rke2_token }}
-  when: rke2_etcd_snapshot_file and ( "rke2-server.service" is not in ansible_facts.services )
 
 - name: Start RKE2 service on the first server
   ansible.builtin.systemd:
