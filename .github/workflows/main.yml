@@ -25,10 +25,13 @@ jobs:
         config:
           - image: "rockylinux8"
             tag: "latest"
+            cgroup_mode: "private"
           - image: "ubuntu2004"
             tag: "latest"
+            cgroup_mode: "host"
           - image: "ubuntu2204"
             tag: "latest"
+            cgroup_mode: "private"
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -51,6 +54,7 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_IMAGE: ${{ matrix.config.image }}
           MOLECULE_TAG: ${{ matrix.config.tag }}
+          MOLECULE_DOCKER_CGROUPS_MODE: ${{ matrix.config.cgroup_mode }}
 
   cluster:
     name: Cluster setup
@@ -61,6 +65,7 @@ jobs:
         config:
           - image: "ubuntu2204"
             tag: "latest"
+            cgroup_mode: "private"
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -83,3 +88,4 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_IMAGE: ${{ matrix.config.image }}
           MOLECULE_TAG: ${{ matrix.config.tag }}
+          MOLECULE_DOCKER_CGROUPS_MODE: ${{ matrix.config.cgroup_mode }}
