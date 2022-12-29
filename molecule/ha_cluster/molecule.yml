@@ -9,7 +9,7 @@ lint: |
   ansible-lint --exclude molecule/
 platforms:
   - name: node1
-    image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
+    image: "geerlingguy/docker-${MOLECULE_IMAGE:-ubuntu2204}-ansible:${MOLECULE_TAG:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-ro}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
@@ -22,7 +22,7 @@ platforms:
       - masters
       - k8s_cluster
   - name: node2
-    image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
+    image: "geerlingguy/docker-${MOLECULE_IMAGE:-ubuntu2204}-ansible:${MOLECULE_TAG:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-ro}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
@@ -35,7 +35,7 @@ platforms:
       - masters
       - k8s_cluster
   - name: node3
-    image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
+    image: "geerlingguy/docker-${MOLECULE_IMAGE:-ubuntu2204}-ansible:${MOLECULE_TAG:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-ro}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
@@ -48,7 +48,7 @@ platforms:
       - masters
       - k8s_cluster
   - name: node4
-    image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
+    image: "geerlingguy/docker-${MOLECULE_IMAGE:-ubuntu2204}-ansible:${MOLECULE_TAG:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-ro}" # Use "ro" for cgroup v1 and "rw" for cgroup v2

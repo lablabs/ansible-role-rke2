@@ -33,23 +33,24 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
         with:
-          path: "${{ github.repository }}"
+          path: 'lablabs.rke2'
 
       - name: Set up Python 3
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Install test dependencies
-        run: pip3 install ansible molecule[docker]==4.0.3 docker
+        run: pip3 install ansible ansible-lint docker molecule[docker] yamllint
 
       - name: Run Molecule tests
         run: molecule test
+        working-directory: ./lablabs.rke2
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
-          image: ${{ matrix.config.image }}
-          tag: ${{ matrix.config.tag }}
+          MOLECULE_IMAGE: ${{ matrix.config.image }}
+          MOLECULE_TAG: ${{ matrix.config.tag }}
 
   cluster:
     name: Cluster setup
@@ -64,20 +65,21 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
         with:
-          path: "${{ github.repository }}"
+          path: 'lablabs.rke2'
 
       - name: Set up Python 3
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Install test dependencies
-        run: pip3 install ansible molecule[docker] docker
+        run: pip3 install ansible ansible-lint docker molecule[docker] yamllint
 
       - name: Run Molecule tests
         run: molecule test
+        working-directory: ./lablabs.rke2
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
-          image: ${{ matrix.config.image }}
-          tag: ${{ matrix.config.tag }}
+          MOLECULE_IMAGE: ${{ matrix.config.image }}
+          MOLECULE_TAG: ${{ matrix.config.tag }}
