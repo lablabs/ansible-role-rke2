@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 1
       matrix:
         config:
           - image: "rockylinux8"
@@ -33,11 +33,11 @@ jobs:
             tag: "latest"
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: "${{ github.repository }}"
       - name: Molecule for Ansible
-        uses: robertdebock/molecule-action@2.7.2
+        uses: robertdebock/molecule-action@4.0.9
         with:
           image: ${{ matrix.config.image }}
           tag: ${{ matrix.config.tag }}
@@ -55,11 +55,11 @@ jobs:
             tag: "latest"
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: "${{ github.repository }}"
       - name: Molecule for Ansible
-        uses: robertdebock/molecule-action@2.7.2
+        uses: robertdebock/molecule-action@4.0.9
         with:
           image: ${{ matrix.config.image }}
           tag: ${{ matrix.config.tag }}
