@@ -52,6 +52,8 @@
         --cluster-reset \
         --cluster-reset-restore-path="{{ rke2_etcd_snapshot_destination_dir }}/{{ rke2_etcd_snapshot_file }}" \
         --token {{ rke2_token }}
+      register: task_output # <- Registers the command output.
+      changed_when: task_output.rc != 0 # <- Uses the return code to define when the task has changed.
 
 - name: Start RKE2 service on the first server
   ansible.builtin.systemd:

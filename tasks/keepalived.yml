@@ -30,7 +30,7 @@
     group: root
     mode: 0755
   when:  ansible_facts['os_family'] == "Debian"
-  notify: restart keepalived
+  notify: Restart keepalived
 
 - name: Create Kubernetes API health check script for RedHat OS famliy
   ansible.builtin.template:
@@ -40,7 +40,7 @@
     group: root
     mode: 0755
   when:  ansible_facts['os_family'] == "RedHat"
-  notify: restart keepalived
+  notify: Restart keepalived
 
 - name: Create RKE2 Server health check script for Debian OS family
   ansible.builtin.template:
@@ -50,7 +50,7 @@
     group: root
     mode: 0755
   when:  ansible_facts['os_family'] == "Debian"
-  notify: restart keepalived
+  notify: Restart keepalived
 
 - name: Create RKE2 Server health check script for RedHat OS family
   ansible.builtin.template:
@@ -60,7 +60,7 @@
     group: root
     mode: 0755
   when:  ansible_facts['os_family'] == "RedHat"
-  notify: restart keepalived
+  notify: Restart keepalived
 
 - name: Create keepalived config file
   ansible.builtin.template:
@@ -69,14 +69,14 @@
     owner: root
     group: root
     mode: 0644
-  notify: restart keepalived
+  notify: Restart keepalived
 
 - name: Enable keepalived and make sure it is not masked
   ansible.builtin.systemd:
     name: keepalived
     enabled: yes
     masked: no
-  notify: restart keepalived
+  notify: Restart keepalived
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
