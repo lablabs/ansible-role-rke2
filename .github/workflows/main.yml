@@ -45,7 +45,7 @@ jobs:
   cluster:
     name: Cluster setup
     runs-on: ubuntu-20.04
-    needs: standalone
+    # needs: standalone
     strategy:
       fail-fast: false
       max-parallel: 1
