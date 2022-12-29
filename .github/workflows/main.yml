@@ -25,8 +25,8 @@ jobs:
         config:
           - image: "rockylinux8"
             tag: "latest"
-          # - image: "ubuntu2004"
-          #   tag: "latest"
+          - image: "ubuntu2004"
+            tag: "latest"
           - image: "ubuntu2204"
             tag: "latest"
     steps:
