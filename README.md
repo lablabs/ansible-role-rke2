@@ -39,9 +39,6 @@ This is a copy of `defaults/main.yml`
 
 ```yaml
 ---
-# Default nodetaints
-node_taints: []
-
 # The node type - server or agent
 rke2_type: server
 
@@ -82,8 +79,12 @@ rke2_additional_sans: []
 # API Server destination port
 rke2_apiserver_dest_port: 6443
 
-# If false, server node(s) will be schedulable and thus your workloads can get launched on them
-rke2_server_taint: false
+# Server nodes taints
+rke2_server_node_taints: []
+  # - 'CriticalAddonsOnly=true:NoExecute'
+
+# Agent nodes taints
+rke2_agent_node_taints: []
 
 # Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
 rke2_token: defaultSecret12345
@@ -309,7 +310,7 @@ This playbook will deploy RKE2 to a cluster with one server(master) and several 
 
 ```
 
-This playbook will deploy RKE2 to a cluster with HA server(master) control-plane and several agent(worker) nodes. The server(master) nodes will be tainted so the workload will be distributed only on worker/agent nodes. The role will install also keepalived on the control-plane nodes and setup VIP address where the Kubernetes API will be reachable. it will also download the Kubernetes config file to the local machine.
+This playbook will deploy RKE2 to a cluster with HA server(master) control-plane and several agent(worker) nodes. The server(master) nodes will be tainted so the workload will be distributed only on worker(agent) nodes. The role will install also keepalived on the control-plane nodes and setup VIP address where the Kubernetes API will be reachable. it will also download the Kubernetes config file to the local machine.
 
 ```yaml
 - name: Deploy RKE2
@@ -317,9 +318,10 @@ This playbook will deploy RKE2 to a cluster with HA server(master) control-plane
   become: yes
   vars:
     rke2_ha_mode: true
-    rke2_server_taint: true
     rke2_api_ip : 192.168.123.100
     rke2_download_kubeconf: true
+    rke2_server_node_taints:
+      - 'CriticalAddonsOnly=true:NoExecute'
   roles:
      - role: lablabs.rke2
 
@@ -332,7 +334,6 @@ This playbook will deploy RKE2 to a cluster with HA server(master) control-plane
 If the playbook starts to hang at the `Start RKE2 service on the rest of the nodes` task and then fails at the `Wait for remaining nodes to be ready` task, you probably have some limitations on you nodes' network.
 
 Please check the required *Inbound Rules for RKE2 Server Nodes* at the following link: <https://docs.rke2.io/install/requirements/#networking>.
-
 
 ## License
 

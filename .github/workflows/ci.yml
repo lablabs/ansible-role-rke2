@@ -1,0 +1,91 @@
+name: molecule test
+
+on:
+    pull_request:
+        branches:
+            - main
+        types: [opened, synchronize, reopened]
+        paths:
+          - 'defaults/**'
+          - 'handlers/**'
+          - 'molecule/**'
+          - 'tasks/**'
+          - 'templates/**'
+          - 'vars/**'
+    schedule:
+        - cron: '0 1 1 * *'
+    workflow_dispatch:
+
+jobs:
+  standalone:
+    name: Single node setup
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        config:
+          - image: "rockylinux8"
+            tag: "latest"
+            cgroup_mode: "private"
+          # - image: "ubuntu2004"
+          #   tag: "latest"
+          #   cgroup_mode: "private"
+          - image: "ubuntu2204"
+            tag: "latest"
+            cgroup_mode: "private"
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          path: 'lablabs.rke2'
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies
+        run: pip3 install ansible ansible-lint docker molecule[docker] yamllint
+
+      - name: Run Molecule tests
+        run: molecule test
+        working-directory: ./lablabs.rke2
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_IMAGE: ${{ matrix.config.image }}
+          MOLECULE_TAG: ${{ matrix.config.tag }}
+          MOLECULE_DOCKER_CGROUPS_MODE: ${{ matrix.config.cgroup_mode }}
+
+  cluster:
+    name: Cluster setup
+    runs-on: ubuntu-20.04
+    needs: standalone
+    strategy:
+      matrix:
+        config:
+          - image: "ubuntu2204"
+            tag: "latest"
+            cgroup_mode: "private"
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          path: 'lablabs.rke2'
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies
+        run: pip3 install ansible ansible-lint docker molecule[docker] yamllint
+
+      - name: Run Molecule tests
+        run: molecule test
+        working-directory: ./lablabs.rke2
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_IMAGE: ${{ matrix.config.image }}
+          MOLECULE_TAG: ${{ matrix.config.tag }}
+          MOLECULE_DOCKER_CGROUPS_MODE: ${{ matrix.config.cgroup_mode }}

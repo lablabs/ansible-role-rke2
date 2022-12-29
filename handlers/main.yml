@@ -1,11 +1,11 @@
 ---
 
-- name: restart keepalived
+- name: Restart keepalived
   ansible.builtin.service:
     name: keepalived
     state: restarted
 
-- name: restart systemd-sysctl
+- name: Restart systemd-sysctl
   ansible.builtin.service:
     state: restarted
     name: systemd-sysctl
