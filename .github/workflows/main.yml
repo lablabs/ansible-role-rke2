@@ -32,6 +32,9 @@ jobs:
           - image: "ubuntu2204"
             tag: "latest"
     steps:
+      - name: Fix Git safe directories issue when in containers
+        # https://github.com/actions/checkout/issues/760
+        run: git config --global --add safe.directory /__w/ansible-role-rke2/ansible-role-rke2
       - name: checkout
         uses: actions/checkout@v3
         with:
@@ -54,6 +57,9 @@ jobs:
           - image: "ubuntu2204"
             tag: "latest"
     steps:
+      - name: Fix Git safe directories issue when in containers
+        # https://github.com/actions/checkout/issues/760
+        run: git config --global --add safe.directory /__w/ansible-role-rke2/ansible-role-rke2
       - name: checkout
         uses: actions/checkout@v3
         with:
