@@ -1,0 +1,113 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+  provision: yes
+lint: |
+  yamllint -f colored -s .
+  ansible-lint --exclude=molecule/ --exclude=.github/
+
+platforms:
+  - name: instance-1
+    management:
+      network_name: private_network
+      network_address: 192.168.123.0/24
+    # interfaces:
+    #   - network_name: private_network
+    #     ip: 192.168.123.11
+    # config_options:
+      # ssh.keep_alive: yes
+      # ssh.remote_user: 'vagrant'
+    box: generic/ubuntu2004
+    box_version: 4.2
+    memory: 2048
+    cpus: 1
+    provider_options:
+      # using session with network leads to troubles
+      qemu_use_session: false
+    groups:
+      - masters
+      - k8s_cluster
+  - name: instance-2
+    # interfaces:
+    #   - network_name: private_network
+    #     ip: 192.168.123.12
+    # config_options:
+      # ssh.keep_alive: yes
+      # ssh.remote_user: 'vagrant'
+    box: generic/ubuntu2004
+    box_version: 4.2
+    memory: 2048
+    cpus: 1
+    provider_options:
+      # using session with network leads to troubles
+      qemu_use_session: false
+    groups:
+      - masters
+      - k8s_cluster
+  - name: instance-3
+    # interfaces:
+    #   - network_name: private_network
+    #     ip: 192.168.123.13
+    # config_options:
+      # ssh.keep_alive: yes
+      # ssh.remote_user: 'vagrant'
+    box: generic/ubuntu2004
+    box_version: 4.2
+    memory: 2048
+    cpus: 1
+    provider_options:
+      # using session with network leads to troubles
+      qemu_use_session: false
+    groups:
+      - masters
+      - k8s_cluster
+  - name: instance-4
+    # interfaces:
+    #   - network_name: private_network
+    #     ip: 192.168.123.14
+    # config_options:
+      # ssh.keep_alive: yes
+      # ssh.remote_user: 'vagrant'
+    box: generic/ubuntu2004
+    box_version: 4.2
+    memory: 2048
+    cpus: 1
+    provider_options:
+      # using session with network leads to troubles
+      qemu_use_session: false
+    groups:
+      - workers
+      - k8s_cluster
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      masters:
+        rke2_type: server
+        k8s_node_label:
+          - controlplane=true
+      workers:
+        rke2_type: agent
+        k8s_node_label:
+          - worker=true
+
+verifier:
+  name: ansible
+scenario:
+  name: ha_cluster_kubevip
+  test_sequence:
+    - lint
+    - destroy
+    - syntax
+    - dependency
+    - create
+    - prepare
+    - converge
+    # - idempotence
+    - verify
+    - cleanup
+    - destroy

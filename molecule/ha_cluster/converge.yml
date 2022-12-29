@@ -6,8 +6,9 @@
     rke2_version: v1.25.3+rke2r1
     rke2_cis_profile: cis-1.23
     rke2_ha_mode: true
-    rke2_server_taint: true
     rke2_api_ip: 192.168.123.100
     rke2_snapshooter: native
+    rke2_server_node_taints:
+      - 'CriticalAddonsOnly=true:NoExecute'
   roles:
-     - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"

@@ -1,0 +1,12 @@
+---
+- name: Prepare
+  hosts: node*
+  become: true
+  tasks:
+    - name: Install packages
+      ansible.builtin.package:
+        update_cache: true
+        name: "{{ item }}"
+      loop:
+        - wget
+        - curl

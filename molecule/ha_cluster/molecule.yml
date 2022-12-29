@@ -12,9 +12,10 @@ platforms:
     image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-ro}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
+    cgroups_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"private"} # Use "private" for cgroup v1 and "host" for cgroup v2
     privileged: true
-    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    pre_build_image: true
     networks:
       - name: rke2net
     groups:
@@ -24,9 +25,10 @@ platforms:
     image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-ro}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
+    cgroups_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"private"} # Use "private" for cgroup v1 and "host" for cgroup v2
     privileged: true
-    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    pre_build_image: true
     networks:
       - name: rke2net
     groups:
@@ -36,9 +38,10 @@ platforms:
     image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-ro}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
+    cgroups_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"private"} # Use "private" for cgroup v1 and "host" for cgroup v2
     privileged: true
-    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    pre_build_image: true
     networks:
       - name: rke2net
     groups:
@@ -48,9 +51,10 @@ platforms:
     image: "geerlingguy/docker-${image:-ubuntu2004}-ansible:${tag:-latest}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-ro}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
+    cgroups_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"private"} # Use "private" for cgroup v1 and "host" for cgroup v2
     privileged: true
-    pre_build_image: ${MOLECULE_PREBUILT:-true}
+    pre_build_image: true
     networks:
       - name: rke2net
     groups:
