@@ -1,7 +1,4 @@
 ---
-# Default nodetaints
-node_taints: []
-
 # The node type - server or agent
 rke2_type: server
 
@@ -42,8 +39,12 @@ rke2_additional_sans: []
 # API Server destination port
 rke2_apiserver_dest_port: 6443
 
-# If false, server node(s) will be schedulable and thus your workloads can get launched on them
-rke2_server_taint: false
+# Server nodes taints
+rke2_server_node_taints: []
+  # - 'CriticalAddonsOnly=true:NoExecute'
+
+# Agent nodes taints
+rke2_agent_node_taints: []
 
 # Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
 rke2_token: defaultSecret12345
