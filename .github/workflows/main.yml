@@ -21,52 +21,61 @@ jobs:
     name: Single node setup
     runs-on: ubuntu-20.04
     strategy:
-      fail-fast: false
-      max-parallel: 3
       matrix:
-        config:
-          - image: "rockylinux8"
-            tag: "latest"
-          # - image: "ubuntu2004"
-          #   tag: "latest"
-          - image: "ubuntu2204"
-            tag: "latest"
+        - image: "rockylinux8"
+          tag: "latest"
+        # - image: "ubuntu2004"
+        #   tag: "latest"
+        - image: "ubuntu2204"
+          tag: "latest"
     steps:
-      - name: Fix Git safe directories issue when in containers
-        # https://github.com/actions/checkout/issues/760
-        run: git config --global --add safe.directory /__w/ansible-role-rke2/ansible-role-rke2
       - name: checkout
         uses: actions/checkout@v3
         with:
           path: "${{ github.repository }}"
-      - name: Molecule for Ansible
-        uses: robertdebock/molecule-action@4.0.9
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v2
         with:
-          image: ${{ matrix.config.image }}
-          tag: ${{ matrix.config.tag }}
+          python-version: '3.x'
+
+      - name: Install test dependencies
+        run: pip3 install ansible molecule[docker]==4.0.3 docker
+
+      - name: Run Molecule tests
+        run: molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          image: ${{ matrix.image }}
+          tag: ${{ matrix.tag }}
 
   cluster:
     name: Cluster setup
     runs-on: ubuntu-20.04
     needs: standalone
     strategy:
-      fail-fast: false
-      max-parallel: 1
       matrix:
-        config:
-          - image: "ubuntu2204"
-            tag: "latest"
+        - image: "ubuntu2204"
+          tag: "latest"
     steps:
-      - name: Fix Git safe directories issue when in containers
-        # https://github.com/actions/checkout/issues/760
-        run: git config --global --add safe.directory /__w/ansible-role-rke2/ansible-role-rke2
       - name: checkout
         uses: actions/checkout@v3
         with:
           path: "${{ github.repository }}"
-      - name: Molecule for Ansible
-        uses: robertdebock/molecule-action@4.0.9
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v2
         with:
-          image: ${{ matrix.config.image }}
-          tag: ${{ matrix.config.tag }}
-          scenario: cluster
+          python-version: '3.x'
+
+      - name: Install test dependencies
+        run: pip3 install ansible molecule[docker] docker
+
+      - name: Run Molecule tests
+        run: molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          image: ${{ matrix.image }}
+          tag: ${{ matrix.tag }}
