@@ -22,12 +22,13 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        - image: "rockylinux8"
-          tag: "latest"
-        # - image: "ubuntu2004"
-        #   tag: "latest"
-        - image: "ubuntu2204"
-          tag: "latest"
+        config:
+          - image: "rockylinux8"
+            tag: "latest"
+          # - image: "ubuntu2004"
+          #   tag: "latest"
+          - image: "ubuntu2204"
+            tag: "latest"
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -47,8 +48,8 @@ jobs:
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
-          image: ${{ matrix.image }}
-          tag: ${{ matrix.tag }}
+          image: ${{ matrix.config.image }}
+          tag: ${{ matrix.config.tag }}
 
   cluster:
     name: Cluster setup
@@ -56,8 +57,9 @@ jobs:
     needs: standalone
     strategy:
       matrix:
-        - image: "ubuntu2204"
-          tag: "latest"
+        config:
+          - image: "ubuntu2204"
+            tag: "latest"
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -77,5 +79,5 @@ jobs:
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
-          image: ${{ matrix.image }}
-          tag: ${{ matrix.tag }}
+          image: ${{ matrix.config.image }}
+          tag: ${{ matrix.config.tag }}
