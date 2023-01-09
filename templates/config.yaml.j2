@@ -22,6 +22,8 @@ node-taint:
 {% if rke2_disable and ( inventory_hostname|string() in groups[rke2_servers_group_name] ) %}
 disable: {{ rke2_disable }}
 {% endif %}
+{% if kubeproxy_disable and ( inventory_hostname|string() in groups[rke2_servers_group_name )%}
+disable-kube-proxy: {{ kubeproxy_disable }}
 {% if rke2_kube_apiserver_args is defined and inventory_hostname in groups[rke2_servers_group_name] %}
 kube-apiserver-arg: {{ rke2_kube_apiserver_args}}
 {% endif %}

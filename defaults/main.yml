@@ -198,3 +198,5 @@ rke2_drain_node_during_upgrade: false
 
 # Wait for all pods to be ready after rke2-service restart during rolling restart.
 rke2_wait_for_all_pods_to_be_ready: false
+
+disable-kube-proxy: false
