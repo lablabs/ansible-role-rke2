@@ -56,7 +56,7 @@
   when:
   - not rke2_drain_node_during_upgrade
   - hostvars[_host_item].inventory_hostname == inventory_hostname
-  - config_file_is_changed.changed
+  - config_file_is_changed is defined and config_file_is_changed.changed
 
 - name: Final steps
   ansible.builtin.include_tasks: summary.yml
