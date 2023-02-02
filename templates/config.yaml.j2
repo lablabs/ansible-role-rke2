@@ -2,6 +2,9 @@
 {% if active_server is defined %}
 server: https://{{ rke2_api_ip }}:9345
 {% endif %}
+{% if rke2_agent_token is defined %}
+agent-token: {{ rke2_agent_token }}
+{% endif %}
 token: {{ rke2_token }}
 data-dir: {{ rke2_data_path }}
 {% if inventory_hostname in groups[rke2_servers_group_name] %}

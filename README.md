@@ -327,6 +327,24 @@ This playbook will deploy RKE2 to a cluster with HA server(master) control-plane
 
 ```
 
+## Having separate token for agent nodes
+
+As per [server configuration documentation](https://docs.rke2.io/reference/server_config) it is possible to define an agent token, which will be used by agent nodes to connect to cluster, giving them less access to cluster than server nodes have.
+Following modifications to above configuration would be necessary:
+- remove `rke2_token` from global vars
+- add to `group_vars/masters.yml`:
+```yaml
+rke2_token: defaultSecret12345
+rke2_agent_token: agentSecret54321
+```
+- add to `group_vars/workers.yml`:
+```yaml
+rke2_token: agentSecret54321
+```
+
+While changing server token is problematic, agent token can be rotated at will, as long as servers and agents have the same value and the services
+(`rke2-server` and `rke2-agent`, as appropriate) have been restarted to make sure the processes use the new value.
+
 ## Troubleshooting
 
 ### Playbook stuck while starting the RKE2 service on agents
