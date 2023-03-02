@@ -88,6 +88,7 @@
     delete secret {{ item }}.node-password.rke2 -n kube-system 2>&1 || true
   args:
     executable: /bin/bash
+  changed_when: false
   with_items: "{{ groups[rke2_cluster_group_name] }}"
   when: rke2_etcd_snapshot_file and inventory_hostname != item and  ( "rke2-server.service" is not in ansible_facts.services )
 
