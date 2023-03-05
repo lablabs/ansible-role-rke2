@@ -6,7 +6,7 @@ driver:
   name: docker
 lint: |
   yamllint -s .
-  ansible-lint --exclude molecule/
+  ansible-lint --exclude molecule/ --exclude .github/
 platforms:
   - name: node1
     image: "geerlingguy/docker-${MOLECULE_IMAGE:-ubuntu2204}-ansible:${MOLECULE_TAG:-latest}"

@@ -94,6 +94,7 @@
   environment:
     INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
     INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
+  changed_when: false
   when: (rke2_version != ( installed_rke2_version.stdout | default({})) and (rke2_airgap_mode))
         or ((installed_rke2_version is not defined) and rke2_airgap_mode)
 
@@ -105,6 +106,7 @@
     INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
     INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
     INSTALL_RKE2_METHOD: "{{ rke2_method }}"
+  changed_when: false
   when: (rke2_version != ( installed_rke2_version.stdout | default({})) and (not rke2_airgap_mode))
         or ((installed_rke2_version is not defined) and (not rke2_airgap_mode))
 
