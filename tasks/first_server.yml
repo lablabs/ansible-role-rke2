@@ -31,8 +31,13 @@
     mode: 0644
   when: rke2_custom_registry_mirrors.0.endpoint | length > 0
 
+- name: Register if we need to do a etcd restore
+  ansible.builtin.set_fact:
+    do_etcd_restore: true
+  when: rke2_etcd_snapshot_file and ((ansible_facts.services['rke2-server.service'] is not defined) or (ansible_facts.services['rke2-server.service']['status'] == 'disabled'))
+
 - name: Restore etcd
-  when: rke2_etcd_snapshot_file and ( "rke2-server.service" is not in ansible_facts.services )
+  when: do_etcd_restore is defined
   block:
     - name: Create the RKE2 etcd snapshot dir
       ansible.builtin.file:
@@ -88,9 +93,9 @@
     delete secret {{ item }}.node-password.rke2 -n kube-system 2>&1 || true
   args:
     executable: /bin/bash
-  changed_when: false
   with_items: "{{ groups[rke2_cluster_group_name] }}"
-  when: rke2_etcd_snapshot_file and inventory_hostname != item and  ( "rke2-server.service" is not in ansible_facts.services )
+  changed_when: false
+  when: inventory_hostname != item and do_etcd_restore is defined
 
 - name: Set an Active Server variable
   ansible.builtin.set_fact:
