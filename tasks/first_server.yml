@@ -31,12 +31,17 @@
     mode: 0644
   when: rke2_custom_registry_mirrors.0.endpoint | length > 0
 
-- name: Register if we need to do a etcd restore
+- name: Register if we need to do a etcd restore from file
   ansible.builtin.set_fact:
     do_etcd_restore: true
   when: rke2_etcd_snapshot_file and ((ansible_facts.services['rke2-server.service'] is not defined) or (ansible_facts.services['rke2-server.service']['status'] == 'disabled'))
 
-- name: Restore etcd
+- name: Register if we need to do a etcd restore from s3
+  ansible.builtin.set_fact:
+    do_etcd_restore_from_s3: true
+  when: not rke2_etcd_snapshot_file and rke2_etcd_snapshot_s3_options is defined and rke2_etcd_snapshot_s3_options.access_key and rke2_etcd_snapshot_s3_options.secret_key and rke2_etcd_snapshot_s3_options.bucket and rke2_etcd_snapshot_s3_options.snapshot_name
+
+- name: Restore etcd from file
   when: do_etcd_restore is defined
   block:
     - name: Create the RKE2 etcd snapshot dir
@@ -60,6 +65,26 @@
       register: task_output # <- Registers the command output.
       changed_when: task_output.rc != 0 # <- Uses the return code to define when the task has changed.
 
+- name: Restore etcd from s3
+  when: do_etcd_restore_from_s3 is defined
+  block:
+    - name: Restore etcd from a s3 snapshot
+      ansible.builtin.shell: |
+        rke2 server \
+        --cluster-reset \
+        --etcd-s3 \
+        --cluster-reset-restore-path="{{ rke2_etcd_snapshot_s3_options.snapshot_name }}" \
+        --etcd-s3-bucket="{{ rke2_etcd_snapshot_s3_options.bucket }}" \
+        --etcd-s3-access-key="{{ rke2_etcd_snapshot_s3_options.access_key }}" \
+        --etcd-s3-secret-key="{{ rke2_etcd_snapshot_s3_options.secret_key }}" \
+        --etcd-s3-endpoint="{{ rke2_etcd_snapshot_s3_options.s3_endpoint }}" \
+        {{ ('--etcd-s3-region=' + rke2_etcd_snapshot_s3_options.region) if rke2_etcd_snapshot_s3_options.region is defined else '' }} \
+        {{ ('--etcd-s3-endpoint-ca=' + rke2_etcd_snapshot_s3_options.endpoint_ca) if rke2_etcd_snapshot_s3_options.endpoint_ca is defined else '' }} \
+        {{ ('--etcd-s3-folder=' + rke2_etcd_snapshot_s3_options.folder) if rke2_etcd_snapshot_s3_options.folder is defined else '' }} \
+        {{ ('--etcd-s3-skip-ssl-verify=' + rke2_etcd_snapshot_s3_options.skip_ssl_verify) if rke2_etcd_snapshot_s3_options.skip_ssl_verify is defined else '' }} \
+        --token {{ rke2_token }}
+      register: task_output # <- Registers the command output.
+      changed_when: task_output.rc != 0 # <- Uses the return code to define when the task has changed.
 - name: Start RKE2 service on the first server
   ansible.builtin.systemd:
     name: "rke2-server.service"
@@ -95,7 +120,7 @@
     executable: /bin/bash
   with_items: "{{ groups[rke2_cluster_group_name] }}"
   changed_when: false
-  when: inventory_hostname != item and do_etcd_restore is defined
+  when: inventory_hostname != item and (do_etcd_restore is defined or do_etcd_restore_from_s3 is defined)
 
 - name: Set an Active Server variable
   ansible.builtin.set_fact:

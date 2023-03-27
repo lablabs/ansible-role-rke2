@@ -177,10 +177,25 @@ rke2_etcd_snapshot_source_dir: etcd_snapshots
 # When the file name is defined, the etcd will be restored on initial deployment Ansible run.
 # The etcd will be restored only during the initial run, so even if you will leave the the file name specified,
 # the etcd will remain untouched during the next runs.
+# You can either use this or set options in `rke2_etcd_snapshot_s3_options`
 rke2_etcd_snapshot_file:
 
 # Etcd snapshot location
 rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
+
+# Etcd snapshot s3 options
+# Set either all these values or `rke2_etcd_snapshot_file` and `rke2_etcd_snapshot_source_dir`
+
+# rke2_etcd_snapshot_s3_options:
+  # s3_endpoint: "" # required
+  # access_key: "" # required
+  # secret_key: "" # required
+  # bucket: "" # required
+  # snapshot_name: "" # required.
+  # skip_ssl_verify: false # optional
+  # endpoint_ca: "" # optional. Can skip if using defaults
+  # region: "" # optional - defaults to us-east-1
+  # folder: "" # optional - defaults to top level of bucket
 
 # Override default containerd snapshotter
 rke2_snapshooter: overlayfs
