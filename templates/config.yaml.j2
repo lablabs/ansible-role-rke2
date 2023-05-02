@@ -1,6 +1,10 @@
 
 {% if active_server is defined %}
+{% if rke2_api_private_ip is defined %}
+server: https://{{ rke2_api_private_ip }}:9345
+{% else %}
 server: https://{{ rke2_api_ip }}:9345
+{% endif %}
 {% endif %}
 {% if rke2_agent_token is defined %}
 agent-token: {{ rke2_agent_token }}
