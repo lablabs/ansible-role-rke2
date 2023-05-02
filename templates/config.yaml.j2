@@ -36,6 +36,9 @@ node-label:
 {% endif %}
 snapshotter: {{ rke2_snapshooter }}
 node-name: {{ inventory_hostname }}
+{% if ( disable_kube_proxy | bool ) %}
+disable-kube-proxy: true
+{% endif %}
 {% if 'cis' in rke2_cis_profile %}
 profile: {{ rke2_cis_profile }}
 {%endif%}

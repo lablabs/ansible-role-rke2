@@ -103,8 +103,11 @@ rke2_install_script_dir: /var/tmp
 rke2_channel: stable
 
 # Do not deploy packaged components and delete any deployed components
-# Valid items: rke2-canal, rke2-coredns, rke2-ingress-nginx, rke2-kube-proxy, rke2-metrics-server
+# Valid items: rke2-canal, rke2-coredns, rke2-ingress-nginx, rke2-metrics-server
 rke2_disable:
+
+# Option to disable kube-proxy
+# disable_kube_proxy: true
 
 # Path to custom manifests deployed during the RKE2 installation
 # It is possible to use Jinja2 templating in the manifests

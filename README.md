@@ -143,8 +143,11 @@ rke2_install_script_dir: /var/tmp
 rke2_channel: stable
 
 # Do not deploy packaged components and delete any deployed components
-# Valid items: rke2-canal, rke2-coredns, rke2-ingress-nginx, rke2-kube-proxy, rke2-metrics-server
+# Valid items: rke2-canal, rke2-coredns, rke2-ingress-nginx, rke2-metrics-server
 rke2_disable:
+
+# Option to disable kube-proxy
+# disable_kube_proxy: true
 
 # Path to custom manifests deployed during the RKE2 installation
 # It is possible to use Jinja2 templating in the manifests
@@ -196,7 +199,6 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
   # endpoint_ca: "" # optional. Can skip if using defaults
   # region: "" # optional - defaults to us-east-1
   # folder: "" # optional - defaults to top level of bucket
-
 # Override default containerd snapshotter
 rke2_snapshooter: overlayfs
 
