@@ -110,7 +110,7 @@ rke2_channel: stable
 rke2_disable:
 
 # Option to disable kube-proxy
-# disable_kube_proxy: true
+disable_kube_proxy: true
 
 # Path to custom manifests deployed during the RKE2 installation
 # It is possible to use Jinja2 templating in the manifests

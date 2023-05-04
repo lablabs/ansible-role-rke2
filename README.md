@@ -58,13 +58,16 @@ rke2_ha_mode_kubevip: false
 # Or if the keepalived is disabled, use IP address of your LB.
 rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
 
+# optional option for RKE2 Server to listen on a private IP address on port 9345
+# rke2_api_private_ip:
+
 # optional option for kubevip IP subnet
 # rke2_api_cidr: 24
 
 # optional option for kubevip
 # rke2_interface: eth0
 
-# optiononal option for kubevip load balancer IP range
+# optional option for kubevip load balancer IP range
 # rke2_loadbalancer_ip_range: 192.168.1.50-192.168.1.100
 
 # Install kubevip cloud provider if rke2_ha_mode_kubevip is true
@@ -147,7 +150,7 @@ rke2_channel: stable
 rke2_disable:
 
 # Option to disable kube-proxy
-# disable_kube_proxy: true
+disable_kube_proxy: true
 
 # Path to custom manifests deployed during the RKE2 installation
 # It is possible to use Jinja2 templating in the manifests
