@@ -10,4 +10,3 @@
       loop:
         - wget
         - curl
-        - apparmor-parser
