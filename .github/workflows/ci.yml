@@ -1,18 +1,6 @@
 name: molecule test
 
 on:
-  push:
-    branches:
-        - hotfix/**
-        - feat**
-        - fix/**
-    paths:
-      - 'defaults/**'
-      - 'handlers/**'
-      - 'molecule/**'
-      - 'tasks/**'
-      - 'templates/**'
-      - 'vars/**'
   pull_request:
     branches:
         - main
