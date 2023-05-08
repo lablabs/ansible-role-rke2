@@ -1,37 +1,36 @@
 name: molecule test
 
 on:
-    pull_request:
-        branches:
-            - main
-        types: [opened, synchronize, reopened]
-        paths:
-          - 'defaults/**'
-          - 'handlers/**'
-          - 'molecule/**'
-          - 'tasks/**'
-          - 'templates/**'
-          - 'vars/**'
-    schedule:
-        - cron: '0 1 1 * *'
-    workflow_dispatch:
+  push:
+  # pull_request:
+  #     branches:
+  #         - main
+  #     types: [opened, synchronize, reopened]
+  #     paths:
+  #       - 'defaults/**'
+  #       - 'handlers/**'
+  #       - 'molecule/**'
+  #       - 'tasks/**'
+  #       - 'templates/**'
+  #       - 'vars/**'
+  schedule:
+      - cron: '0 1 1 * *'
+  workflow_dispatch:
 
 jobs:
   standalone:
     name: Single node setup
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
+      fail-fast: ${{ !contains(github.event_name, 'pull_request') }}
       matrix:
         config:
           - image: "rockylinux8"
-            tag: "latest"
-            cgroup_mode: "private"
-          # - image: "ubuntu2004"
-          #   tag: "latest"
-          #   cgroup_mode: "private"
+            cgroup_mode: "host"
+            volumes: "rw"
           - image: "ubuntu2204"
-            tag: "latest"
-            cgroup_mode: "private"
+            cgroup_mode: "host"
+            volumes: "rw"
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -44,7 +43,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies
-        run: pip3 install ansible ansible-lint docker molecule[docker] yamllint
+        run: pip3 install ansible docker molecule molecule-plugins[docker] "requests<2.29.2"
 
       - name: Run Molecule tests
         run: molecule test
@@ -53,19 +52,19 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_IMAGE: ${{ matrix.config.image }}
-          MOLECULE_TAG: ${{ matrix.config.tag }}
           MOLECULE_DOCKER_CGROUPS_MODE: ${{ matrix.config.cgroup_mode }}
+          MOLECULE_DOCKER_VOLUMES: ${{ matrix.config.volumes }}
 
   cluster:
     name: Cluster setup
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: standalone
     strategy:
       matrix:
         config:
           - image: "ubuntu2204"
-            tag: "latest"
-            cgroup_mode: "private"
+            cgroup_mode: "host"
+            volumes: "rw"
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -78,7 +77,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies
-        run: pip3 install ansible ansible-lint docker molecule[docker] yamllint
+        run: pip3 install ansible docker molecule molecule-plugins[docker] "requests<2.29.2"
 
       - name: Run Molecule tests
         run: molecule test
