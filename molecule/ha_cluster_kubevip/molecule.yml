@@ -1,7 +1,7 @@
 ---
 dependency:
   name: 'shell'
-  command: ansible-playbook ${MOLECULE_PROJECT_DIRECTORY}/molecule/ha_cluster/dependency.yml -i localhost,
+  command: ansible-playbook ${MOLECULE_PROJECT_DIRECTORY}/molecule/ha_cluster_kubevip/dependency.yml -i localhost,
 driver:
   name: docker
 platforms:
@@ -69,11 +69,10 @@ provisioner:
         rke2_type: agent
         k8s_node_label:
           - worker=true
-
 verifier:
   name: ansible
 scenario:
-  name: ha_cluster
+  name: ha_cluster_kubevip
   test_sequence:
     - dependency
     - cleanup
