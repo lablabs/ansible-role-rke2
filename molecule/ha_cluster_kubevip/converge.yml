@@ -6,7 +6,7 @@
     rke2_server_taint: true
     rke2_cni: calico
     rke2_api_ip: 192.168.123.100
-    rke2_version: v1.27.1+rke2r1
+    rke2_version: v1.22.9+rke2r1
     rke2_cis_profile: cis-1.23
     rke2_snapshooter: native
     rke2_ha_mode_keepalived: false
