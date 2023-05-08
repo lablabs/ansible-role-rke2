@@ -8,9 +8,9 @@ platforms:
   - name: node1
     image: "geerlingguy/docker-${MOLECULE_IMAGE:-ubuntu2204}-ansible:latest"
     volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-ro}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
-    cgroupns_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"private"} # Use "private" for cgroup v1 and "host" for cgroup v2
-    command: ${MOLECULE_DOCKER_COMMAND:-"/usr/sbin/init"}
+      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-rw}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
+    cgroupns_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"host"} # Use "private" for cgroup v1 and "host" for cgroup v2
+    command: /usr/sbin/init
     privileged: true
     pre_build_image: true
     networks:
@@ -21,9 +21,9 @@ platforms:
   - name: node2
     image: "geerlingguy/docker-${MOLECULE_IMAGE:-ubuntu2204}-ansible:latest"
     volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-ro}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
-    cgroupns_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"private"} # Use "private" for cgroup v1 and "host" for cgroup v2
-    command: ${MOLECULE_DOCKER_COMMAND:-"/usr/sbin/init"}
+      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-rw}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
+    cgroupns_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"host"} # Use "private" for cgroup v1 and "host" for cgroup v2
+    command: /usr/sbin/init
     privileged: true
     pre_build_image: true
     networks:
