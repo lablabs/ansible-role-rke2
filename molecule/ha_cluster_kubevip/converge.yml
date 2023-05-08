@@ -1,0 +1,19 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+  vars:
+    rke2_server_taint: true
+    rke2_cni: calico
+    rke2_api_ip: 192.168.123.100
+    rke2_version: v1.27.1+rke2r1
+    rke2_cis_profile: cis-1.23
+    rke2_snapshooter: native
+    rke2_ha_mode_keepalived: false
+    rke2_ha_mode: true
+    rke2_ha_mode_kubevip: true
+    rke2_kubevip_cloud_provider_enable: true
+    rke2_kubevip_svc_enable: true
+    rke2_loadbalancer_ip_range: 192.168.123.1-192.168.123.50
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"

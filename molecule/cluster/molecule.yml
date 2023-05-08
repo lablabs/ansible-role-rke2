@@ -1,7 +1,7 @@
 ---
 dependency:
   name: 'shell'
-  command: ansible-playbook ${MOLECULE_PROJECT_DIRECTORY}/molecule/default/dependency.yml -i localhost,
+  command: ansible-playbook ${MOLECULE_PROJECT_DIRECTORY}/molecule/cluster/dependency.yml -i localhost,
 driver:
   name: docker
 platforms:
