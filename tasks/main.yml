@@ -54,7 +54,6 @@
   loop_control:
     loop_var: _host_item
   when:
-  - not rke2_drain_node_during_upgrade
   - hostvars[_host_item].inventory_hostname == inventory_hostname
   - config_file_is_changed is defined and config_file_is_changed.changed
 
