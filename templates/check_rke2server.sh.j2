@@ -4,6 +4,6 @@ errorExit() {
     exit 1
 }
 curl --silent --max-time 2 --insecure https://localhost:9345/ -o /dev/null || errorExit "Error GET https://localhost:9345/"
-if ip addr | grep -q {{rke2_api_ip}}; then
+if ip addr | grep -wq {{rke2_api_ip}}; then
     curl --silent --max-time 2 --insecure https://{{rke2_api_ip}}:9345/ -o /dev/null || errorExit "Error GET https://{{rke2_api_ip}}:9345/"
 fi
