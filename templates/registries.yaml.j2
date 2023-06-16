@@ -1,3 +1,4 @@
+{% if rke2_custom_registry_mirrors | length > 0 %}
 mirrors:
 {% for mirror in rke2_custom_registry_mirrors %}
   {{ mirror.name }}:
@@ -10,7 +11,8 @@ mirrors:
       {{ mirror.rewrite }}
 {% endif %}
 {% endfor %}
-{% if rke2_custom_registry_configs is defined %}
+{% endif %}
+{% if rke2_custom_registry_mirrors | length > 0 %}
 configs:
 {% for config in rke2_custom_registry_configs %}
   {{ config.endpoint }}:

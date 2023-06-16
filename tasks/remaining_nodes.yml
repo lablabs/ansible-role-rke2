@@ -34,7 +34,7 @@
     owner: root
     group: root
     mode: 0644
-  when: rke2_custom_registry_mirrors.0.endpoint | length > 0
+  when: (rke2_custom_registry_mirrors | length > 0 or rke2_custom_registry_configs | length > 0)
   register: config_file_is_changed
 
 - name: Start RKE2 service on the rest of the nodes
