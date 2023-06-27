@@ -67,8 +67,10 @@ rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ip
 # optional option for kubevip
 # rke2_interface: eth0
 
-# optional option for kubevip load balancer IP range
-# rke2_loadbalancer_ip_range: 192.168.1.50-192.168.1.100
+# kubevip load balancer IP range
+rke2_loadbalancer_ip_range: {}
+#  range-global: 192.168.1.50-192.168.1.100
+#  cidr-finance: 192.168.0.220/29,192.168.0.230/29
 
 # Install kubevip cloud provider if rke2_ha_mode_kubevip is true
 rke2_kubevip_cloud_provider_enable: true
