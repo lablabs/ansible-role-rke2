@@ -7,6 +7,9 @@
 
 [<img src="https://lablabs.io/static/ll-logo.png" width=350px>](https://lablabs.io/)
 
+> [!WARNING]  
+> Until the following [PR](https://github.com/ansible/galaxy-importer/pull/241) is resolved we are unable to publish new releases to new Ansible Galaxy (galaxy-ng)
+
 This Ansible role will deploy [RKE2](https://docs.rke2.io/) Kubernetes Cluster. RKE2 will be installed using the tarball method.
 
 The Role can install the RKE2 in 3 modes:
