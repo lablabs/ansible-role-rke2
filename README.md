@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/github/license/lablabs/ansible-role-rke2)](https://github.com/lablabs/ansible-role-rke2/blob/main/LICENSE)  
 
 > [!WARNING]  
-> Until the following [PR](https://github.com/ansible/galaxy-importer/pull/241) is resolved we are unable to publish new releases to new Ansible Galaxy (galaxy-ng)
+> Until the following [PR](https://github.com/ansible/galaxy-importer/pull/241) is resolved we are unable to publish new releases to Ansible Galaxy (galaxy-ng)
 
 [<img src="https://lablabs.io/static/ll-logo.png" width=350px>](https://lablabs.io/)
 
