@@ -1,6 +1,5 @@
 galaxy_info:
   role_name: rke2
-  namespace: lablabs
   author: Michal Muransky
   description: This Ansible Role will deploy Rancher RKE2 Kubernetes
   company: Labyrinth Labs
