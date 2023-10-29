@@ -14,7 +14,7 @@
     dest: /etc/rancher/rke2/config.yaml
     owner: root
     group: root
-    mode: 0644
+    mode: 0600
   register: config_file_is_changed
 
 - name: Copy Containerd Registry Configuration file
@@ -23,7 +23,7 @@
     dest: /etc/rancher/rke2/registries.yaml
     owner: root
     group: root
-    mode: 0644
+    mode: 0600
   when: rke2_custom_registry_mirrors.0.endpoint | length > 0
   register: config_file_is_changed
 
