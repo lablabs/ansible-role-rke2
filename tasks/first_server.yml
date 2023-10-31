@@ -137,10 +137,6 @@
   changed_when: false
   register: node_names
 
-- debug: var=node_names
-
-- debug: var=groups[rke2_cluster_group_name]
-
 - name: Restore etcd - remove old nodes
   ansible.builtin.shell: |
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
