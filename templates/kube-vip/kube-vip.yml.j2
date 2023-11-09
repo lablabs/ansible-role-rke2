@@ -4,7 +4,6 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/name: kube-vip-ds
-    app.kubernetes.io/version: v0.5.5
   name: kube-vip-ds
   namespace: kube-system
 spec:
@@ -16,7 +15,6 @@ spec:
       creationTimestamp: null
       labels:
         app.kubernetes.io/name: kube-vip-ds
-        app.kubernetes.io/version: v0.5.5
     spec:
       affinity:
         nodeAffinity:
@@ -64,8 +62,7 @@ spec:
           value: "{{ rke2_api_ip }}"
         - name: prometheus_server
           value: :2112
-        image: ghcr.io/kube-vip/kube-vip:v0.5.5
-        imagePullPolicy: Always
+        image: "{{ rke2_kubevip_image }}"
         name: kube-vip
         resources: {}
         securityContext:
@@ -81,8 +78,3 @@ spec:
       - effect: NoExecute
         operator: Exists
   updateStrategy: {}
-status:
-  currentNumberScheduled: 0
-  desiredNumberScheduled: 0
-  numberMisscheduled: 0
-  numberReady: 0

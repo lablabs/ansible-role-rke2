@@ -38,6 +38,9 @@ rke2_kubevip_cloud_provider_enable: true
 # Enable kube-vip to watch Services of type LoadBalancer
 rke2_kubevip_svc_enable: true
 
+# Specify which image is used for kube-vip container
+rke2_kubevip_image: ghcr.io/kube-vip/kube-vip:v0.5.5
+
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
 
