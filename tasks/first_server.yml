@@ -100,7 +100,23 @@
     enabled: false
     masked: true
 
-- name: Wait for the first server be ready
+- name: Wait for the first server be ready - no CNI
+  ansible.builtin.shell: |
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get node "{{ inventory_hostname }}" -o jsonpath='{range .status.conditions[*]}{.message}{"\n"}{end}'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: node_status
+  until:
+  - '"kubelet has sufficient memory available"  in node_status.stdout_lines'
+  - '"kubelet has no disk pressure"  in node_status.stdout_lines'
+  - '"kubelet has sufficient PID available"  in node_status.stdout_lines'
+  - '"cni plugin not initialized" in node_status.stdout'
+  retries: 100
+  delay: 15
+  when: rke2_cni == 'none'
+
+- name: Wait for the first server be ready - with CNI
   ansible.builtin.shell: |
     set -o pipefail
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ inventory_hostname }}"
@@ -112,6 +128,7 @@
     '" Ready "  in first_server.stdout'
   retries: 40
   delay: 15
+  when: rke2_cni != 'none'
 
 - name: Restore etcd - remove old <node>.node-password.rke2 secrets
   ansible.builtin.shell: |
