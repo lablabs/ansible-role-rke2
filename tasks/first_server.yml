@@ -111,7 +111,7 @@
   - '"kubelet has sufficient memory available"  in node_status.stdout_lines'
   - '"kubelet has no disk pressure"  in node_status.stdout_lines'
   - '"kubelet has sufficient PID available"  in node_status.stdout_lines'
-  - '"cni plugin not initialized" in node_status.stdout'
+  - ('"cni plugin not initialized" in node_status.stdout' or '"kubelet is posting ready status." in node_status.stdout')
   retries: 100
   delay: 15
   when: rke2_cni == 'none'
