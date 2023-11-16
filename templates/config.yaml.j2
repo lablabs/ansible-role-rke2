@@ -56,3 +56,15 @@ profile: {{ rke2_cis_profile }}
 {{ option }}
 {% endfor %}
 {% endif %}
+{% if ( rke2_kube_controller_manager_arg is defined ) %}
+kube-controller-manager-arg:
+{% for argument in rke2_kube_controller_manager_arg %}
+  - {{ argument }}
+{% endfor %}
+{% endif %}
+{% if ( rke2_kube_scheduler_arg is defined ) %}
+kube-scheduler-arg:
+{% for argument in rke2_kube_scheduler_arg %}
+  - {{ argument }}
+{% endfor %}
+{% endif %}
