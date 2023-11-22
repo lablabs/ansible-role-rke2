@@ -21,12 +21,6 @@
   when:
     - rke2_ha_mode | bool
 
-- name: Prepare very first server node in the cluster
-  ansible.builtin.include_tasks: first_server.yml
-  when:
-    - inventory_hostname == groups[rke2_servers_group_name].0
-    - active_server is not defined
-
 - name: Copy kube-vip manifests to the masternode
   ansible.builtin.include_tasks: kubevip.yml
   when:
@@ -34,6 +28,12 @@
     - rke2_ha_mode | bool
     - rke2_ha_mode_kubevip | bool
     - not rke2_ha_mode_keepalived | bool
+
+- name: Prepare very first server node in the cluster
+  ansible.builtin.include_tasks: first_server.yml
+  when:
+    - inventory_hostname == groups[rke2_servers_group_name].0
+    - active_server is not defined
 
 - name: Prepare and join remaining nodes of the cluster
   ansible.builtin.include_tasks: remaining_nodes.yml
