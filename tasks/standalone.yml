@@ -15,7 +15,7 @@
     owner: root
     group: root
     mode: 0600
-  register: config_file_is_changed
+  register: rke2_config_file_is_changed
 
 - name: Copy Containerd Registry Configuration file
   ansible.builtin.template:
@@ -25,7 +25,7 @@
     group: root
     mode: 0600
   when: rke2_custom_registry_mirrors.0.endpoint | length > 0
-  register: config_file_is_changed
+  register: containerd_config_file_is_changed
 
 - name: Start RKE2 service on the server node
   ansible.builtin.systemd:
