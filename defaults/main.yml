@@ -218,6 +218,16 @@ rke2_agents_group_name: workers
 #   - "option=value"
 #   - "HTTP_PROXY=http://your-proxy.example.com:8888"
 
+# (Optional) Customize default kube-controller-manager arguments
+# This functionality allows appending the argument if it is not present by default or replacing it if it already exists.
+# rke2_kube_controller_manager_arg:
+#   - "bind-address=0.0.0.0"
+
+# (Optional) Customize default kube-scheduler arguments
+# This functionality allows appending the argument if it is not present by default or replacing it if it already exists.
+# rke2_kube_scheduler_arg:
+#   - "bind-address=0.0.0.0"
+
 # Cordon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
 rke2_drain_node_during_upgrade: false
 
