@@ -68,3 +68,6 @@ kube-scheduler-arg:
   - {{ argument }}
 {% endfor %}
 {% endif %}
+{% if (rke2_debug | bool ) %}
+debug: true
+{% endif %}
