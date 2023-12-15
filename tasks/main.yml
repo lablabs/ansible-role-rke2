@@ -48,6 +48,7 @@
     loop_var: _host_item
   when:
     - hostvars[_host_item].inventory_hostname == inventory_hostname
+    - installed_version != "not installed"
     - rke2_version != running_version
 
 - name: Rolling restart when config files change
@@ -57,6 +58,7 @@
     loop_var: _host_item
   when:
     - hostvars[_host_item].inventory_hostname == inventory_hostname
+    - installed_version != "not installed"
     # Should not restart if the version changed triggering a drain restart
     - rke2_version == running_version
     - >
