@@ -21,7 +21,7 @@
 
 - name: Restart RKE2 service on {{ inventory_hostname }}
   ansible.builtin.service:
-    name: "rke2-{{ rke2_type }}.service"
+    name: "{{ rke2_service_name }}"
     state: restarted
 
 - name: Wait for all nodes to be ready again

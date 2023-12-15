@@ -29,7 +29,7 @@
 
 - name: Start RKE2 service on the server node
   ansible.builtin.systemd:
-    name: "rke2-{{ rke2_type }}.service"
+    name: "{{ rke2_service_name }}"
     state: started
     enabled: true
   environment:
