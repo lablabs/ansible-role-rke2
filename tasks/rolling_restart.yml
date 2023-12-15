@@ -23,6 +23,7 @@
   ansible.builtin.service:
     name: "{{ rke2_service_name }}"
     state: restarted
+  notify: "Service (re)started"
 
 - name: Wait for all nodes to be ready again
   ansible.builtin.shell: |
