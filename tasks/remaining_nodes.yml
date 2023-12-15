@@ -39,7 +39,7 @@
 
 - name: Start RKE2 service on the rest of the nodes
   ansible.builtin.systemd:
-    name: "rke2-{{ rke2_type }}.service"
+    name: "{{ rke2_service_name }}"
     state: started
     enabled: true
   retries: 10
