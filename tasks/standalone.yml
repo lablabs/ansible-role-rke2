@@ -15,7 +15,7 @@
     owner: root
     group: root
     mode: 0600
-  register: rke2_config_file_is_changed
+  notify: "Config file changed"
 
 - name: Copy Containerd Registry Configuration file
   ansible.builtin.template:
@@ -25,7 +25,7 @@
     group: root
     mode: 0600
   when: rke2_custom_registry_mirrors.0.endpoint | length > 0
-  register: containerd_config_file_is_changed
+  notify: "Config file changed"
 
 - name: Start RKE2 service on the server node
   ansible.builtin.systemd:
@@ -34,6 +34,7 @@
     enabled: true
   environment:
     RKE2_TOKEN: "{{ rke2_token }}"
+  notify: "Service (re)started"
 
 - name: Wait for the first server be ready - no CNI
   ansible.builtin.shell: |

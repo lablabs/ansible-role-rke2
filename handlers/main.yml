@@ -12,3 +12,11 @@
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
+
+- name: Config file changed
+  ansible.builtin.set_fact:
+    rke2_restart_needed: true
+
+- name: Service (re)started
+  ansible.builtin.set_fact:
+    rke2_restart_needed: false
