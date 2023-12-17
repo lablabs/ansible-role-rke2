@@ -62,6 +62,12 @@ spec:
           value: "{{ rke2_api_ip }}"
         - name: prometheus_server
           value: :2112
+{% if rke2_kubevip_args  is defined %}
+{% for item in rke2_kubevip_args %}
+        - name: {{ item.param }}
+          value: {{ item.value }}
+{% endfor %}
+{% endif %}
         image: "{{ rke2_kubevip_image }}"
         name: kube-vip
         resources: {}

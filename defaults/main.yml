@@ -39,7 +39,15 @@ rke2_kubevip_cloud_provider_enable: true
 rke2_kubevip_svc_enable: true
 
 # Specify which image is used for kube-vip container
-rke2_kubevip_image: ghcr.io/kube-vip/kube-vip:v0.5.5
+rke2_kubevip_image: ghcr.io/kube-vip/kube-vip:v0.6.4
+
+# (Optional) A list of kube-vip flags
+# All flags can be found here https://kube-vip.io/docs/installation/flags/
+# rke2_kubevip_args: []
+# - param: lb_enable
+#   value: true
+# - param: lb_port
+#   value: 6443
 
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
