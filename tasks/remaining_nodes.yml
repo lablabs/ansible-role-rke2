@@ -25,7 +25,7 @@
     owner: root
     group: root
     mode: 0600
-  register: rke2_config_file_is_changed
+  notify: "Config file changed"
 
 - name: Copy Containerd Registry Configuration file
   ansible.builtin.template:
@@ -35,11 +35,11 @@
     group: root
     mode: 0600
   when: (rke2_custom_registry_mirrors | length > 0 or rke2_custom_registry_configs | length > 0)
-  register: containerd_config_file_is_changed
+  notify: "Config file changed"
 
 - name: Start RKE2 service on the rest of the nodes
   ansible.builtin.systemd:
-    name: "rke2-{{ rke2_type }}.service"
+    name: "{{ rke2_service_name }}"
     state: started
     enabled: true
   retries: 10
@@ -48,6 +48,7 @@
   until: result is not failed
   environment:
     RKE2_TOKEN: "{{ rke2_token }}"
+  notify: "Service (re)started"
 
 - name: Mask other RKE2 service on the rest of the nodes
   ansible.builtin.systemd:

@@ -74,6 +74,50 @@
     path: /usr/local
   register: usr_local
 
+- name: Set RKE2 bin path
+  ansible.builtin.set_fact:
+    rke2_bin_path: "{{ '/usr/local/bin/rke2' if usr_local.stat.writeable == True else ' /opt/rke2/bin/rke2' }}"
+
+- name: Check RKE2 version
+  ansible.builtin.shell: |
+    set -euo pipefail
+
+    rke2_bin_path="{{ rke2_bin_path }}"
+    rke2_service_name="{{ rke2_service_name }}"
+    rke2_version="{{ rke2_version }}"
+
+    if [ -f "$rke2_bin_path" ]; then
+      installed_version="$($rke2_bin_path --version | grep -E "rke2 version" | awk '{print $3}')"
+    else
+      installed_version="not installed"
+    fi
+
+    if systemctl is-active --quiet $rke2_service_name && rke2_service_pid=$(systemctl show $rke2_service_name --property MainPID --value); then
+      rke2_bin_path="$(realpath "/proc/$rke2_service_pid/exe")"
+    fi
+
+    # Linux appends the target of removed proc exe with ' (deleted)', making the path unavailable.
+    if [ -f "$rke2_bin_path" ]; then
+      running_version="$($rke2_bin_path --version | grep -E "rke2 version" | awk '{print $3}')"
+    elif [ "$installed_version" = "not installed" ]; then
+      running_version="$rke2_version"
+    else
+      running_version="outdated"
+    fi
+
+    echo "{\"installed_version\":\"$installed_version\",\"running_version\":\"$running_version\"}"
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: versions_check
+
+- name: Set RKE2 versions
+  ansible.builtin.set_fact:
+    installed_version: "{{ versions.installed_version }}"
+    running_version: "{{ versions.running_version }}"
+  vars:
+    versions: "{{ versions_check.stdout | from_json }}"
+
 - name: Run AirGap RKE2 script
   ansible.builtin.command:
     cmd: "{{ rke2_install_script_dir }}/rke2.sh"
@@ -81,8 +125,7 @@
     INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
     INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
   changed_when: false
-  when: (rke2_version != ( installed_rke2_version.stdout | default({})) and (rke2_airgap_mode))
-        or ((installed_rke2_version is not defined) and rke2_airgap_mode)
+  when: rke2_version != installed_version and rke2_airgap_mode
 
 - name: Run RKE2 script
   ansible.builtin.command:
@@ -93,22 +136,7 @@
     INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
     INSTALL_RKE2_METHOD: "{{ rke2_method }}"
   changed_when: false
-  when: (rke2_version != ( installed_rke2_version.stdout | default({})) and (not rke2_airgap_mode))
-        or ((installed_rke2_version is not defined) and (not rke2_airgap_mode))
-
-- name: Set RKE2 bin path
-  ansible.builtin.set_fact:
-    rke2_bin_path: "{{ '/usr/local/bin/rke2' if usr_local.stat.writeable == True else ' /opt/rke2/bin/rke2' }}"
-
-- name: Check RKE2 version
-  ansible.builtin.shell: |
-    set -o pipefail
-    {{ rke2_bin_path }} --version | grep -E "rke2 version" | awk '{print $3}'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  register: installed_rke2_version
-  when: '"rke2-server.service" in ansible_facts.services'
+  when: rke2_version != installed_version and not rke2_airgap_mode
 
 - name: Copy Custom Manifests
   ansible.builtin.template:

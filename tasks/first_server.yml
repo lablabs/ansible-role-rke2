@@ -20,7 +20,7 @@
     owner: root
     group: root
     mode: 0600
-  register: rke2_config_file_is_changed
+  notify: "Config file changed"
 
 - name: Copy Containerd Registry Configuration file
   ansible.builtin.template:
@@ -30,7 +30,7 @@
     group: root
     mode: 0600
   when: (rke2_custom_registry_mirrors | length > 0 or rke2_custom_registry_configs | length > 0)
-  register: containerd_config_file_is_changed
+  notify: "Config file changed"
 
 - name: Register if we need to do a etcd restore from file
   ansible.builtin.set_fact:
@@ -86,6 +86,7 @@
         --token {{ rke2_token }}
       register: task_output # <- Registers the command output.
       changed_when: task_output.rc != 0 # <- Uses the return code to define when the task has changed.
+
 - name: Start RKE2 service on the first server
   ansible.builtin.systemd:
     name: "rke2-server.service"
@@ -93,6 +94,7 @@
     enabled: true
   environment:
     RKE2_TOKEN: "{{ rke2_token }}"
+  notify: "Service (re)started"
 
 - name: Mask RKE2 agent service on the first server
   ansible.builtin.systemd:
