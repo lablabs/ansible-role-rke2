@@ -26,6 +26,8 @@ rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ip
 
 # optional option for kubevip
 # rke2_interface: eth0
+# optional option for IPv4/IPv6 addresses to advertise for node
+# rke2_bind_address: "{{ hostvars[inventory_hostname]['ansible_' + rke2_interface]['ipv4']['address'] }}"
 
 # kubevip load balancer IP range
 rke2_loadbalancer_ip_range: {}
@@ -98,7 +100,7 @@ rke2_airgap_copy_sourcepath: local_artifacts
 # (File extensions in the list and on the real files must be retained)
 rke2_airgap_copy_additional_tarballs: []
 
-# Destination for airgap additional images tarballs ( see https://docs.rke2.io/install/airgap/#tarball-method )
+# Destination for airgap additional images tarballs ( see https://docs.rke2.io/install/airgap#tarball-method )
 rke2_tarball_images_path: "{{ rke2_data_path }}/agent/images"
 
 # Architecture to be downloaded, currently there are releases for amd64 and s390x
@@ -203,17 +205,19 @@ rke2_agents_group_name: workers
 # k8s_node_label: []
 
 # (Optional) Additional RKE2 server configuration options
-# You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-rke2-server-nodes
+# You could find the flags at https://docs.rke2.io/reference/server_config
 # rke2_server_options:
 #   - "option: value"
+#   - "node-ip: {{ rke2_bind_address }}"  # ex: (agent/networking) IPv4/IPv6 addresses to advertise for node
 
 # (Optional) Additional RKE2 agent configuration options
-# You could find the flags at https://docs.rke2.io/install/install_options/install_options/#configuring-linux-rke2-agent-nodes
+# You could find the flags at https://docs.rke2.io/reference/linux_agent_config
 # rke2_agent_options:
 #   - "option: value"
+#   - "node-ip: {{ rke2_bind_address }}"  # ex: (agent/networking) IPv4/IPv6 addresses to advertise for node
 
 # (Optional) Configure Proxy
-# All flags can be found here https://github.com/rancher/rke2/blob/master/docs/advanced.md#configuring-an-http-proxy
+# All flags can be found here https://docs.rke2.io/advanced#configuring-an-http-proxy
 # rke2_environment_options: []
 #   - "option=value"
 #   - "HTTP_PROXY=http://your-proxy.example.com:8888"
