@@ -298,6 +298,10 @@ rke2_wait_for_all_pods_to_be_ready: false
 
 # Enable debug mode (rke2-service)
 rke2_debug: false
+
+# (Optional) Customize default kubelet arguments
+# rke_kubelet_arg:
+#   - "--system-reserved=cpu=100m,memory=100Mi"
 ```
 
 ## Inventory file example
