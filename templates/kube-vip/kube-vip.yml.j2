@@ -62,6 +62,8 @@ spec:
           value: "{{ rke2_api_ip }}"
         - name: prometheus_server
           value: :2112
+        - name: lb_enable
+          value: "{{ rke2_kubevip_IPVS_lb_enable }}"
 {% if rke2_kubevip_args  is defined %}
 {% for item in rke2_kubevip_args %}
         - name: {{ item.param }}

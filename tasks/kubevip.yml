@@ -29,3 +29,10 @@
     - "templates/kube-vip/kube-vip-cloud-*.j2"
   when:
     - rke2_kubevip_cloud_provider_enable | bool
+
+- name: Enable IPVS kernel module
+  ansible.builtin.modprobe:
+    name: ip_vs
+    state: present
+  when:
+    - rke2_kubevip_IPVS_lb_enable | bool
