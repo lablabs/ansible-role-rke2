@@ -31,7 +31,7 @@
     - rke2_kubevip_cloud_provider_enable | bool
 
 - name: Enable IPVS kernel module
-  ansible.builtin.modprobe:
+  community.general.modprobe:
     name: ip_vs
     state: present
   when:
