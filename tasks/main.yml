@@ -21,6 +21,19 @@
   when:
     - rke2_ha_mode | bool
 
+- name: Enable IPVS kernel module
+  community.general.modprobe:
+    name: ip_vs
+    state: present
+    persistent: present
+  when:
+    - rke2_kubevip_IPVS_lb_enable | bool
+    - inventory_hostname in groups[rke2_servers_group_name]
+    - rke2_ha_mode | bool
+    - rke2_ha_mode_kubevip | bool
+    - not rke2_ha_mode_keepalived | bool
+
+
 - name: Copy kube-vip manifests to the masternode
   ansible.builtin.include_tasks: kubevip.yml
   when:
