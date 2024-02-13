@@ -85,6 +85,11 @@ rke2_kubevip_image: ghcr.io/kube-vip/kube-vip:v0.6.4
 # Specify which image is used for kube-vip cloud provider container
 rke2_kubevip_cloud_provider_image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.4
 
+# Enable kube-vip IPVS load balancer for control plane
+rke2_kubevip_ipvs_lb_enable: false
+# Enable layer 4 load balancing for control plane using IPVS kernel module
+# Must use kube-vip version 0.4.0 or later
+
 # (Optional) A list of kube-vip flags
 # All flags can be found here https://kube-vip.io/docs/installation/flags/
 # rke2_kubevip_args: []
