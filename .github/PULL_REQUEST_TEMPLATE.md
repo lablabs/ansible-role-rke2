@@ -10,7 +10,7 @@ Please include a summary of the change and which issue is fixed.
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] This change requires a documentation update
-- [ ] Small minor change not affecting the Ansible Role code (Github Actions Workflow, Documentation etc.)
+- [ ] Small minor change not affecting the Ansible Role code (GitHub Actions Workflow, Documentation etc.)
 
 ## How Has This Been Tested?
 <!---
