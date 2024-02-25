@@ -297,7 +297,7 @@ rke2_wait_for_all_pods_to_be_ready: false
 rke2_debug: false
 
 # (Optional) Customize default kubelet arguments
-# rke_kubelet_arg:
+# rke2_kubelet_arg:
 #   - "--system-reserved=cpu=100m,memory=100Mi"
 ```
 

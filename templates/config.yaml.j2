@@ -71,9 +71,9 @@ kube-scheduler-arg:
 {% if (rke2_debug | bool ) %}
 debug: true
 {% endif %}
-{% if ( rke_kubelet_arg is defined ) %}
+{% if ( rke2_kubelet_arg is defined ) %}
 kubelet-arg:
-{% for argument in rke_kubelet_arg %}
+{% for argument in rke2_kubelet_arg %}
   - {{ argument }}
 {% endfor %}
 {% endif %}
