@@ -98,6 +98,9 @@ rke2_kubevip_ipvs_lb_enable: false
 # - param: lb_port
 #   value: 6443
 
+#Prometheus metrics port for kube-vip
+rke2_kubevip_metrics_port: 2112
+
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
 
