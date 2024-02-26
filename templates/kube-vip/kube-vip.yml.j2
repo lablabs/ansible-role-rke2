@@ -61,7 +61,7 @@ spec:
         - name: address
           value: "{{ rke2_api_ip }}"
         - name: prometheus_server
-          value: :2112
+          value: ":{{ rke2_kubevip_metrics_port }}"
         - name: lb_enable
           value: "{{ rke2_kubevip_ipvs_lb_enable }}"
 {% if rke2_kubevip_args  is defined %}
@@ -72,6 +72,9 @@ spec:
 {% endif %}
         image: "{{ rke2_kubevip_image }}"
         name: kube-vip
+        ports:
+        - name: metrics
+          containerPort: "{{ rke2_kubevip_metrics_port }}"
         resources: {}
         securityContext:
           capabilities:
