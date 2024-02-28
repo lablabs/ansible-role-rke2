@@ -13,6 +13,7 @@
 - name: Replace loopback IP by master server IP
   ansible.builtin.replace:
     path: "{{ rke2_download_kubeconf_path }}/{{ rke2_download_kubeconf_file_name }}"
+    mode: '0600'
     regexp: '127.0.0.1'
     replace: "{{ rke2_api_ip | default(hostvars[groups[rke2_servers_group_name].0].ansible_host) }}"
   delegate_to: localhost
