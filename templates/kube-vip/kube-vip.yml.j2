@@ -74,7 +74,7 @@ spec:
         name: kube-vip
         ports:
         - name: metrics
-          containerPort: "{{ rke2_kubevip_metrics_port }}"
+          containerPort: {{ rke2_kubevip_metrics_port | int }}
         resources: {}
         securityContext:
           capabilities:
