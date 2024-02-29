@@ -50,6 +50,8 @@ spec:
           value: "{{ rke2_kubevip_svc_enable }}"
         - name: svc_election
           value: "true"
+        - name: enableServicesElection
+          value: "{{ rke2_kubevip_service_election_enable }}"
         - name: vip_leaderelection
           value: "true"
         - name: vip_leaseduration
