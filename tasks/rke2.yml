@@ -20,7 +20,7 @@
     path: "{{ rke2_artifact_path }}"
     state: directory
     mode: 0700
-  when: rke2_airgap_mode
+  when: rke2_airgap_mode and rke2_airgap_implementation != 'exists'
 
 - name: Download RKE2 checksum and artifacts
   when: rke2_airgap_mode and rke2_airgap_implementation == 'download'
@@ -30,13 +30,13 @@
       url: "{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
       dest: "{{ rke2_artifact_path }}/sha256sum-{{ rke2_architecture }}.txt"
       force: yes
-      mode: 0644
+      mode: 0640
       timeout: 30
   - name: Download RKE2 artifacts and compare with checksums
     ansible.builtin.get_url:
       url: "{{ rke2_artifact_url }}/{{ rke2_version }}/{{ item }}"
       dest: "{{ rke2_artifact_path }}/{{ item }}"
-      mode: 0644
+      mode: 0640
       checksum: "sha256:{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
       timeout: 30
     with_items: "{{ rke2_artifact | reject('search', 'sha256sum') | list }}"
@@ -45,13 +45,13 @@
   ansible.builtin.copy:
     src: "{{ rke2_airgap_copy_sourcepath }}/{{ item }}"
     dest: "{{ rke2_artifact_path }}/{{ item }}"
-    mode: 0644
+    mode: 0640
     force: yes
   with_items: "{{ rke2_artifact }}"
   when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
 
 - name: Airgap mode - additional images tarballs
-  when: rke2_airgap_mode and ( rke2_airgap_copy_additional_tarballs | length > 0 )
+  when: rke2_airgap_mode and ( rke2_airgap_copy_additional_tarballs | length > 0 )  and rke2_airgap_implementation != 'exists'
   block:
   - name: Create additional images tarballs folder
     ansible.builtin.file:
@@ -62,9 +62,40 @@
     ansible.builtin.copy:
       src: "{{ rke2_airgap_copy_sourcepath }}/{{ item }}"
       dest: "{{ rke2_tarball_images_path }}/{{ item }}"
-      mode: 0644
+      mode: 0640
       force: yes
     with_items: "{{ rke2_airgap_copy_additional_tarballs }}"
+
+- name: Airgap mode - ensure artifacts exist and have acceptable permissions # only modifies permissions if they are overprivileged
+  when: rke2_airgap_mode and rke2_airgap_implementation == 'exists'
+  block:
+    - name: Stat artifacts
+      ansible.builtin.stat:
+        path: "{{ rke2_artifact_path }}/{{ item }}"
+      with_items:  "{{ rke2_artifact }}"
+      register: artifacts
+    - name: Stat install script
+      ansible.builtin.stat:
+        path: "{{ rke2_install_script_dir }}/rke2.sh"
+      register: install_script
+    - name: Set artifact facts
+      ansible.builtin.set_fact:
+        artifacts_writeable: "{{ artifacts.values() | map(attribute='writeable') | list | bool }}"
+    - name: Make the artifacts read-only
+      ansible.builtin.file:
+        path: "{{ rke2_artifact_path }}/{{ item }}"
+        mode: 0640
+      with_items: "{{ rke2_artifact }}"
+      when: artifacts_writeable
+    - name: Make the install script executable.
+      ansible.builtin.file:
+        path: "{{ rke2_install_script_dir }}/rke2.sh"
+        mode: 0700
+      when: install_script.writeable
+    - name: Install script must be executable
+      ansible.builtin.fail:
+        msg: "The install script at {{ rke2_install_script_dir }}/rke2.sh must be executable."
+      when: not install_script['executable']
 
 - name: Populate service facts
   ansible.builtin.service_facts:
@@ -118,25 +149,33 @@
   vars:
     versions: "{{ versions_check.stdout | from_json }}"
 
-- name: Run AirGap RKE2 script
-  ansible.builtin.command:
-    cmd: "{{ rke2_install_script_dir }}/rke2.sh"
-  environment:
-    INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
-    INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
-  changed_when: false
-  when: rke2_version != installed_version and rke2_airgap_mode
-
-- name: Run RKE2 script
-  ansible.builtin.command:
-    cmd: "{{ rke2_install_script_dir }}/rke2.sh"
-  environment:
-    INSTALL_RKE2_VERSION: "{{ rke2_version }}"
-    INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
-    INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
-    INSTALL_RKE2_METHOD: "{{ rke2_method }}"
-  changed_when: false
-  when: rke2_version != installed_version and not rke2_airgap_mode
+- name: Run RKE2 install script
+  block:
+  - name: Run the script with airgap variables
+    ansible.builtin.command:
+      cmd: "{{ rke2_install_script_dir }}/rke2.sh"
+    environment:
+      INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
+      INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
+      INSTALL_RKE2_METHOD: "{{ rke2_method }}"
+    register: script_result
+    changed_when: false
+    when: rke2_version != installed_version and rke2_airgap_mode
+  - name: Run RKE2 script without airgap variables
+    ansible.builtin.command:
+      cmd: "{{ rke2_install_script_dir }}/rke2.sh"
+    environment:
+      INSTALL_RKE2_VERSION: "{{ rke2_version }}"
+      INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
+      INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
+      INSTALL_RKE2_METHOD: "{{ rke2_method }}"
+    register: script_result
+    changed_when: false
+    when: rke2_version != installed_version and not rke2_airgap_mode
+  - name: Check if script failed
+    ansible.builtin.fail:
+      msg: "RKE2 install script failed: {{ script_result.stderr }}"
+    when: script_result.rc > 0
 
 - name: Copy Custom Manifests
   ansible.builtin.template:
