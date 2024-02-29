@@ -92,7 +92,7 @@ rke2_kubevip_ipvs_lb_enable: false
 
 rke2_kubevip_service_election_enable: false
 # By default ARP mode provides a HA implementation of a VIP (your service IP address) which will receive traffic on the kube-vip leader.
-# To circumvent this kube-vip has implemented a new function which is "leader election per service", 
+# To circumvent this kube-vip has implemented a new function which is "leader election per service",
 # instead of one node becoming the leader for all services an election is held across all kube-vip instances and the leader from that election becomes the holder of that service. Ultimately,
 # this means that every service can end up on a different node when it is created in theory preventing a bottleneck in the initial deployment.
 # minimum kube-vip version 0.5.0
