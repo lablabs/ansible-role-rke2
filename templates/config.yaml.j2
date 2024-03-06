@@ -77,3 +77,7 @@ kubelet-arg:
   - {{ argument }}
 {% endfor %}
 {% endif %}
+{% if (rke2_disable_cloud_controller | bool ) %}
+disable-cloud-controller	: true
+{% endif %}
+
