@@ -91,11 +91,11 @@
       ansible.builtin.file:
         path: "{{ rke2_install_script_dir }}/rke2.sh"
         mode: 0700
-      when: install_script.writeable
+      when: install_script.stat.writeable
     - name: Install script must be executable
       ansible.builtin.fail:
         msg: "The install script at {{ rke2_install_script_dir }}/rke2.sh must be executable."
-      when: not install_script['executable']
+      when: not install_script.stat.executable
 
 - name: Populate service facts
   ansible.builtin.service_facts:
@@ -150,6 +150,7 @@
     versions: "{{ versions_check.stdout | from_json }}"
 
 - name: Run RKE2 install script
+  when: rke2_version != installed_version
   block:
   - name: Run the script with airgap variables
     ansible.builtin.command:
@@ -158,9 +159,8 @@
       INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
       INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
       INSTALL_RKE2_METHOD: "{{ rke2_method }}"
-    register: script_result
     changed_when: false
-    when: rke2_version != installed_version and rke2_airgap_mode
+    when: rke2_airgap_mode
   - name: Run RKE2 script without airgap variables
     ansible.builtin.command:
       cmd: "{{ rke2_install_script_dir }}/rke2.sh"
@@ -169,13 +169,8 @@
       INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
       INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
       INSTALL_RKE2_METHOD: "{{ rke2_method }}"
-    register: script_result
     changed_when: false
-    when: rke2_version != installed_version and not rke2_airgap_mode
-  - name: Check if script failed
-    ansible.builtin.fail:
-      msg: "RKE2 install script failed: {{ script_result.stderr }}"
-    when: script_result.rc > 0
+    when: not rke2_airgap_mode
 
 - name: Copy Custom Manifests
   ansible.builtin.template:
