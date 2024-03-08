@@ -235,7 +235,7 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
   # region: "" # optional - defaults to us-east-1
   # folder: "" # optional - defaults to top level of bucket
 # Override default containerd snapshotter
-rke2_snapshooter: overlayfs
+rke2_snapshotter: overlayfs
 
 # Deploy RKE2 with default CNI canal
 rke2_cni: canal

@@ -38,7 +38,7 @@ node-label:
   - {{ label }}
 {% endfor %}
 {% endif %}
-snapshotter: {{ rke2_snapshooter }}
+snapshotter: {{ rke2_snapshotter }}
 node-name: {{ inventory_hostname }}
 {% if ( disable_kube_proxy | bool ) %}
 disable-kube-proxy: true
