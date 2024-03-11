@@ -91,7 +91,7 @@
       ansible.builtin.file:
         path: "{{ rke2_install_script_dir }}/rke2.sh"
         mode: 0700
-      when: install_script.stat.writeable
+      when: install_script.stat.writeable and not install_script.stat.executable
     - name: Install script must be executable
       ansible.builtin.fail:
         msg: "The install script at {{ rke2_install_script_dir }}/rke2.sh must be executable."
@@ -179,7 +179,7 @@
     owner: root
     group: root
     mode: 0644
-  with_items: "{{ rke2_custom_manifests }}"
+  with_fileglob: "{{ rke2_custom_manifests }}/*"
   when: rke2_custom_manifests
 
 - name: Copy Static Pods
@@ -189,7 +189,7 @@
     owner: root
     group: root
     mode: 0644
-  with_items: "{{ rke2_static_pods }}"
+  with_fileglob: "{{ rke2_static_pods }}/*"
   when: rke2_static_pods
 
 - name: Copy RKE2 environment file
