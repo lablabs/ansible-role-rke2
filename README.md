@@ -39,7 +39,7 @@ This is a copy of `defaults/main.yml`
 ```yaml
 ---
 # The node type - server or agent
-rke2_type: server
+rke2_type: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' }}"
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -121,8 +121,8 @@ rke2_server_node_taints: []
 # Agent nodes taints
 rke2_agent_node_taints: []
 
-# Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
-rke2_token: defaultSecret12345
+# Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster - if you need it again you can find it in /etc/rancher/rke2/config.yaml
+rke2_token: "{{ lookup('community.general.random_string', base64=True, length=32) }}"
 
 # RKE2 version
 rke2_version: v1.25.3+rke2r1
@@ -141,7 +141,7 @@ rke2_data_path: /var/lib/rancher/rke2
 rke2_artifact_url: https://github.com/rancher/rke2/releases/download/
 
 # Local path to store artifacts
-rke2_artifact_path: /rke2/artifact
+rke2_artifact_path: "/var/tmp"
 
 # Airgap required artifacts
 rke2_artifact:
@@ -165,14 +165,14 @@ rke2_airgap_copy_sourcepath: local_artifacts
 # (File extensions in the list and on the real files must be retained)
 rke2_airgap_copy_additional_tarballs: []
 
-# Destination for airgap additional images tarballs ( see https://docs.rke2.io/install/airgap/#tarball-method )
+# Destination for airgap additional images tarballs ( see https://docs.rke2.io/install/airgap#tarball-method )
 rke2_tarball_images_path: "{{ rke2_data_path }}/agent/images"
 
 # Architecture to be downloaded, currently there are releases for amd64 and s390x
 rke2_architecture: amd64
 
 # Destination directory for RKE2 installation script
-rke2_install_script_dir: /var/tmp
+rke2_install_script_dir: "{{ rke2_install_script_dir }}"
 
 # RKE2 channel
 rke2_channel: stable
@@ -235,7 +235,8 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
   # region: "" # optional - defaults to us-east-1
   # folder: "" # optional - defaults to top level of bucket
 # Override default containerd snapshotter
-rke2_snapshotter: overlayfs
+rke2_snapshotter: "{{ rke2_snapshooter }}"
+rke2_snapshooter: overlayfs
 
 # Deploy RKE2 with default CNI canal
 rke2_cni: canal
@@ -309,6 +310,9 @@ rke2_debug: false
 # (Optional) Customize default kubelet arguments
 # rke2_kubelet_arg:
 #   - "--system-reserved=cpu=100m,memory=100Mi"
+
+rke2_node_name: "{{ inventory_hostname }}"
+
 ```
 
 ## Inventory file example
@@ -318,14 +322,14 @@ The RKE2 Kubernetes master/server nodes must belong to `masters` group and worke
 
 ```ini
 [masters]
-master-01 ansible_host=192.168.123.1 rke2_type=server
-master-02 ansible_host=192.168.123.2 rke2_type=server
-master-03 ansible_host=192.168.123.3 rke2_type=server
+master-01 ansible_host=192.168.123.1
+master-02 ansible_host=192.168.123.2
+master-03 ansible_host=192.168.123.3
 
 [workers]
-worker-01 ansible_host=192.168.123.11 rke2_type=agent
-worker-02 ansible_host=192.168.123.12 rke2_type=agent
-worker-03 ansible_host=192.168.123.13 rke2_type=agent
+worker-01 ansible_host=192.168.123.11
+worker-02 ansible_host=192.168.123.12
+worker-03 ansible_host=192.168.123.13
 
 [k8s_cluster:children]
 masters
@@ -382,6 +386,8 @@ This playbook will deploy RKE2 to a cluster with one server(master) and several 
 
 This playbook will deploy RKE2 to a cluster with HA server(master) control-plane and several agent(worker) nodes. The server(master) nodes will be tainted so the workload will be distributed only on worker(agent) nodes. The role will install also keepalived on the control-plane nodes and setup VIP address where the Kubernetes API will be reachable. it will also download the Kubernetes config file to the local machine.
 
+(Note that this taint will make setup fail if you don't account for it)
+
 ```yaml
 - name: Deploy RKE2
   hosts: all
@@ -411,6 +417,8 @@ rke2_agent_token: agentSecret54321
 ```yaml
 rke2_token: agentSecret54321
 ```
+
+If not defined, a secure token is generated and available in `/etc/rancher/rke2/config.yaml` on the first control plane node.
 
 While changing server token is problematic, agent token can be rotated at will, as long as servers and agents have the same value and the services
 (`rke2-server` and `rke2-agent`, as appropriate) have been restarted to make sure the processes use the new value.

@@ -1,6 +1,6 @@
 ---
 # The node type - server or agent
-rke2_type: server
+rke2_type: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' }}"
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -109,6 +109,7 @@ rke2_artifact:
   - sha256sum-{{ rke2_architecture }}.txt
   - rke2.linux-{{ rke2_architecture }}.tar.gz
   - rke2-images.linux-{{ rke2_architecture }}.tar.zst
+  - rke2-images-{{ rke2_cni | list | first }}.linux-{{ rke2_architecture }}.tar.zst
 
 # Changes the deploy strategy to install based on local artifacts
 rke2_airgap_mode: false
@@ -199,8 +200,8 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
 rke2_snapshotter: "{{ rke2_snapshooter }}"
 rke2_snapshooter: overlayfs
 
-# Deploy RKE2 with default CNI canal
-rke2_cni: canal
+# Deploy RKE2 with default CNI canal (should be a list)
+rke2_cni: [canal]
 
 # Validate system configuration against the selected benchmark
 # (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25)
