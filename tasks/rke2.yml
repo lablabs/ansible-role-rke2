@@ -69,16 +69,16 @@
 - name: Airgap mode - ensure artifacts exist and have acceptable permissions # only modifies permissions if they are overprivileged
   when: rke2_airgap_mode and rke2_airgap_implementation == 'exists'
   block:
-    - name: Stat artifacts
+    - name: Register artifacts
       ansible.builtin.stat:
         path: "{{ rke2_artifact_path }}/{{ item }}"
       with_items:  "{{ rke2_artifact }}"
       register: artifacts
-    - name: Stat install script
+    - name: Register install script
       ansible.builtin.stat:
         path: "{{ rke2_install_script_dir }}/rke2.sh"
       register: install_script
-    - name: Set artifact facts
+    - name: Register artifact facts
       ansible.builtin.set_fact:
         artifacts_writeable: "{{ artifacts.values() | map(attribute='writeable') | list | bool }}"
     - name: Make the artifacts read-only
@@ -172,25 +172,32 @@
     changed_when: false
     when: not rke2_airgap_mode
 
-- name: Copy Custom Manifests
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: "{{ rke2_data_path }}/server/manifests/"
-    owner: root
-    group: root
-    mode: 0644
-  with_fileglob: "{{ rke2_custom_manifests }}/*"
-  when: rke2_custom_manifests
-
-- name: Copy Static Pods
-  ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: "{{ rke2_data_path }}/agent/pod-manifests/"
-    owner: root
-    group: root
-    mode: 0644
-  with_fileglob: "{{ rke2_static_pods }}/*"
-  when: rke2_static_pods
+- name: Create /server/manifests directory
+  when: rke2_custom_manifests or rke2_static_pods
+  block:
+  - name: Create directory
+    ansible.builtin.file:
+      path: "{{ rke2_data_path }}/server/manifests"
+      state: directory
+      mode: 0755
+  - name: Copy Custom Manifests
+    ansible.builtin.template:
+      src: "{{ item }}"
+      dest: "{{ rke2_data_path }}/server/manifests/{{ item | basename | regex_replace('\\.j2$', '') }}"
+      owner: root
+      group: root
+      mode: 0644
+    with_fileglob: "{{ rke2_custom_manifests }}/*"
+    when: rke2_custom_manifests
+  - name: Copy Static Pods
+    ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: "{{ rke2_data_path }}/agent/pod-manifests/{{ item | basename | regex_replace('\\.j2$', '') }}"
+      owner: root
+      group: root
+      mode: 0644
+    with_fileglob: "{{ rke2_static_pods }}/*"
+    when: rke2_static_pods
 
 - name: Copy RKE2 environment file
   ansible.builtin.template:
