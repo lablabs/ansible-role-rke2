@@ -153,7 +153,7 @@ rke2_artifact:
 rke2_airgap_mode: false
 
 # Airgap implementation type - download, copy or exists
-# - 'download' will fetch the artifacts on each node,
+# - 'download' will fetch the artifacts on each node (and fallback to downloading files locally and pushing to remote),
 # - 'copy' will transfer local files in 'rke2_artifact' to the nodes,
 # - 'exists' assumes 'rke2_artifact' files are already stored in 'rke2_artifact_path'
 rke2_airgap_implementation: download
