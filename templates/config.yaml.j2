@@ -46,12 +46,12 @@ disable-kube-proxy: true
 {% if 'cis' in rke2_cis_profile %}
 profile: {{ rke2_cis_profile }}
 {%endif%}
-{% if rke2_server_options is defined and inventory_hostname in groups[rke2_servers_group_name] %}
+{% if rke2_server_options is defined %}
 {% for option in rke2_server_options %}
 {{ option }}
 {% endfor %}
 {% endif %}
-{% if rke2_agent_options is defined and inventory_hostname in groups[rke2_agents_group_name] %}
+{% if rke2_agent_options is defined %}
 {% for option in rke2_agent_options %}
 {{ option }}
 {% endfor %}
