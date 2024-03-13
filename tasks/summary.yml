@@ -20,6 +20,7 @@
   become: false
   when:
   - rke2_download_kubeconf | bool
+  - not rke2_airgap_mode
 
 - name: Summary
   when: inventory_hostname == groups[rke2_servers_group_name].0

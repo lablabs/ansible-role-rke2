@@ -13,17 +13,23 @@
     dest: "{{ rke2_install_script_dir }}/rke2.sh"
     mode: 0700
     force: yes
-  when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
+  when:
+    - rke2_airgap_mode
+    - rke2_airgap_implementation == 'copy'
 
 - name: Create RKE2 artifacts folder
   ansible.builtin.file:
     path: "{{ rke2_artifact_path }}"
     state: directory
     mode: 0700
-  when: rke2_airgap_mode and rke2_airgap_implementation != 'exists'
+  when:
+    - rke2_airgap_mode
+    - rke2_airgap_implementation != 'exists'
 
 - name: Download RKE2 checksum and artifacts
-  when: rke2_airgap_mode and rke2_airgap_implementation == 'download'
+  when:
+    - rke2_airgap_mode
+    - rke2_airgap_implementation == 'download'
   block:
   - name: Download sha256 checksum file
     ansible.builtin.get_url:
@@ -48,10 +54,15 @@
     mode: 0640
     force: yes
   with_items: "{{ rke2_artifact }}"
-  when: rke2_airgap_mode and rke2_airgap_implementation == 'copy'
+  when:
+    - rke2_airgap_mode
+    - rke2_airgap_implementation == 'copy'
 
 - name: Airgap mode - additional images tarballs
-  when: rke2_airgap_mode and ( rke2_airgap_copy_additional_tarballs | length > 0 )  and rke2_airgap_implementation != 'exists'
+  when:
+    - rke2_airgap_mode
+    - ( rke2_airgap_copy_additional_tarballs | length > 0 )
+    - rke2_airgap_implementation != 'exists'
   block:
   - name: Create additional images tarballs folder
     ansible.builtin.file:
@@ -67,7 +78,9 @@
     with_items: "{{ rke2_airgap_copy_additional_tarballs }}"
 
 - name: Airgap mode - ensure artifacts exist and have acceptable permissions # only modifies permissions if they are overprivileged
-  when: rke2_airgap_mode and rke2_airgap_implementation == 'exists'
+  when:
+    - rke2_airgap_mode
+    - rke2_airgap_implementation == 'exists'
   block:
     - name: Register artifacts
       ansible.builtin.stat:
@@ -91,7 +104,9 @@
       ansible.builtin.file:
         path: "{{ rke2_install_script_dir }}/rke2.sh"
         mode: 0700
-      when: install_script.stat.writeable and not install_script.stat.executable
+      when:
+        - install_script.stat.writeable
+        - not install_script.stat.executable
     - name: Install script must be executable
       ansible.builtin.fail:
         msg: "The install script at {{ rke2_install_script_dir }}/rke2.sh must be executable."
@@ -206,4 +221,6 @@
     owner: root
     group: root
     mode: 0644
-  when: rke2_environment_options is defined and rke2_environment_options|length > 0
+  when:
+    - rke2_environment_options is defined
+    - rke2_environment_options|length > 0
