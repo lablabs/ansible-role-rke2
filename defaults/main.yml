@@ -146,10 +146,10 @@ rke2_disable:
 # Option to disable kube-proxy
 disable_kube_proxy: false
 
-# Option to disable builtin cloud controller - mostly for onprem 
+# Option to disable builtin cloud controller - mostly for onprem
 rke2_disable_cloud_controller: false
 
-# Cloud provider to use for the cluster (aws, azure, gce, openstack, vsphere, external) 
+# Cloud provider to use for the cluster (aws, azure, gce, openstack, vsphere, external)
 # applicable only if rke2_disable_cloud_controller is true
 rke2_cloud_provider_name: "external"
 
