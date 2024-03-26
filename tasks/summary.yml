@@ -31,11 +31,9 @@
       args:
         executable: /bin/bash
       changed_when: false
-      run_once: true
       retries: 5
       register: nodes_summary
 
     - name: K8s nodes state
       ansible.builtin.debug:
         var: nodes_summary.stdout_lines
-      run_once: true
