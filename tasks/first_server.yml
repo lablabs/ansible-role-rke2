@@ -145,7 +145,9 @@
 - name: Set an Active Server variable
   ansible.builtin.set_fact:
     active_server: "{{ inventory_hostname }}"
-  run_once: true
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  loop: "{{ groups[rke2_cluster_group_name] }}"
 
 - name: Get all nodes
   ansible.builtin.shell: |
