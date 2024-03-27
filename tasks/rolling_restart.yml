@@ -1,12 +1,12 @@
 ---
 
-- name: Cordon and Drain the node {{ inventory_hostname }}
+- name: Cordon and Drain the node {{ rke2_node_name }}
   ansible.builtin.shell: |
     set -o pipefail
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-    cordon "{{ inventory_hostname }}" && \
+    cordon "{{ rke2_node_name }}" && \
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-    drain "{{ inventory_hostname }}" --ignore-daemonsets --delete-emptydir-data
+    drain "{{ rke2_node_name }}" --ignore-daemonsets --delete-emptydir-data
   args:
     executable: /bin/bash
   register: drain
@@ -19,7 +19,7 @@
   run_once: true
   when: rke2_drain_node_during_upgrade
 
-- name: Restart RKE2 service on {{ inventory_hostname }}
+- name: Restart RKE2 service on {{ rke2_node_name }}
   ansible.builtin.service:
     name: "{{ rke2_service_name }}"
     state: restarted
@@ -40,11 +40,11 @@
   delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true
 
-- name: Uncordon the node {{ inventory_hostname }}
+- name: Uncordon the node {{ rke2_node_name }}
   ansible.builtin.shell: |
     set -o pipefail
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-    uncordon "{{ inventory_hostname }}"
+    uncordon "{{ rke2_node_name }}"
   args:
     executable: /bin/bash
   changed_when: false

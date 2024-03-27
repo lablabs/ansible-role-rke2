@@ -16,6 +16,6 @@ mirrors:
 configs:
 {% for config in rke2_custom_registry_configs %}
   {{ config.endpoint }}:
-    {{ config.config | to_nice_yaml(indent=6) }}
+    {{ config.config | to_nice_yaml(indent=2, width=1337) | indent(4, first=false) }}
 {%- endfor %}
 {% endif %}

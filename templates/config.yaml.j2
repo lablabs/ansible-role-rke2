@@ -9,9 +9,10 @@ server: https://{{ rke2_api_ip }}:9345
 {% if rke2_agent_token is defined %}
 agent-token: {{ rke2_agent_token }}
 {% endif %}
+{% if rke2_token is defined and groups[rke2_servers_group_name].0 %}
 token: {{ rke2_token }}
+{% endif %}
 data-dir: {{ rke2_data_path }}
-{% if inventory_hostname in groups[rke2_servers_group_name] %}
 cni: {{ rke2_cni }}
 tls-san:
   - cluster.local
@@ -19,14 +20,13 @@ tls-san:
 {% for san in rke2_additional_sans %}
   - {{ san }}
 {% endfor %}
-{% endif %}
 {% if ( combined_node_taints is defined and combined_node_taints|length > 0) %}
 node-taint:
 {% for taint in combined_node_taints %}
   - {{ taint }}
 {% endfor %}
 {% endif %}
-{% if rke2_disable and ( inventory_hostname|string() in groups[rke2_servers_group_name] ) %}
+{% if rke2_disable %}
 disable: {{ rke2_disable }}
 {% endif %}
 {% if rke2_kube_apiserver_args is defined and inventory_hostname in groups[rke2_servers_group_name] %}
@@ -38,20 +38,20 @@ node-label:
   - {{ label }}
 {% endfor %}
 {% endif %}
-snapshotter: {{ rke2_snapshooter }}
-node-name: {{ inventory_hostname }}
+snapshotter: {{ rke2_snapshotter }}
+node-name: {{ rke2_node_name }}
 {% if ( disable_kube_proxy | bool ) %}
 disable-kube-proxy: true
 {% endif %}
 {% if 'cis' in rke2_cis_profile %}
 profile: {{ rke2_cis_profile }}
 {%endif%}
-{% if rke2_server_options is defined and inventory_hostname in groups[rke2_servers_group_name] %}
+{% if rke2_server_options is defined %}
 {% for option in rke2_server_options %}
 {{ option }}
 {% endfor %}
 {% endif %}
-{% if rke2_agent_options is defined and inventory_hostname in groups[rke2_agents_group_name] %}
+{% if rke2_agent_options is defined %}
 {% for option in rke2_agent_options %}
 {{ option }}
 {% endfor %}
@@ -76,4 +76,8 @@ kubelet-arg:
 {% for argument in rke2_kubelet_arg %}
   - {{ argument }}
 {% endfor %}
+{% endif %}
+{% if (rke2_disable_cloud_controller | bool ) %}
+disable-cloud-controller: true
+cloud-provider-name: "{{ rke2_cloud_provider_name }}"
 {% endif %}

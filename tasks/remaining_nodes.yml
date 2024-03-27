@@ -42,6 +42,7 @@
     name: "{{ rke2_service_name }}"
     state: started
     enabled: true
+    masked: false
   retries: 10
   delay: 3
   register: result

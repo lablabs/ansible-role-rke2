@@ -4,7 +4,7 @@
   become: yes
   vars:
     rke2_version: v1.22.12+rke2r1
-    rke2_snapshooter: native
+    rke2_snapshotter: native
     rke2_server_node_taints:
       - 'CriticalAddonsOnly=true:NoExecute'
   roles:

@@ -1,6 +1,6 @@
 ---
 # The node type - server or agent
-rke2_type: server
+rke2_type: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' }}"
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -82,8 +82,8 @@ rke2_server_node_taints: []
 # Agent nodes taints
 rke2_agent_node_taints: []
 
-# Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
-rke2_token: defaultSecret12345
+# Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster - if you need it again you can find it in /etc/rancher/rke2/config.yaml
+rke2_token: "{{ lookup('community.general.random_string', base64=True, length=32) }}"
 
 # RKE2 version
 rke2_version: v1.25.3+rke2r1
@@ -102,13 +102,14 @@ rke2_data_path: /var/lib/rancher/rke2
 rke2_artifact_url: https://github.com/rancher/rke2/releases/download/
 
 # Local path to store artifacts
-rke2_artifact_path: /rke2/artifact
+rke2_artifact_path: "/var/tmp"
 
 # Airgap required artifacts
 rke2_artifact:
   - sha256sum-{{ rke2_architecture }}.txt
   - rke2.linux-{{ rke2_architecture }}.tar.gz
   - rke2-images.linux-{{ rke2_architecture }}.tar.zst
+  - rke2-images-{{ rke2_cni | list | first }}.linux-{{ rke2_architecture }}.tar.zst
 
 # Changes the deploy strategy to install based on local artifacts
 rke2_airgap_mode: false
@@ -133,7 +134,7 @@ rke2_tarball_images_path: "{{ rke2_data_path }}/agent/images"
 rke2_architecture: amd64
 
 # Destination directory for RKE2 installation script
-rke2_install_script_dir: /var/tmp
+rke2_install_script_dir: "{{ rke2_install_script_dir }}"
 
 # RKE2 channel
 rke2_channel: stable
@@ -144,6 +145,13 @@ rke2_disable:
 
 # Option to disable kube-proxy
 disable_kube_proxy: false
+
+# Option to disable builtin cloud controller - mostly for onprem
+rke2_disable_cloud_controller: false
+
+# Cloud provider to use for the cluster (aws, azure, gce, openstack, vsphere, external)
+# applicable only if rke2_disable_cloud_controller is true
+rke2_cloud_provider_name: "external"
 
 # Path to custom manifests deployed during the RKE2 installation
 # It is possible to use Jinja2 templating in the manifests
@@ -196,10 +204,11 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
   # region: "" # optional - defaults to us-east-1
   # folder: "" # optional - defaults to top level of bucket
 # Override default containerd snapshotter
+rke2_snapshotter: "{{ rke2_snapshooter }}"
 rke2_snapshooter: overlayfs
 
-# Deploy RKE2 with default CNI canal
-rke2_cni: canal
+# Deploy RKE2 with default CNI canal (should be a list)
+rke2_cni: [canal]
 
 # Validate system configuration against the selected benchmark
 # (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25)
@@ -270,3 +279,5 @@ rke2_debug: false
 # (Optional) Customize default kubelet arguments
 # rke2_kubelet_arg:
 #   - "--system-reserved=cpu=100m,memory=100Mi"
+
+rke2_node_name: "{{ inventory_hostname }}"

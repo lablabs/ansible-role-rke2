@@ -1,4 +1,4 @@
-- name: Restart RKE2 service on {{ inventory_hostname }}
+- name: Restart RKE2 service on {{ rke2_node_name }}
   ansible.builtin.service:
     name: "{{ rke2_service_name }}"
     state: restarted
