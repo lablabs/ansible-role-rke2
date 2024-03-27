@@ -316,6 +316,10 @@ rke2_debug: false
 # (Optional) Customize default kubelet arguments
 # rke2_kubelet_arg:
 #   - "--system-reserved=cpu=100m,memory=100Mi"
+
+# (Optional) Customize default kube-proxy arguments
+# rke2_kube_proxy_arg:
+#   - "proxy-mode=ipvs"
 ```
 
 ## Inventory file example
