@@ -77,6 +77,12 @@ kubelet-arg:
   - {{ argument }}
 {% endfor %}
 {% endif %}
+{% if ( rke2_kube_proxy_arg is defined ) %}
+kube-proxy-arg:
+{% for argument in rke2_kube_proxy_arg %}
+  - {{ argument }}
+{% endfor %}
+{% endif %}
 {% if (rke2_disable_cloud_controller | bool ) %}
 disable-cloud-controller: true
 cloud-provider-name: "{{ rke2_cloud_provider_name }}"
