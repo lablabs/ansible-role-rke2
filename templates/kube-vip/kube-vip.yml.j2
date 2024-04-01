@@ -83,6 +83,9 @@ spec:
             add:
             - NET_ADMIN
             - NET_RAW
+        volumeMounts:
+        - mountPath: /etc/kubernetes/admin.conf
+          name: kubeconfig
       hostAliases:
       - hostnames:
         - kubernetes
@@ -94,4 +97,9 @@ spec:
         operator: Exists
       - effect: NoExecute
         operator: Exists
+      volumes:
+      - hostPath:
+          path: /etc/rancher/rke2/rke2.yaml
+          type: File
+        name: kubeconfig
   updateStrategy: {}
