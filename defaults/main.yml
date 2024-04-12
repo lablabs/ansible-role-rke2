@@ -281,3 +281,6 @@ rke2_debug: false
 # (Optional) Customize default kube-proxy arguments
 # rke2_kube_proxy_arg:
 #   - "proxy-mode=ipvs"
+
+# The value for the node-name configuration item
+rke2_node_name: "{{ inventory_hostname }}"
