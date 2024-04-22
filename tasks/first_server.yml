@@ -104,7 +104,7 @@
 
 - name: Wait for the first server be ready - no CNI
   ansible.builtin.shell: |
-    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get node "{{ inventory_hostname }}" -o jsonpath='{range .status.conditions[*]}{.message}{"\n"}{end}'
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get node "{{ rke2_node_name }}" -o jsonpath='{range .status.conditions[*]}{.message}{"\n"}{end}'
   args:
     executable: /bin/bash
   changed_when: false
@@ -121,7 +121,7 @@
 - name: Wait for the first server be ready - with CNI
   ansible.builtin.shell: |
     set -o pipefail
-    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ inventory_hostname }}"
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ rke2_node_name }}"
   args:
     executable: /bin/bash
   changed_when: false
