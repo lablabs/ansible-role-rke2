@@ -49,8 +49,6 @@ spec:
         - name: svc_enable
           value: "{{ rke2_kubevip_svc_enable }}"
         - name: svc_election
-          value: "true"
-        - name: enableServicesElection
           value: "{{ rke2_kubevip_service_election_enable }}"
         - name: vip_leaderelection
           value: "true"
@@ -83,6 +81,13 @@ spec:
             add:
             - NET_ADMIN
             - NET_RAW
+        volumeMounts:
+        - mountPath: /etc/kubernetes/admin.conf
+          name: kubeconfig
+      hostAliases:
+      - hostnames:
+        - kubernetes
+        ip: 127.0.0.1
       hostNetwork: true
       serviceAccountName: kube-vip
       tolerations:
@@ -90,4 +95,9 @@ spec:
         operator: Exists
       - effect: NoExecute
         operator: Exists
+      volumes:
+      - hostPath:
+          path: /etc/rancher/rke2/rke2.yaml
+          type: File
+        name: kubeconfig
   updateStrategy: {}
