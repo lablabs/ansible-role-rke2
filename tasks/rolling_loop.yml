@@ -1,0 +1,8 @@
+# Isolating this loop to a file reduces log spam and resource utilization
+# when restarts are not required.
+- name: "{{ _loop_name }} {{ hostvars[_host_item].inventory_hostname }}"
+  ansible.builtin.include_tasks: "{{ _loop_over_tasks }}"
+  with_items: "{{ groups[rke2_cluster_group_name] }}"
+  loop_control:
+    loop_var: _host_item
+  when: hostvars[_host_item].inventory_hostname == inventory_hostname
