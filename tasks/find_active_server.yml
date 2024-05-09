@@ -1,8 +1,5 @@
 ---
 
-- name: Populate services facts
-  ansible.builtin.service_facts:
-
 - name: Set the Active Server variable
   ansible.builtin.set_fact:
     active_server: "{{ inventory_hostname }}"
