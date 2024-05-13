@@ -90,7 +90,7 @@ rke2_kubevip_ipvs_lb_enable: false
 # Enable layer 4 load balancing for control plane using IPVS kernel module
 # Must use kube-vip version 0.4.0 or later
 
-rke2_kubevip_service_election_enable: false
+rke2_kubevip_service_election_enable: true
 # By default ARP mode provides a HA implementation of a VIP (your service IP address) which will receive traffic on the kube-vip leader.
 # To circumvent this kube-vip has implemented a new function which is "leader election per service",
 # instead of one node becoming the leader for all services an election is held across all kube-vip instances and the leader from that election becomes the holder of that service. Ultimately,
@@ -316,6 +316,13 @@ rke2_debug: false
 # (Optional) Customize default kubelet arguments
 # rke2_kubelet_arg:
 #   - "--system-reserved=cpu=100m,memory=100Mi"
+
+# (Optional) Customize default kube-proxy arguments
+# rke2_kube_proxy_arg:
+#   - "proxy-mode=ipvs"
+
+# The value for the node-name configuration item
+rke2_node_name: "{{ inventory_hostname }}"
 ```
 
 ## Inventory file example

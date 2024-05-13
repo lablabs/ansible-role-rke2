@@ -5,10 +5,9 @@
     src: /etc/rancher/rke2/rke2.yaml
     dest: "{{ rke2_download_kubeconf_path }}/{{ rke2_download_kubeconf_file_name }}"
     flat: yes
-  delegate_to: "{{ groups[rke2_servers_group_name].0 }}"
-  run_once: true
   when:
   - rke2_download_kubeconf | bool
+  - inventory_hostname == groups[rke2_servers_group_name].0
 
 - name: Replace loopback IP by master server IP
   ansible.builtin.replace:
@@ -31,11 +30,9 @@
       args:
         executable: /bin/bash
       changed_when: false
-      run_once: true
       retries: 5
       register: nodes_summary
 
     - name: K8s nodes state
       ansible.builtin.debug:
         var: nodes_summary.stdout_lines
-      run_once: true
