@@ -14,7 +14,8 @@
     state: present
 
 - name: Check if separate partition
-  command: grep '/usr/local ' /proc/mounts
+  ansible.builtin.command: grep '/usr/local ' /proc/mounts
+  changed_when: false
   register: partition_result
 
 - name: Copy systemctl config file for kernel hardening
