@@ -19,3 +19,15 @@ jobs:
         uses: MonolithProjects/action-molecule@v1.4.3
         with:
           molecule_command: lint
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install ansible-lint
+        run: pip3 install ansible-lint
+
+      - name: Run ansible-lint
+        run: ansible-lint --profile production .
+        working-directory: ./lablabs.rke2
