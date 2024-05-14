@@ -1,0 +1,12 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-ingress-nginx
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    controller:
+      extraArgs:
+{% if rke2_ingress_nginx_default_certificate | length > 0 %}
+        default-ssl-certificate: "{{ rke2_ingress_nginx_default_certificate }}"
+{% endif %}
