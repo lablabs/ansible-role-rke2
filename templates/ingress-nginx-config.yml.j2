@@ -5,8 +5,6 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
-    controller:
-      extraArgs:
-{% if rke2_ingress_nginx_default_certificate | length > 0 %}
-        default-ssl-certificate: "{{ rke2_ingress_nginx_default_certificate }}"
+{% if rke2_ingress_nginx_values | length > 0 %}
+    {{ rke2_ingress_nginx_values | to_nice_yaml | indent(2) }}
 {% endif %}
