@@ -1,6 +1,5 @@
 - name: Restore etcd - get all nodes
   ansible.builtin.shell: |
-    set -o pipefail
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
     get nodes --no-headers -o custom-columns=":metadata.name"
   args:
