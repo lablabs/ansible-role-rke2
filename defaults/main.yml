@@ -265,6 +265,13 @@ rke2_agents_group_name: workers
 # rke2_kube_scheduler_arg:
 #   - "bind-address=0.0.0.0"
 
+# (Optional) Configure nginx via HelmChartConfig: https://docs.rke2.io/networking/networking_services#nginx-ingress-controller
+# rke2_ingress_nginx_values:
+#   controller:
+#     config:
+#       use-forwarded-headers: "true"
+rke2_ingress_nginx_values: {}
+
 # Cordon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
 rke2_drain_node_during_upgrade: false
 
