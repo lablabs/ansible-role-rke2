@@ -1,0 +1,16 @@
+---
+- name: Create the RKE2 manifests directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ rke2_data_path }}/server/manifests"
+    owner: root
+    group: root
+    mode: 0700
+
+- name: Copy ingress-nginx files to first server
+  ansible.builtin.template:
+    src: "templates/ingress-nginx-config.yml.j2"
+    dest: "{{ rke2_data_path }}/server/manifests/rke2-ingress-nginx-config.yaml"
+    owner: root
+    group: root
+    mode: 0664

@@ -189,7 +189,7 @@ rke2_disable_cloud_controller: false
 
 # Cloud provider to use for the cluster (aws, azure, gce, openstack, vsphere, external)
 # applicable only if rke2_disable_cloud_controller is true
-rke2_cloud_provider_name: "rke2"
+rke2_cloud_provider_name: "external"
 
 # Path to custom manifests deployed during the RKE2 installation
 # It is possible to use Jinja2 templating in the manifests
@@ -303,6 +303,13 @@ rke2_agents_group_name: workers
 # This functionality allows appending the argument if it is not present by default or replacing it if it already exists.
 # rke2_kube_scheduler_arg:
 #   - "bind-address=0.0.0.0"
+
+# (Optional) Configure nginx via HelmChartConfig: https://docs.rke2.io/networking/networking_services#nginx-ingress-controller
+# rke2_ingress_nginx_values:
+#   controller:
+#     config:
+#       use-forwarded-headers: "true"
+rke2_ingress_nginx_values: {}
 
 # Cordon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
 rke2_drain_node_during_upgrade: false

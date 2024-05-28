@@ -1,7 +1,7 @@
 {% if rke2_custom_registry_mirrors | length > 0 %}
 mirrors:
 {% for mirror in rke2_custom_registry_mirrors %}
-  {{ mirror.name }}:
+  "{{ mirror.name }}":
     endpoint:
 {% for endpoint in mirror.endpoint %}
       - "{{ endpoint }}"
