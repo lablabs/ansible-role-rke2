@@ -189,7 +189,7 @@ rke2_disable_cloud_controller: false
 
 # Cloud provider to use for the cluster (aws, azure, gce, openstack, vsphere, external)
 # applicable only if rke2_disable_cloud_controller is true
-rke2_cloud_provider_name: "rke2"
+rke2_cloud_provider_name: "external"
 
 # Path to custom manifests deployed during the RKE2 installation
 # It is possible to use Jinja2 templating in the manifests
