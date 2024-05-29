@@ -148,23 +148,3 @@
   delegate_to: "{{ item }}"
   delegate_facts: true
   loop: "{{ groups[rke2_cluster_group_name] }}"
-
-- name: Get all nodes
-  ansible.builtin.shell: |
-    set -o pipefail
-    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-    get nodes --no-headers | awk '{print $1}'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  register: node_names
-
-- name: Restore etcd - remove old nodes
-  ansible.builtin.shell: |
-    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-    delete node {{ item }} 2>&1 || true
-  args:
-    executable: /bin/bash
-  with_items: "{{ node_names.stdout_lines | difference(groups[rke2_cluster_group_name]) }}"
-  changed_when: false
-  when: inventory_hostname != item and (do_etcd_restore is defined or do_etcd_restore_from_s3 is defined)

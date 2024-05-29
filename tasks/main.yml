@@ -53,6 +53,12 @@
     - inventory_hostname == groups[rke2_servers_group_name].0
     - active_server is not defined
 
+- name: Restore etcd specific tasks
+  ansible.builtin.include_tasks: first_server_restore.yml
+  when:
+    - inventory_hostname == active_server or inventory_hostname == groups[rke2_servers_group_name].0
+    - do_etcd_restore is defined or do_etcd_restore_from_s3 is defined
+
 - name: Prepare and join remaining nodes of the cluster
   ansible.builtin.include_tasks: remaining_nodes.yml
   when:
