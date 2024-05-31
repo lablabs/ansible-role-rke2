@@ -17,6 +17,7 @@
   ansible.builtin.command: grep '/usr/local ' /proc/mounts
   changed_when: false
   register: partition_result
+  failed_when: partition_result.rc >= 2
 
 - name: Copy systemctl config file for kernel hardening
   ansible.builtin.copy:
