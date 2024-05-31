@@ -1,5 +1,10 @@
 ---
 
+- name: Populate services facts
+  ansible.builtin.service_facts:
+  # gathering service facts can be slow, only do so after install / upgrade
+  when: rke2_version != installed_version
+
 - name: Set the Active Server variable
   ansible.builtin.set_fact:
     active_server: "{{ inventory_hostname }}"
