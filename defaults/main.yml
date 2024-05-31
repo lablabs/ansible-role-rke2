@@ -292,7 +292,6 @@ rke2_debug: false
 # The value for the node-name configuration item
 rke2_node_name: "{{ inventory_hostname }}"
 
-
 # Allow the role to restart rke2 services as needed. Set to false if this will
 # be accomplished outside the role.
 rke2_restart_allowed: true
