@@ -28,9 +28,8 @@ The Role can install the RKE2 in 3 modes:
 
 ## Tested on
 
-* Rocky Linux 8
-* Ubuntu 20.04 LTS
-* Ubuntu 22.04 LTS
+* Rocky Linux 9
+* Ubuntu 24.04 LTS
 
 ## Role Variables
 
