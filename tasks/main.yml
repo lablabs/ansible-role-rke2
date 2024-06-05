@@ -46,6 +46,8 @@
   ansible.builtin.include_tasks: ingress-nginx.yml
   when:
     - inventory_hostname == groups[rke2_servers_group_name].0
+    - rke2_ingress_nginx_values is defined
+    - rke2_ingress_nginx_values | length > 0
 
 - name: Prepare very first server node in the cluster
   ansible.builtin.include_tasks: first_server.yml
