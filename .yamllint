@@ -3,6 +3,11 @@
 extends: default
 
 rules:
+  comments:
+    min-spaces-from-content: 1
+  octal-values:
+    forbid-implicit-octal: false
+    forbid-explicit-octal: true
   braces:
     max-spaces-inside: 1
     level: error
@@ -15,7 +20,6 @@ rules:
   commas:
     max-spaces-after: -1
     level: error
-  comments: disable
   comments-indentation: disable
   document-start: disable
   empty-lines:

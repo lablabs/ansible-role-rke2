@@ -24,10 +24,10 @@ jobs:
       fail-fast: ${{ !contains(github.event_name, 'pull_request') }}
       matrix:
         config:
-          - image: "rockylinux8"
+          - image: "rockylinux9"
             cgroup_mode: "host"
             volumes: "rw"
-          - image: "ubuntu2204"
+          - image: "ubuntu2404"
             cgroup_mode: "host"
             volumes: "rw"
     steps:
@@ -62,7 +62,7 @@ jobs:
     strategy:
       matrix:
         config:
-          - image: "ubuntu2204"
+          - image: "ubuntu2404"
             cgroup_mode: "host"
             volumes: "rw"
     steps:

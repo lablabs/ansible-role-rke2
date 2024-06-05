@@ -3,14 +3,14 @@
   hosts: node*
   become: true
   tasks:
-    - name: Install packages
+    - name: Install wget for Ubuntu
       ansible.builtin.package:
         update_cache: true
         name:
           - wget
-          - curl
+      when: ansible_distribution == "Ubuntu"
 
-    - name: Install special packages for RockyLinux
+    - name: Install iproute for RockyLinux
       ansible.builtin.package:
         update_cache: true
         name:
