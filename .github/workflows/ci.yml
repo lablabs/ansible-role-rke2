@@ -32,7 +32,7 @@ jobs:
             volumes: "rw"
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'lablabs.rke2'
 
@@ -67,7 +67,7 @@ jobs:
             volumes: "rw"
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'lablabs.rke2'
 
@@ -104,7 +104,7 @@ jobs:
   #           volumes: "rw"
   #   steps:
   #     - name: checkout
-  #       uses: actions/checkout@v3
+  #       uses: actions/checkout@v4
   #       with:
   #         path: 'lablabs.rke2'
 
@@ -142,7 +142,7 @@ jobs:
   #           volumes: "rw"
   #   steps:
   #     - name: checkout
-  #       uses: actions/checkout@v3
+  #       uses: actions/checkout@v4
   #       with:
   #         path: 'lablabs.rke2'
 
