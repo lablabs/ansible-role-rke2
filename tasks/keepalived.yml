@@ -5,10 +5,10 @@
     update_cache: true
   when: ansible_pkg_mgr == 'apt'
 
-- name: Update dnf/yum cache
-  ansible.builtin.yum:
+- name: Update dnf cache
+  ansible.builtin.dnf:
     update_cache: true
-  when: ansible_pkg_mgr == 'dnf' or ansible_pkg_mgr == 'yum'
+  when: ansible_pkg_mgr == 'dnf'
 
 - name: Install packages
   ansible.builtin.package:
