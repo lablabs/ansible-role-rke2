@@ -72,6 +72,9 @@ rke2_kubevip_metrics_port: 2112
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
 
+# Configure cluster domain
+# rke2_cluster_domain: cluster.example.net
+
 # API Server destination port
 rke2_apiserver_dest_port: 6443
 

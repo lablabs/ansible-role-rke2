@@ -20,6 +20,9 @@ tls-san:
   - {{ san }}
 {% endfor %}
 {% endif %}
+{% if rke2_cluster_domain is defined %}
+cluster-domain: {{ rke2_cluster_domain }}
+{% endif %}
 {% if ( combined_node_taints is defined and combined_node_taints|length > 0) %}
 node-taint:
 {% for taint in combined_node_taints %}
