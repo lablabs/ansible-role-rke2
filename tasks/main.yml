@@ -67,26 +67,29 @@
     - active_server is defined
     - groups[rke2_cluster_group_name] | length | int >= 2
 
-- name: Rolling cordon and drain restart when version changes
-  ansible.builtin.include_tasks: rolling_restart.yml
-  with_items: "{{ groups[rke2_cluster_group_name] }}"
-  loop_control:
-    loop_var: _host_item
+- name: "{{ _loop_name }}"
+  ansible.builtin.include_tasks: rolling_loop.yml
+  vars:
+    _loop_name: Rolling cordon and drain restart when version changes
+    _loop_over_tasks: rolling_restart.yml
   when:
-    - hostvars[_host_item].inventory_hostname == inventory_hostname
+    - rke2_restart_allowed
+    - rke2_restart_needed
     - installed_version != "not installed"
     - rke2_version != running_version
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
-- name: Rolling restart when config files change
-  ansible.builtin.include_tasks: change_config.yml
-  with_items: "{{ groups[rke2_cluster_group_name] }}"
-  loop_control:
-    loop_var: _host_item
+- name: "{{ _loop_name }}"
+  ansible.builtin.include_tasks: rolling_loop.yml
+  vars:
+    _loop_name: Rolling restart when config files change
+    _loop_over_tasks: rolling_restart.yml
+    # drain not required for config change only
+    rke2_drain_node_during_upgrade: false
   when:
-    - hostvars[_host_item].inventory_hostname == inventory_hostname
+    - rke2_restart_allowed
     - rke2_restart_needed
 
 - name: Final steps
