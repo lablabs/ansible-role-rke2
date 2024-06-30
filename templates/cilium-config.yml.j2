@@ -1,0 +1,19 @@
+# /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+# https://docs.rke2.io/networking/basic_network_options
+# https://github.com/rancher/rke2-charts/tree/main/charts/rke2-cilium/rke2-cilium/1.15.600
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-cilium
+  namespace: kube-system
+spec:
+  valuesContent: |-
+{% if rke2_cilium_values | length > 0 %}
+    {{ rke2_cilium_values | to_nice_yaml | indent(2) }}
+{% endif %}
+{% if rke2_ha_mode == true and disable_kube_proxy == true  %}
+    kubeProxyReplacement: true
+    k8sServiceHost: {{ rke2_api_ip }} 
+    k8sServicePort: 6443
+{% endif %}
