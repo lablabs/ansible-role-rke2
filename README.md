@@ -332,6 +332,14 @@ rke2_debug: false
 
 # The value for the node-name configuration item
 rke2_node_name: "{{ inventory_hostname }}"
+
+# the network to use for Pods.. Set to '10.42.0.0/16' by default.
+rke2_cluster_cidr:
+  - 10.42.0.0/16
+
+# the network to use for ClusterIP Services. Set to '10.43.0.0/16' by default.
+rke2_service_cidr:
+  - 10.43.0.0/16
 ```
 
 ## Inventory file example
