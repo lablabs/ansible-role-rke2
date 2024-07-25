@@ -294,3 +294,11 @@ rke2_debug: false
 
 # The value for the node-name configuration item
 rke2_node_name: "{{ inventory_hostname }}"
+
+# default pod network range for rke2
+rke2_cluster_cidr:
+  - 10.42.0.0/16
+
+# default service network range for rke2
+rke2_service_cidr:
+  - 10.43.0.0/16
