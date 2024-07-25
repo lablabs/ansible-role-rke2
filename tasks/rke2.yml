@@ -112,6 +112,7 @@
   register: versions_check
 
 - name: Set RKE2 versions
+  when: not ansible_check_mode
   ansible.builtin.set_fact:
     installed_version: "{{ versions.installed_version }}"
     running_version: "{{ versions.running_version }}"
@@ -125,7 +126,7 @@
     INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
     INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
   changed_when: false
-  when: rke2_version != installed_version and rke2_airgap_mode
+  when: not ansible_check_mode and rke2_version != installed_version and rke2_airgap_mode
 
 - name: Run RKE2 script
   ansible.builtin.command:
@@ -136,7 +137,7 @@
     INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
     INSTALL_RKE2_METHOD: "{{ rke2_method }}"
   changed_when: false
-  when: rke2_version != installed_version and not rke2_airgap_mode
+  when: not ansible_check_mode and rke2_version != installed_version and not rke2_airgap_mode
 
 - name: Copy Custom Manifests
   ansible.builtin.template:
