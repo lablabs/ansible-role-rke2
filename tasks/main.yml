@@ -42,6 +42,14 @@
     - rke2_ha_mode_kubevip | bool
     - not rke2_ha_mode_keepalived | bool
 
+- name: Copy rke2_cilium_values manifests to the masternode
+  ansible.builtin.include_tasks: rke2_cilium_values.yml
+  when:
+    - inventory_hostname == groups[rke2_servers_group_name].0
+    - rke2_cni == "cilium"
+    - rke2_cilium_values is defined
+    - rke2_cilium_values | length > 0
+
 - name: Copy ingress-nginx manifests to the masternode
   ansible.builtin.include_tasks: ingress-nginx.yml
   when:

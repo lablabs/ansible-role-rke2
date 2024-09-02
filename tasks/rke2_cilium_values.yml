@@ -1,0 +1,17 @@
+---
+- name: Create the RKE2 manifests directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ rke2_data_path }}/server/manifests"
+    owner: root
+    group: root
+    mode: 0700
+
+- name: Copy rke2_cilium_values files to first server
+  ansible.builtin.template:
+    src: "templates/rke2_cilium_config.yaml.j2"
+    dest: "{{ rke2_data_path }}/server/manifests/rke2-cilium-config.yaml"
+    owner: root
+    group: root
+    mode: 0664
+  notify: "Config file changed"

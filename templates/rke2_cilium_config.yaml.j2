@@ -1,0 +1,10 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-cilium
+  namespace: kube-system
+spec:
+  valuesContent: |-
+{% if rke2_cilium_values | length > 0 %}
+    {{ rke2_cilium_values | to_nice_yaml | indent(4) }}
+{% endif %}

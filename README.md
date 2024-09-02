@@ -313,6 +313,14 @@ rke2_agents_group_name: workers
 #       use-forwarded-headers: "true"
 rke2_ingress_nginx_values: {}
 
+# (Optional) Configure cilium via HelmChartConfig: https://docs.rke2.io/networking/basic_network_options
+# rke2_cilium_values:
+#   encryption:
+#     enabled: true
+#     nodeEncryption: true
+#     type: wireguard
+rke2_cilium_values: {}
+
 # Cordon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
 rke2_drain_node_during_upgrade: false
 
