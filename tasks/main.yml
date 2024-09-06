@@ -75,7 +75,9 @@
     loop_var: _host_item
   when:
     - hostvars[_host_item].inventory_hostname == inventory_hostname
+    - installed_version is defined
     - installed_version != "not installed"
+    - rke2_version is defined
     - rke2_version != running_version
 
 - name: Flush handlers

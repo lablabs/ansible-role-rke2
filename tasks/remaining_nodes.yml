@@ -90,5 +90,6 @@
   retries: 100
   delay: 15
   when:
+    - not ansible_check_mode
     - rke2_cni != 'none'
     - inventory_hostname == active_server or inventory_hostname == groups[rke2_servers_group_name].0
