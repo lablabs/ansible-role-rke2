@@ -58,7 +58,7 @@
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get pods -A --field-selector=metadata.namespace!=kube-system,status.phase!=Running,status.phase!=Succeeded --ignore-not-found | wc -l
   args:
     executable: /bin/bash
-  failed_when: "all_pods_ready.rc not in [ 0, 1 ]"
+  failed_when: "all_pods_ready.rc != 0"
   changed_when: false
   register: all_pods_ready
   until:
