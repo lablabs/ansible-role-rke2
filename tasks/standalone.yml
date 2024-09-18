@@ -50,7 +50,7 @@
   - ('"cni plugin not initialized" in node_status.stdout' or '"kubelet is posting ready status." in node_status.stdout')
   retries: 100
   delay: 15
-  when: rke2_cni == 'none'
+  when: not ansible_check_mode and rke2_cni == 'none'
 
 - name: Wait for the first server be ready - with CNI
   ansible.builtin.shell: |
@@ -64,4 +64,4 @@
     - '" Ready "  in first_server.stdout'
   retries: 40
   delay: 15
-  when: rke2_cni != 'none'
+  when: not ansible_check_mode rke2_cni != 'none'

@@ -65,6 +65,7 @@
         --token {{ rke2_token }}
       register: task_output # <- Registers the command output.
       changed_when: task_output.rc != 0 # <- Uses the return code to define when the task has changed.
+      when: not ansible_check_mode
 
 - name: Restore etcd from s3
   when: do_etcd_restore_from_s3 is defined
@@ -86,6 +87,7 @@
         --token {{ rke2_token }}
       register: task_output # <- Registers the command output.
       changed_when: task_output.rc != 0 # <- Uses the return code to define when the task has changed.
+      when: not ansible_check_mode
 
 - name: Start RKE2 service on the first server
   ansible.builtin.systemd:
@@ -116,7 +118,9 @@
   - ('"cni plugin not initialized" in node_status.stdout' or '"kubelet is posting ready status." in node_status.stdout')
   retries: 100
   delay: 15
-  when: rke2_cni == 'none'
+  when:
+  - not ansible_check_mode
+  - rke2_cni == 'none'
 
 - name: Wait for the first server be ready - with CNI
   ansible.builtin.shell: |
@@ -130,7 +134,9 @@
     '" Ready "  in first_server.stdout'
   retries: 40
   delay: 15
-  when: rke2_cni != 'none'
+  when:
+  - not ansible_check_mode
+  - rke2_cni != 'none'
 
 - name: Restore etcd - remove old <node>.node-password.rke2 secrets
   ansible.builtin.shell: |
@@ -140,7 +146,7 @@
     executable: /bin/bash
   with_items: "{{ groups[rke2_cluster_group_name] }}"
   changed_when: false
-  when: inventory_hostname != item and (do_etcd_restore is defined or do_etcd_restore_from_s3 is defined)
+  when: not ansible_check_mode and inventory_hostname != item and (do_etcd_restore is defined or do_etcd_restore_from_s3 is defined)
 
 - name: Set an Active Server variable
   ansible.builtin.set_fact:
