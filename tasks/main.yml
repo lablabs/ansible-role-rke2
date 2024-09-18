@@ -18,8 +18,6 @@
 
 - name: Find Active Server
   ansible.builtin.include_tasks: find_active_server.yml
-  when:
-    - rke2_ha_mode | bool
 
 - name: Enable IPVS kernel module
   community.general.modprobe:
