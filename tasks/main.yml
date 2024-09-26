@@ -18,8 +18,6 @@
 
 - name: Find Active Server
   ansible.builtin.include_tasks: find_active_server.yml
-  when:
-    - rke2_ha_mode | bool
 
 - name: Enable IPVS kernel module
   community.general.modprobe:
@@ -58,6 +56,7 @@
 - name: Restore etcd specific tasks
   ansible.builtin.include_tasks: first_server_restore.yml
   when:
+    - active_server is defined
     - inventory_hostname == active_server or inventory_hostname == groups[rke2_servers_group_name].0
     - do_etcd_restore is defined or do_etcd_restore_from_s3 is defined
 
@@ -74,7 +73,9 @@
     loop_var: _host_item
   when:
     - hostvars[_host_item].inventory_hostname == inventory_hostname
+    - installed_version is defined
     - installed_version != "not installed"
+    - rke2_version is defined
     - rke2_version != running_version
 
 - name: Flush handlers
