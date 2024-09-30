@@ -94,7 +94,9 @@
 
 - name: Rolling restart when config files change
   ansible.builtin.include_tasks: change_config.yml
-  with_items: "{{ groups[rke2_cluster_group_name] }}"
+  with_items:
+    - "{{ groups[rke2_servers_group_name] }}"
+    - "{{ groups[rke2_agents_group_name] }}"
   loop_control:
     loop_var: _host_item
   when:
