@@ -38,6 +38,7 @@
         path: "{{ venv_dir }}"
         state: absent
 
-    - name: Longhorn check error
+    - name: Longhorn check for failure
       ansible.builtin.fail:
         msg: To prevent data loss, the play will be terminated.
+      when: all_longhorn_vol_healthy is failed
