@@ -340,6 +340,9 @@ rke2_cluster_cidr:
 # the network to use for ClusterIP Services. Set to '10.43.0.0/16' by default.
 rke2_service_cidr:
   - 10.43.0.0/16
+
+# Enable SELinux for rke2
+rke2_selinux: false
 ```
 
 ## Inventory file example
