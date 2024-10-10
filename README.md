@@ -123,8 +123,8 @@ rke2_server_node_taints: []
 # Agent nodes taints
 rke2_agent_node_taints: []
 
-# Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
-rke2_token: defaultSecret12345
+# Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster - if you need it again you can find it in /etc/rancher/rke2/config.yaml
+rke2_token: "{{ lookup('community.general.random_string', base64=True, length=32) }}"
 
 # RKE2 version
 rke2_version: v1.25.3+rke2r1
