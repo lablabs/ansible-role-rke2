@@ -1,6 +1,6 @@
 ---
 # The node type - server or agent
-rke2_type: server
+rke2_type: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' }}"
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
