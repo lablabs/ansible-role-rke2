@@ -143,7 +143,7 @@ rke2_data_path: /var/lib/rancher/rke2
 rke2_artifact_url: https://github.com/rancher/rke2/releases/download/
 
 # Local path to store artifacts
-rke2_artifact_path: /rke2/artifact
+rke2_artifact_path: /var/tmp
 
 # Airgap required artifacts
 rke2_artifact:
