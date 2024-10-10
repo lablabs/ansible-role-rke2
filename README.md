@@ -38,7 +38,7 @@ This is a copy of `defaults/main.yml`
 ```yaml
 ---
 # The node type - server or agent
-rke2_type: server
+rke2_type: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' }}"
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -349,14 +349,14 @@ The RKE2 Kubernetes master/server nodes must belong to `masters` group and worke
 
 ```ini
 [masters]
-master-01 ansible_host=192.168.123.1 rke2_type=server
-master-02 ansible_host=192.168.123.2 rke2_type=server
-master-03 ansible_host=192.168.123.3 rke2_type=server
+master-01 ansible_host=192.168.123.1
+master-02 ansible_host=192.168.123.2
+master-03 ansible_host=192.168.123.3
 
 [workers]
-worker-01 ansible_host=192.168.123.11 rke2_type=agent
-worker-02 ansible_host=192.168.123.12 rke2_type=agent
-worker-03 ansible_host=192.168.123.13 rke2_type=agent
+worker-01 ansible_host=192.168.123.11
+worker-02 ansible_host=192.168.123.12
+worker-03 ansible_host=192.168.123.13
 
 [k8s_cluster:children]
 masters
@@ -411,7 +411,7 @@ This playbook will deploy RKE2 to a cluster with one server(master) and several 
 
 ```
 
-This playbook will deploy RKE2 to a cluster with HA server(master) control-plane and several agent(worker) nodes. The server(master) nodes will be tainted so the workload will be distributed only on worker(agent) nodes. The role will install also keepalived on the control-plane nodes and setup VIP address where the Kubernetes API will be reachable. it will also download the Kubernetes config file to the local machine.
+This playbook will deploy RKE2 to a cluster with HA server(master) control-plane and several agent(worker) nodes. The server(master) nodes will be tainted so the workload will be distributed only on worker(agent) nodes. The role will install also keepalived on the control-plane nodes and setup VIP address where the Kubernetes API will be reachable. it will also download the Kubernetes config file to the local machine. Note that this taint will make setup fail if you don't account for it!
 
 ```yaml
 - name: Deploy RKE2
