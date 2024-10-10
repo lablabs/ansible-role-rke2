@@ -40,7 +40,13 @@
 - name: Register if we need to do a etcd restore from s3
   ansible.builtin.set_fact:
     do_etcd_restore_from_s3: true
-  when: not rke2_etcd_snapshot_file and rke2_etcd_snapshot_s3_options is defined and rke2_etcd_snapshot_s3_options.access_key and rke2_etcd_snapshot_s3_options.secret_key and rke2_etcd_snapshot_s3_options.bucket and rke2_etcd_snapshot_s3_options.snapshot_name
+  when:
+    - not rke2_etcd_snapshot_file
+    - rke2_etcd_snapshot_s3_options is defined
+    - rke2_etcd_snapshot_s3_options.access_key
+    - rke2_etcd_snapshot_s3_options.secret_key
+    - rke2_etcd_snapshot_s3_options.bucket
+    - rke2_etcd_snapshot_s3_options.snapshot_name
 
 - name: Restore etcd from file
   when: do_etcd_restore is defined
