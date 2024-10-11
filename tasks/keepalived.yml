@@ -20,7 +20,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: 0750
 
 - name: Create Kubernetes API health check script for Debian OS family
   ansible.builtin.template:
@@ -68,7 +68,7 @@
     dest: /etc/keepalived/keepalived.conf
     owner: root
     group: root
-    mode: 0644
+    mode: 0640
   notify: Restart keepalived
 
 - name: Enable keepalived and make sure it is not masked

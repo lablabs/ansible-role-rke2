@@ -50,8 +50,8 @@ vrrp_instance VI_1 {
 {% endfor %}
     }
     authentication {
-        auth_type PASS
-        auth_pass rke2servers
+        auth_type AH
+        auth_pass {{ keepalived_secret }}
     }
 ### The following entry is the VRRP config for the incoming interface ###
 
