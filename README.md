@@ -139,6 +139,11 @@ rke2_install_bash_url: https://get.rke2.io
 # Local data directory for RKE2
 rke2_data_path: /var/lib/rancher/rke2
 
+# Extra kubelet arguments (https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/)
+rke2_kubelet_arg:
+    - "root-dir=/var/lib/kubelet" # kubelet data directory (/var/lib/kubelet is the default but "{{ rke2_data_path }}/kubelet" could make more sense for you)
+#   - "system-reserved=cpu=100m,memory=100Mi"
+
 # Default URL to fetch artifacts
 rke2_artifact_url: https://github.com/rancher/rke2/releases/download/
 
@@ -321,10 +326,6 @@ rke2_wait_for_all_pods_to_be_ready: false
 
 # Enable debug mode (rke2-service)
 rke2_debug: false
-
-# (Optional) Customize default kubelet arguments
-# rke2_kubelet_arg:
-#   - "--system-reserved=cpu=100m,memory=100Mi"
 
 # (Optional) Customize default kube-proxy arguments
 # rke2_kube_proxy_arg:
