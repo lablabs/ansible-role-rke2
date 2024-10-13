@@ -44,7 +44,7 @@ node-label:
   - {{ label }}
 {% endfor %}
 {% endif %}
-snapshotter: {{ rke2_snapshooter }}
+snapshotter: {{ rke2_snapshotter }}
 node-name: {{ rke2_node_name }}
 {% if ( disable_kube_proxy | bool ) %}
 disable-kube-proxy: true
