@@ -13,4 +13,4 @@
     dest: "{{ rke2_data_path }}/server/manifests/rke2-ingress-nginx-config.yaml"
     owner: root
     group: root
-    mode: 0664
+    mode: 0660

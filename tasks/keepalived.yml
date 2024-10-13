@@ -20,7 +20,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: 0750
 
 - name: Create Kubernetes API health check script for Debian OS family
   ansible.builtin.template:
@@ -28,7 +28,7 @@
     dest: /etc/keepalived/check_apiserver.sh
     owner: root
     group: root
-    mode: 0755
+    mode: 0750
   when:  ansible_facts['os_family'] == "Debian"
   notify: Restart keepalived
 
@@ -38,7 +38,7 @@
     dest: /usr/libexec/keepalived/check_apiserver.sh
     owner: root
     group: root
-    mode: 0755
+    mode: 0750
   when:  ansible_facts['os_family'] == "RedHat"
   notify: Restart keepalived
 
@@ -48,7 +48,7 @@
     dest: /etc/keepalived/check_rke2server.sh
     owner: root
     group: root
-    mode: 0755
+    mode: 0750
   when:  ansible_facts['os_family'] == "Debian"
   notify: Restart keepalived
 
@@ -58,7 +58,7 @@
     dest: /usr/libexec/keepalived/check_rke2server.sh
     owner: root
     group: root
-    mode: 0755
+    mode: 0750
   when:  ansible_facts['os_family'] == "RedHat"
   notify: Restart keepalived
 
@@ -68,7 +68,7 @@
     dest: /etc/keepalived/keepalived.conf
     owner: root
     group: root
-    mode: 0644
+    mode: 0640
   notify: Restart keepalived
 
 - name: Enable keepalived and make sure it is not masked
