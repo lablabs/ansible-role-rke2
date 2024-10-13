@@ -6,7 +6,7 @@
     path: /etc/rancher/rke2
     owner: root
     group: root
-    mode: 0755
+    mode: 0750
 
 - name: Set server taints
   ansible.builtin.set_fact:
@@ -50,12 +50,12 @@
         state: directory
         path: "{{ rke2_etcd_snapshot_destination_dir }}"
         recurse: true
-        mode: 0755
+        mode: 0750
     - name: Copy etcd snapshot file
       ansible.builtin.copy:
         src: "{{ rke2_etcd_snapshot_source_dir }}/{{ rke2_etcd_snapshot_file }}"
         dest: "{{ rke2_etcd_snapshot_destination_dir }}/{{ rke2_etcd_snapshot_file }}"
-        mode: 0644
+        mode: 0640
         force: true
     - name: Restore etcd from a snapshot
       ansible.builtin.shell: |
