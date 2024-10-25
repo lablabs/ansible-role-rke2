@@ -95,3 +95,6 @@ cloud-provider-name: "{{ rke2_cloud_provider_name }}"
 {% endif %}
 cluster-cidr: "{% for network in rke2_cluster_cidr %}{{ network }}{% if not loop['last'] %},{% endif %}{% endfor %}"
 service-cidr: "{% for network in rke2_service_cidr %}{{ network }}{% if not loop['last'] %},{% endif %}{% endfor %}"
+{% if (rke2_selinux | bool ) %}
+selinux: true
+{% endif %}
