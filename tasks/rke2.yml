@@ -81,7 +81,7 @@
 
 - name: Set RKE2 bin path
   ansible.builtin.set_fact:
-    rke2_bin_path: "{{ '/usr/local/bin/rke2' if (usr_local.stat.writeable) and (partition_result.rc == 1) else '/opt/rke2/bin/rke2' }}"
+    rke2_bin_path: "{{ '/usr/local/bin/rke2' if (usr_local.stat.writeable) or (partition_result.rc == 1) else '/opt/rke2/bin/rke2' }}"
 
 - name: Check RKE2 version
   ansible.builtin.shell: |
