@@ -1,5 +1,4 @@
 ---
-
 - name: Download RKE2 installation script
   ansible.builtin.get_url:
     url: "{{ rke2_install_bash_url }}"
@@ -25,21 +24,21 @@
 - name: Download RKE2 checksum and artifacts
   when: rke2_airgap_mode and rke2_airgap_implementation == 'download'
   block:
-  - name: Download sha256 checksum file
-    ansible.builtin.get_url:
-      url: "{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
-      dest: "{{ rke2_artifact_path }}/sha256sum-{{ rke2_architecture }}.txt"
-      force: yes
-      mode: 0644
-      timeout: 30
-  - name: Download RKE2 artifacts and compare with checksums
-    ansible.builtin.get_url:
-      url: "{{ rke2_artifact_url }}/{{ rke2_version }}/{{ item }}"
-      dest: "{{ rke2_artifact_path }}/{{ item }}"
-      mode: 0644
-      checksum: "sha256:{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
-      timeout: 30
-    with_items: "{{ rke2_artifact | reject('search', 'sha256sum') | list }}"
+    - name: Download sha256 checksum file
+      ansible.builtin.get_url:
+        url: "{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
+        dest: "{{ rke2_artifact_path }}/sha256sum-{{ rke2_architecture }}.txt"
+        force: yes
+        mode: 0644
+        timeout: 30
+    - name: Download RKE2 artifacts and compare with checksums
+      ansible.builtin.get_url:
+        url: "{{ rke2_artifact_url }}/{{ rke2_version }}/{{ item }}"
+        dest: "{{ rke2_artifact_path }}/{{ item }}"
+        mode: 0644
+        checksum: "sha256:{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
+        timeout: 30
+      with_items: "{{ rke2_artifact | reject('search', 'sha256sum') | list }}"
 
 - name: Copy local RKE2 artifacts
   ansible.builtin.copy:
@@ -53,18 +52,18 @@
 - name: Airgap mode - additional images tarballs
   when: rke2_airgap_mode and ( rke2_airgap_copy_additional_tarballs | length > 0 )
   block:
-  - name: Create additional images tarballs folder
-    ansible.builtin.file:
-      path: "{{ rke2_tarball_images_path }}"
-      state: directory
-      mode: 0700
-  - name: Copy additional tarball images RKE2 components
-    ansible.builtin.copy:
-      src: "{{ rke2_airgap_copy_sourcepath }}/{{ item }}"
-      dest: "{{ rke2_tarball_images_path }}/{{ item }}"
-      mode: 0644
-      force: yes
-    with_items: "{{ rke2_airgap_copy_additional_tarballs }}"
+    - name: Create additional images tarballs folder
+      ansible.builtin.file:
+        path: "{{ rke2_tarball_images_path }}"
+        state: directory
+        mode: 0700
+    - name: Copy additional tarball images RKE2 components
+      ansible.builtin.copy:
+        src: "{{ rke2_airgap_copy_sourcepath }}/{{ item }}"
+        dest: "{{ rke2_tarball_images_path }}/{{ item }}"
+        mode: 0644
+        force: yes
+      with_items: "{{ rke2_airgap_copy_additional_tarballs }}"
 
 - name: Populate service facts
   ansible.builtin.service_facts:
@@ -74,9 +73,15 @@
     path: /usr/local
   register: usr_local
 
+- name: Check if separate partition
+  ansible.builtin.command: grep '/usr/local ' /proc/mounts
+  changed_when: false
+  register: partition_result
+  failed_when: partition_result.rc >= 2
+
 - name: Set RKE2 bin path
   ansible.builtin.set_fact:
-    rke2_bin_path: "{{ '/usr/local/bin/rke2' if usr_local.stat.writeable == True else ' /opt/rke2/bin/rke2' }}"
+    rke2_bin_path: "{{ '/usr/local/bin/rke2' if (usr_local.stat.writeable) and (partition_result.rc == 1) else '/opt/rke2/bin/rke2' }}"
 
 - name: Check RKE2 version
   ansible.builtin.shell: |
@@ -112,6 +117,7 @@
   register: versions_check
 
 - name: Set RKE2 versions
+  when: not ansible_check_mode
   ansible.builtin.set_fact:
     installed_version: "{{ versions.installed_version }}"
     running_version: "{{ versions.running_version }}"
@@ -125,7 +131,7 @@
     INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
     INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
   changed_when: false
-  when: rke2_version != installed_version and rke2_airgap_mode
+  when: not ansible_check_mode and rke2_version != installed_version and rke2_airgap_mode
 
 - name: Run RKE2 script
   ansible.builtin.command:
@@ -135,8 +141,9 @@
     INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
     INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
     INSTALL_RKE2_METHOD: "{{ rke2_method }}"
+    INSTALL_RKE2_TYPE: "{{ rke2_type }}"
   changed_when: false
-  when: rke2_version != installed_version and not rke2_airgap_mode
+  when: not ansible_check_mode and rke2_version != installed_version and not rke2_airgap_mode
 
 - name: Copy Custom Manifests
   ansible.builtin.template:
