@@ -31,7 +31,7 @@
     - rke2_airgap_mode
     - rke2_airgap_implementation == 'download'
   block:
-  - name: "Download sha256 checksum file"
+  - name: Download sha256 checksum file
     ansible.builtin.get_url:
       url: "{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
       dest: "{{ rke2_artifact_path }}/sha256sum-{{ rke2_architecture }}.txt"
