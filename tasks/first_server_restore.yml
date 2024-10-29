@@ -1,0 +1,17 @@
+- name: Restore etcd - get all nodes
+  ansible.builtin.shell: |
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+    get nodes --no-headers -o custom-columns=":metadata.name"
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: node_names
+
+- name: Restore etcd - remove old nodes
+  ansible.builtin.shell: |
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+    delete node {{ item }} 2>&1 || true
+  args:
+    executable: /bin/bash
+  with_items: "{{ node_names.stdout_lines | difference(groups[rke2_cluster_group_name]) }}"
+  changed_when: false

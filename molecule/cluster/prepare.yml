@@ -3,10 +3,16 @@
   hosts: node*
   become: true
   tasks:
-    - name: Install packages
+    - name: Install wget for Ubuntu
       ansible.builtin.package:
         update_cache: true
-        name: "{{ item }}"
-      loop:
-        - wget
-        - curl
+        name:
+          - wget
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Install iproute for RockyLinux
+      ansible.builtin.package:
+        update_cache: true
+        name:
+          - iproute
+      when: ansible_distribution == "Rocky"

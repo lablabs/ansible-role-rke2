@@ -18,6 +18,7 @@
   delegate_to: localhost
   become: false
   when:
+  - not ansible_check_mode
   - rke2_download_kubeconf | bool
 
 - name: Summary

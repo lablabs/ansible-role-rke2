@@ -28,9 +28,8 @@ The Role can install the RKE2 in 3 modes:
 
 ## Tested on
 
-* Rocky Linux 8
-* Ubuntu 20.04 LTS
-* Ubuntu 22.04 LTS
+* Rocky Linux 9
+* Ubuntu 24.04 LTS
 
 ## Role Variables
 
@@ -111,6 +110,9 @@ rke2_kubevip_metrics_port: 2112
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
 
+# Configure cluster domain
+# rke2_cluster_domain: cluster.example.net
+
 # API Server destination port
 rke2_apiserver_dest_port: 6443
 
@@ -189,7 +191,7 @@ rke2_disable_cloud_controller: false
 
 # Cloud provider to use for the cluster (aws, azure, gce, openstack, vsphere, external)
 # applicable only if rke2_disable_cloud_controller is true
-rke2_cloud_provider_name: "rke2"
+rke2_cloud_provider_name: "external"
 
 # Path to custom manifests deployed during the RKE2 installation
 # It is possible to use Jinja2 templating in the manifests
@@ -304,6 +306,13 @@ rke2_agents_group_name: workers
 # rke2_kube_scheduler_arg:
 #   - "bind-address=0.0.0.0"
 
+# (Optional) Configure nginx via HelmChartConfig: https://docs.rke2.io/networking/networking_services#nginx-ingress-controller
+# rke2_ingress_nginx_values:
+#   controller:
+#     config:
+#       use-forwarded-headers: "true"
+rke2_ingress_nginx_values: {}
+
 # Cordon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
 rke2_drain_node_during_upgrade: false
 
@@ -323,6 +332,17 @@ rke2_debug: false
 
 # The value for the node-name configuration item
 rke2_node_name: "{{ inventory_hostname }}"
+
+# the network to use for Pods.. Set to '10.42.0.0/16' by default.
+rke2_cluster_cidr:
+  - 10.42.0.0/16
+
+# the network to use for ClusterIP Services. Set to '10.43.0.0/16' by default.
+rke2_service_cidr:
+  - 10.43.0.0/16
+
+# Enable SELinux for rke2
+rke2_selinux: false
 ```
 
 ## Inventory file example
