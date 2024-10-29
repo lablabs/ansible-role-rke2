@@ -6,7 +6,7 @@
     path: /etc/rancher/rke2
     owner: root
     group: root
-    mode: 075
+    mode: 0755
 
 - name: Set server taints
   ansible.builtin.set_fact:
