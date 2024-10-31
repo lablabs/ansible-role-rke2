@@ -247,8 +247,8 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
 rke2_snapshotter: "{{ rke2_snapshooter }}"
 rke2_snapshooter: overlayfs # legacy variable that only exists to keep backward compatibility with previous configurations
 
-# Deploy RKE2 with default CNI canal
-rke2_cni: canal
+# Deploy RKE2 with default CNI canal (should be a list)
+rke2_cni: [canal]
 
 # Validate system configuration against the selected benchmark
 # (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25)
