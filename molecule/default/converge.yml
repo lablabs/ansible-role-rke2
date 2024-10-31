@@ -4,6 +4,6 @@
   become: yes
   vars:
     rke2_version: v1.27.1+rke2r1
-    rke2_snapshooter: native
+    rke2_snapshotter: native
   roles:
     - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
