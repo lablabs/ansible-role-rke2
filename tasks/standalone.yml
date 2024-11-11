@@ -64,4 +64,4 @@
     - '" Ready "  in first_server.stdout'
   retries: 40
   delay: 15
-  when: not ansible_check_mode rke2_cni != 'none'
+  when: not ansible_check_mode and rke2_cni != 'none'

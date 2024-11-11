@@ -1,6 +1,6 @@
 ---
 # The node type - server or agent
-rke2_type: server
+rke2_type: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' if inventory_hostname in groups[rke2_agents_group_name] }}"
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -206,7 +206,8 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
   # region: "" # optional - defaults to us-east-1
   # folder: "" # optional - defaults to top level of bucket
 # Override default containerd snapshotter
-rke2_snapshooter: overlayfs
+rke2_snapshotter: "{{ rke2_snapshooter }}"
+rke2_snapshooter: overlayfs # legacy variable that only exists to keep backward compatibility with previous configurations
 
 # Deploy RKE2 with default CNI canal
 rke2_cni: canal
