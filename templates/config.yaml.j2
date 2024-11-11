@@ -6,6 +6,9 @@ server: https://{{ rke2_api_private_ip }}:9345
 server: https://{{ rke2_api_ip }}:9345
 {% endif %}
 {% endif %}
+{% if rke2_bind_address is defined %}
+bind-address: {{ rke2_bind_address }}
+{% endif %}
 {% if rke2_agent_token is defined %}
 agent-token: {{ rke2_agent_token }}
 {% endif %}
@@ -19,6 +22,9 @@ tls-san:
 {% for san in rke2_additional_sans %}
   - {{ san }}
 {% endfor %}
+{% endif %}
+{% if rke2_cluster_domain is defined %}
+cluster-domain: {{ rke2_cluster_domain }}
 {% endif %}
 {% if ( combined_node_taints is defined and combined_node_taints|length > 0) %}
 node-taint:
@@ -38,7 +44,7 @@ node-label:
   - {{ label }}
 {% endfor %}
 {% endif %}
-snapshotter: {{ rke2_snapshooter }}
+snapshotter: {{ rke2_snapshotter }}
 node-name: {{ rke2_node_name }}
 {% if ( disable_kube_proxy | bool ) %}
 disable-kube-proxy: true
@@ -86,4 +92,9 @@ kube-proxy-arg:
 {% if (rke2_disable_cloud_controller | bool ) %}
 disable-cloud-controller: true
 cloud-provider-name: "{{ rke2_cloud_provider_name }}"
+{% endif %}
+cluster-cidr: "{% for network in rke2_cluster_cidr %}{{ network }}{% if not loop['last'] %},{% endif %}{% endfor %}"
+service-cidr: "{% for network in rke2_service_cidr %}{{ network }}{% if not loop['last'] %},{% endif %}{% endfor %}"
+{% if (rke2_selinux | bool ) %}
+selinux: true
 {% endif %}

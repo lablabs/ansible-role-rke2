@@ -1,7 +1,7 @@
 {% if rke2_custom_registry_mirrors | length > 0 %}
 mirrors:
 {% for mirror in rke2_custom_registry_mirrors %}
-  {{ mirror.name }}:
+  "{{ mirror.name }}":
     endpoint:
 {% for endpoint in mirror.endpoint %}
       - "{{ endpoint }}"
@@ -16,6 +16,6 @@ mirrors:
 configs:
 {% for config in rke2_custom_registry_configs %}
   {{ config.endpoint }}:
-    {{ config.config | to_nice_yaml(indent=6) }}
+    {{ config.config | to_nice_yaml(indent=2) | indent(4) }}
 {%- endfor %}
 {% endif %}

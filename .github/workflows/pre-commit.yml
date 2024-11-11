@@ -9,8 +9,8 @@ jobs:
   pre-commit:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
 
     - name: Run pre-commit
-      uses: pre-commit/action@v2.0.3
+      uses: pre-commit/action@v3.0.1

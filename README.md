@@ -28,9 +28,8 @@ The Role can install the RKE2 in 3 modes:
 
 ## Tested on
 
-* Rocky Linux 8
-* Ubuntu 20.04 LTS
-* Ubuntu 22.04 LTS
+* Rocky Linux 9
+* Ubuntu 24.04 LTS
 
 ## Role Variables
 
@@ -39,7 +38,7 @@ This is a copy of `defaults/main.yml`
 ```yaml
 ---
 # The node type - server or agent
-rke2_type: server
+rke2_type: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' if inventory_hostname in groups[rke2_agents_group_name] }}"
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -110,6 +109,9 @@ rke2_kubevip_metrics_port: 2112
 
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
+
+# Configure cluster domain
+# rke2_cluster_domain: cluster.example.net
 
 # API Server destination port
 rke2_apiserver_dest_port: 6443
@@ -189,7 +191,7 @@ rke2_disable_cloud_controller: false
 
 # Cloud provider to use for the cluster (aws, azure, gce, openstack, vsphere, external)
 # applicable only if rke2_disable_cloud_controller is true
-rke2_cloud_provider_name: "rke2"
+rke2_cloud_provider_name: "external"
 
 # Path to custom manifests deployed during the RKE2 installation
 # It is possible to use Jinja2 templating in the manifests
@@ -242,10 +244,11 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
   # region: "" # optional - defaults to us-east-1
   # folder: "" # optional - defaults to top level of bucket
 # Override default containerd snapshotter
-rke2_snapshooter: overlayfs
+rke2_snapshotter: "{{ rke2_snapshooter }}"
+rke2_snapshooter: overlayfs # legacy variable that only exists to keep backward compatibility with previous configurations
 
-# Deploy RKE2 with default CNI canal
-rke2_cni: canal
+# Deploy RKE2 with default CNI canal (should be a list)
+rke2_cni: [canal]
 
 # Validate system configuration against the selected benchmark
 # (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25)
@@ -304,6 +307,13 @@ rke2_agents_group_name: workers
 # rke2_kube_scheduler_arg:
 #   - "bind-address=0.0.0.0"
 
+# (Optional) Configure nginx via HelmChartConfig: https://docs.rke2.io/networking/networking_services#nginx-ingress-controller
+# rke2_ingress_nginx_values:
+#   controller:
+#     config:
+#       use-forwarded-headers: "true"
+rke2_ingress_nginx_values: {}
+
 # Cordon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
 rke2_drain_node_during_upgrade: false
 
@@ -323,6 +333,17 @@ rke2_debug: false
 
 # The value for the node-name configuration item
 rke2_node_name: "{{ inventory_hostname }}"
+
+# the network to use for Pods.. Set to '10.42.0.0/16' by default.
+rke2_cluster_cidr:
+  - 10.42.0.0/16
+
+# the network to use for ClusterIP Services. Set to '10.43.0.0/16' by default.
+rke2_service_cidr:
+  - 10.43.0.0/16
+
+# Enable SELinux for rke2
+rke2_selinux: false
 ```
 
 ## Inventory file example
@@ -332,14 +353,14 @@ The RKE2 Kubernetes master/server nodes must belong to `masters` group and worke
 
 ```ini
 [masters]
-master-01 ansible_host=192.168.123.1 rke2_type=server
-master-02 ansible_host=192.168.123.2 rke2_type=server
-master-03 ansible_host=192.168.123.3 rke2_type=server
+master-01 ansible_host=192.168.123.1
+master-02 ansible_host=192.168.123.2
+master-03 ansible_host=192.168.123.3
 
 [workers]
-worker-01 ansible_host=192.168.123.11 rke2_type=agent
-worker-02 ansible_host=192.168.123.12 rke2_type=agent
-worker-03 ansible_host=192.168.123.13 rke2_type=agent
+worker-01 ansible_host=192.168.123.11
+worker-02 ansible_host=192.168.123.12
+worker-03 ansible_host=192.168.123.13
 
 [k8s_cluster:children]
 masters

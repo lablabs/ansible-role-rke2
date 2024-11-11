@@ -40,7 +40,13 @@
 - name: Register if we need to do a etcd restore from s3
   ansible.builtin.set_fact:
     do_etcd_restore_from_s3: true
-  when: not rke2_etcd_snapshot_file and rke2_etcd_snapshot_s3_options is defined and rke2_etcd_snapshot_s3_options.access_key and rke2_etcd_snapshot_s3_options.secret_key and rke2_etcd_snapshot_s3_options.bucket and rke2_etcd_snapshot_s3_options.snapshot_name
+  when:
+    - not rke2_etcd_snapshot_file
+    - rke2_etcd_snapshot_s3_options is defined
+    - rke2_etcd_snapshot_s3_options.access_key
+    - rke2_etcd_snapshot_s3_options.secret_key
+    - rke2_etcd_snapshot_s3_options.bucket
+    - rke2_etcd_snapshot_s3_options.snapshot_name
 
 - name: Restore etcd from file
   when: do_etcd_restore is defined
@@ -65,6 +71,7 @@
         --token {{ rke2_token }}
       register: task_output # <- Registers the command output.
       changed_when: task_output.rc != 0 # <- Uses the return code to define when the task has changed.
+      when: not ansible_check_mode
 
 - name: Restore etcd from s3
   when: do_etcd_restore_from_s3 is defined
@@ -86,6 +93,7 @@
         --token {{ rke2_token }}
       register: task_output # <- Registers the command output.
       changed_when: task_output.rc != 0 # <- Uses the return code to define when the task has changed.
+      when: not ansible_check_mode
 
 - name: Start RKE2 service on the first server
   ansible.builtin.systemd:
@@ -116,7 +124,9 @@
   - ('"cni plugin not initialized" in node_status.stdout' or '"kubelet is posting ready status." in node_status.stdout')
   retries: 100
   delay: 15
-  when: rke2_cni == 'none'
+  when:
+  - not ansible_check_mode
+  - rke2_cni == 'none'
 
 - name: Wait for the first server be ready - with CNI
   ansible.builtin.shell: |
@@ -130,17 +140,45 @@
     '" Ready "  in first_server.stdout'
   retries: 40
   delay: 15
-  when: rke2_cni != 'none'
+  when:
+  - not ansible_check_mode
+  - rke2_cni != 'none'
 
-- name: Restore etcd - remove old <node>.node-password.rke2 secrets
-  ansible.builtin.shell: |
-    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-    delete secret {{ item }}.node-password.rke2 -n kube-system 2>&1 || true
-  args:
-    executable: /bin/bash
-  with_items: "{{ groups[rke2_cluster_group_name] }}"
-  changed_when: false
-  when: inventory_hostname != item and (do_etcd_restore is defined or do_etcd_restore_from_s3 is defined)
+- name: Restore etcd
+  when: do_etcd_restore is defined or do_etcd_restore_from_s3 is defined
+  block:
+    - name: Get registered nodes
+      ansible.builtin.shell: |
+        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+        get nodes --no-headers | awk '{print $1}'
+      args:
+        executable: /bin/bash
+      changed_when: false
+      register: registered_node_names
+
+    - name: Get all node names
+      ansible.builtin.set_fact:
+        node_names: "{{ hostvars | dict2items | map(attribute='value.rke2_node_name') }}"
+      run_once: true
+      register: node_names
+
+    - name: remove old <node>.node-password.rke2 secrets
+      ansible.builtin.shell: |
+        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+        delete secret {{ item }}.node-password.rke2 -n kube-system 2>&1 || true
+      args:
+        executable: /bin/bash
+      with_items: "{{ registered_node_names.stdout_lines | difference(node_names) }}"
+      changed_when: false
+
+    - name: remove old nodes
+      ansible.builtin.shell: |
+        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+        delete node {{ item }} 2>&1 || true
+      args:
+        executable: /bin/bash
+      with_items: "{{ registered_node_names.stdout_lines | difference(node_names) }}"
+      changed_when: false
 
 - name: Set an Active Server variable
   ansible.builtin.set_fact:
@@ -148,22 +186,3 @@
   delegate_to: "{{ item }}"
   delegate_facts: true
   loop: "{{ groups[rke2_cluster_group_name] }}"
-
-- name: Get all nodes
-  ansible.builtin.shell: |
-    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-    get nodes --no-headers | awk '{print $1}'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  register: node_names
-
-- name: Restore etcd - remove old nodes
-  ansible.builtin.shell: |
-    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-    delete node {{ item }} 2>&1 || true
-  args:
-    executable: /bin/bash
-  with_items: "{{ node_names.stdout_lines | difference(groups[rke2_cluster_group_name]) }}"
-  changed_when: false
-  when: inventory_hostname != item and (do_etcd_restore is defined or do_etcd_restore_from_s3 is defined)
