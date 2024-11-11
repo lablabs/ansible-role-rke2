@@ -45,7 +45,7 @@
         checksum: "sha256:{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
         timeout: 30
       with_items: "{{ rke2_artifact | reject('search', 'sha256sum') | list }}"
-    rescue:
+  rescue:
     - name: "Remote downloading failed: Downloading locally and pushing to remote hosts"
       ansible.builtin.pause: # Slight delay to make sure you know it's gonna happen and have time to cancel
         seconds: 7
@@ -122,7 +122,7 @@
     - name: Register artifacts
       ansible.builtin.stat:
         path: "{{ rke2_artifact_path }}/{{ item }}"
-      with_items:  "{{ rke2_artifact }}"
+      with_items: "{{ rke2_artifact }}"
       register: artifacts
     - name: Register install script
       ansible.builtin.stat:
@@ -211,25 +211,25 @@
 - name: Run RKE2 install script
   when: rke2_version != installed_version
   block:
-  - name: Run the script with airgap variables
-    ansible.builtin.command:
-      cmd: "{{ rke2_install_script_dir }}/rke2.sh"
-    environment:
-      INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
-      INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
-      INSTALL_RKE2_METHOD: "{{ rke2_method }}"
-    changed_when: false
-    when: rke2_airgap_mode
-  - name: Run RKE2 script without airgap variables
-    ansible.builtin.command:
-      cmd: "{{ rke2_install_script_dir }}/rke2.sh"
-    environment:
-      INSTALL_RKE2_VERSION: "{{ rke2_version }}"
-      INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
-      INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
-      INSTALL_RKE2_METHOD: "{{ rke2_method }}"
-    changed_when: false
-    when: not ansible_check_mode and not rke2_airgap_mode
+    - name: Run the script with airgap variables
+      ansible.builtin.command:
+        cmd: "{{ rke2_install_script_dir }}/rke2.sh"
+      environment:
+        INSTALL_RKE2_ARTIFACT_PATH: "{{ rke2_artifact_path }}"
+        INSTALL_RKE2_AGENT_IMAGES_DIR: "{{ rke2_data_path }}/agent/images"
+        INSTALL_RKE2_METHOD: "{{ rke2_method }}"
+      changed_when: false
+      when: rke2_airgap_mode
+    - name: Run RKE2 script without airgap variables
+      ansible.builtin.command:
+        cmd: "{{ rke2_install_script_dir }}/rke2.sh"
+      environment:
+        INSTALL_RKE2_VERSION: "{{ rke2_version }}"
+        INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
+        INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
+        INSTALL_RKE2_METHOD: "{{ rke2_method }}"
+      changed_when: false
+      when: not ansible_check_mode and not rke2_airgap_mode
 
 - name: Copy Custom Manifests
   ansible.builtin.template:
@@ -244,31 +244,31 @@
 - name: Create /server/manifests directory
   when: rke2_custom_manifests or rke2_static_pods
   block:
-  - name: Create directory
-    ansible.builtin.file:
-      path: "{{ rke2_data_path }}/server/manifests"
-      state: directory
-      mode: 0755
-  - name: Copy Custom Manifests
-    ansible.builtin.template:
-      src: "{{ item }}"
-      dest: "{{ rke2_data_path }}/server/manifests/{{ item | basename | regex_replace('\\.j2$', '') }}"
-      owner: root
-      group: root
-      mode: 0644
-    with_fileglob: "{{ rke2_custom_manifests }}/*"
-    when:
-      - rke2_custom_manifests
-      - inventory_hostname == groups[rke2_servers_group_name].0
-  - name: Copy Static Pods
-    ansible.builtin.copy:
-      src: "{{ item }}"
-      dest: "{{ rke2_data_path }}/agent/pod-manifests/{{ item | basename | regex_replace('\\.j2$', '') }}"
-      owner: root
-      group: root
-      mode: 0644
-    with_fileglob: "{{ rke2_static_pods }}/*"
-    when: rke2_static_pods
+    - name: Create directory
+      ansible.builtin.file:
+        path: "{{ rke2_data_path }}/server/manifests"
+        state: directory
+        mode: 0755
+    - name: Copy Custom Manifests
+      ansible.builtin.template:
+        src: "{{ item }}"
+        dest: "{{ rke2_data_path }}/server/manifests/{{ item | basename | regex_replace('\\.j2$', '') }}"
+        owner: root
+        group: root
+        mode: 0644
+      with_fileglob: "{{ rke2_custom_manifests }}/*"
+      when:
+        - rke2_custom_manifests
+        - inventory_hostname == groups[rke2_servers_group_name].0
+    - name: Copy Static Pods
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ rke2_data_path }}/agent/pod-manifests/{{ item | basename | regex_replace('\\.j2$', '') }}"
+        owner: root
+        group: root
+        mode: 0644
+      with_fileglob: "{{ rke2_static_pods }}/*"
+      when: rke2_static_pods
 
 - name: Copy RKE2 environment file
   ansible.builtin.template:
