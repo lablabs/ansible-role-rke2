@@ -38,7 +38,7 @@ This is a copy of `defaults/main.yml`
 ```yaml
 ---
 # The node type - server or agent
-rke2_type: server
+rke2_type: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' if inventory_hostname in groups[rke2_agents_group_name] }}"
 
 # Deploy the control plane in HA mode
 rke2_ha_mode: false
@@ -244,10 +244,11 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
   # region: "" # optional - defaults to us-east-1
   # folder: "" # optional - defaults to top level of bucket
 # Override default containerd snapshotter
-rke2_snapshooter: overlayfs
+rke2_snapshotter: "{{ rke2_snapshooter }}"
+rke2_snapshooter: overlayfs # legacy variable that only exists to keep backward compatibility with previous configurations
 
-# Deploy RKE2 with default CNI canal
-rke2_cni: canal
+# Deploy RKE2 with default CNI canal (should be a list)
+rke2_cni: [canal]
 
 # Validate system configuration against the selected benchmark
 # (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25)
@@ -352,14 +353,14 @@ The RKE2 Kubernetes master/server nodes must belong to `masters` group and worke
 
 ```ini
 [masters]
-master-01 ansible_host=192.168.123.1 rke2_type=server
-master-02 ansible_host=192.168.123.2 rke2_type=server
-master-03 ansible_host=192.168.123.3 rke2_type=server
+master-01 ansible_host=192.168.123.1
+master-02 ansible_host=192.168.123.2
+master-03 ansible_host=192.168.123.3
 
 [workers]
-worker-01 ansible_host=192.168.123.11 rke2_type=agent
-worker-02 ansible_host=192.168.123.12 rke2_type=agent
-worker-03 ansible_host=192.168.123.13 rke2_type=agent
+worker-01 ansible_host=192.168.123.11
+worker-02 ansible_host=192.168.123.12
+worker-03 ansible_host=192.168.123.13
 
 [k8s_cluster:children]
 masters
