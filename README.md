@@ -189,8 +189,9 @@ disable_kube_proxy: false
 # Option to disable builtin cloud controller - mostly for onprem
 rke2_disable_cloud_controller: false
 
-# Cloud provider to use for the cluster (aws, azure, gce, openstack, vsphere, external)
+# Cloud provider to use for the cluster (aws, azure, gce, harvester, rancher-vsphere, openstack, vsphere, external)
 # applicable only if rke2_disable_cloud_controller is true
+# Can be set to false to disable setting it in the configuration file
 rke2_cloud_provider_name: "external"
 
 # Path to custom manifests deployed during the RKE2 installation
