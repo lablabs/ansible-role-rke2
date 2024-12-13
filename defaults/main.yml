@@ -213,7 +213,7 @@ rke2_snapshooter: overlayfs # legacy variable that only exists to keep backward 
 rke2_cni: canal
 
 # Validate system configuration against the selected benchmark
-# (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25)
+# (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25) or "cis" for rke2 1.30+ 
 rke2_cis_profile: ""
 
 # Download Kubernetes config file to the Ansible controller
