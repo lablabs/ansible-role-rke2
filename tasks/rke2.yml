@@ -231,16 +231,6 @@
       changed_when: false
       when: not rke2_airgap_mode
 
-- name: Copy Custom Manifests
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: "{{ rke2_data_path }}/server/manifests/"
-    owner: root
-    group: root
-    mode: 0644
-  with_items: "{{ rke2_custom_manifests }}"
-  when: rke2_custom_manifests
-
 - name: Create /server/manifests directory
   when: rke2_custom_manifests or rke2_static_pods
   block:
