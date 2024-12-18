@@ -55,6 +55,7 @@
       ansible.builtin.file:
         path: "{{ rke2_airgap_copy_sourcepath }}"
         state: directory
+        mode: 0700
     - name: Download RKE2 checksum locally
       delegate_to: localhost
       run_once: true
@@ -72,6 +73,7 @@
         force: yes
         url: "{{ item }}"
         dest: "{{ rke2_airgap_copy_sourcepath }}/"
+        mode: 0640
       with_items: "{{ [rke2_artifact_url+'/'+rke2_version+'/'] | product(rke2_artifact) | map('join') | list + [rke2_install_bash_url] }}"
     - name: Copy local RKE2 files to remote hosts
       ansible.builtin.copy:
