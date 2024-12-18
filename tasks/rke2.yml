@@ -241,34 +241,15 @@
   with_items: "{{ rke2_custom_manifests }}"
   when: rke2_custom_manifests
 
-- name: Create /server/manifests directory
-  when: rke2_custom_manifests or rke2_static_pods
-  block:
-    - name: Create directory
-      ansible.builtin.file:
-        path: "{{ rke2_data_path }}/server/manifests"
-        state: directory
-        mode: 0755
-    - name: Copy Custom Manifests
-      ansible.builtin.template:
-        src: "{{ item }}"
-        dest: "{{ rke2_data_path }}/server/manifests/{{ item | basename | regex_replace('\\.j2$', '') }}"
-        owner: root
-        group: root
-        mode: 0644
-      with_fileglob: "{{ rke2_custom_manifests }}/*"
-      when:
-        - rke2_custom_manifests
-        - inventory_hostname == groups[rke2_servers_group_name].0
-    - name: Copy Static Pods
-      ansible.builtin.copy:
-        src: "{{ item }}"
-        dest: "{{ rke2_data_path }}/agent/pod-manifests/{{ item | basename | regex_replace('\\.j2$', '') }}"
-        owner: root
-        group: root
-        mode: 0644
-      with_fileglob: "{{ rke2_static_pods }}/*"
-      when: rke2_static_pods
+- name: Copy Static Pods
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ rke2_data_path }}/agent/pod-manifests/"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ rke2_static_pods }}"
+  when: rke2_static_pods
 
 - name: Copy RKE2 environment file
   ansible.builtin.template:
