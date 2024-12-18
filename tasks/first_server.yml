@@ -146,9 +146,11 @@
   when: do_etcd_restore is defined or do_etcd_restore_from_s3 is defined
   block:
     - name: Get registered nodes
-      ansible.builtin.shell: |
-        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-        get nodes --no-headers | awk '{print $1}'
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+          get nodes --no-headers | awk '{print $1}'
       args:
         executable: /bin/bash
       changed_when: false
