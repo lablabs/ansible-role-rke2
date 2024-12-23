@@ -6,5 +6,5 @@ metadata:
 spec:
   valuesContent: |-
 {% if rke2_ingress_nginx_values | length > 0 %}
-    {{ rke2_ingress_nginx_values | to_nice_yaml | indent(2) }}
+    {{ rke2_ingress_nginx_values | to_nice_yaml(indent=2) | indent(4) }}
 {% endif %}
