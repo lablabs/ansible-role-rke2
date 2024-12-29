@@ -143,7 +143,7 @@ rke2_data_path: /var/lib/rancher/rke2
 rke2_artifact_url: https://github.com/rancher/rke2/releases/download/
 
 # Local path to store artifacts
-rke2_artifact_path: /rke2/artifact
+rke2_artifact_path: /var/tmp
 
 # Airgap required artifacts
 rke2_artifact:
@@ -174,7 +174,7 @@ rke2_tarball_images_path: "{{ rke2_data_path }}/agent/images"
 rke2_architecture: amd64
 
 # Destination directory for RKE2 installation script
-rke2_install_script_dir: /var/tmp
+rke2_install_script_dir: "{{ rke2_artifact_path }}"
 
 # RKE2 channel
 rke2_channel: stable
