@@ -1,5 +1,4 @@
 ---
-
 - name: Create etcd group
   ansible.builtin.group:
     name: etcd
@@ -13,15 +12,9 @@
     comment: etcd user
     state: present
 
-- name: Check if separate partition
-  ansible.builtin.command: grep '/usr/local ' /proc/mounts
-  changed_when: false
-  register: partition_result
-  failed_when: partition_result.rc >= 2
-
 - name: Copy systemctl config file for kernel hardening
   ansible.builtin.copy:
-    src: "{{ '/usr/local/share/rke2/rke2-cis-sysctl.conf' if (usr_local.stat.writeable) and (partition_result.rc == 1) else '/opt/rke2/share/rke2/rke2-cis-sysctl.conf' }}"
+    src: "{{ '/usr/local/share/rke2/rke2-cis-sysctl.conf' if (not usr_local.stat.writeable) or (partition_result.rc == 1) else '/opt/rke2/share/rke2/rke2-cis-sysctl.conf' }}"
     dest: /etc/sysctl.d/60-rke2-cis.conf
     mode: 0600
     remote_src: true

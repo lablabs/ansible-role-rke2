@@ -91,7 +91,9 @@ kube-proxy-arg:
 {% endif %}
 {% if (rke2_disable_cloud_controller | bool ) %}
 disable-cloud-controller: true
+{% if rke2_cloud_provider_name != false %}
 cloud-provider-name: "{{ rke2_cloud_provider_name }}"
+{% endif %}
 {% endif %}
 cluster-cidr: "{% for network in rke2_cluster_cidr %}{{ network }}{% if not loop['last'] %},{% endif %}{% endfor %}"
 service-cidr: "{% for network in rke2_service_cidr %}{{ network }}{% if not loop['last'] %},{% endif %}{% endfor %}"

@@ -167,7 +167,7 @@ rke2_airgap_copy_sourcepath: local_artifacts
 # (File extensions in the list and on the real files must be retained)
 rke2_airgap_copy_additional_tarballs: []
 
-# Destination for airgap additional images tarballs ( see https://docs.rke2.io/install/airgap/#tarball-method )
+# Destination for airgap additional images tarballs ( see https://docs.rke2.io/install/airgap#tarball-method )
 rke2_tarball_images_path: "{{ rke2_data_path }}/agent/images"
 
 # Architecture to be downloaded, currently there are releases for amd64 and s390x
@@ -186,7 +186,9 @@ rke2_disable:
 # Option to disable kube-proxy
 disable_kube_proxy: false
 
-# Option to disable builtin cloud controller - mostly for onprem
+# Option to disable builtin cloud controller when working with aws, azure, gce etc
+# For onprem environment, this should remain false and keep rke2_cloud_provider_name as "external"
+# https://docs.k3s.io/networking/networking-services#deploying-an-external-cloud-controller-manager (same for RKE2)
 rke2_disable_cloud_controller: false
 
 # Cloud provider to use for the cluster (aws, azure, gce, openstack, vsphere, external)
@@ -247,11 +249,11 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
 rke2_snapshotter: "{{ rke2_snapshooter }}"
 rke2_snapshooter: overlayfs # legacy variable that only exists to keep backward compatibility with previous configurations
 
-# Deploy RKE2 with default CNI canal (should be a list)
+# Deploy RKE2 with default CNI canal
 rke2_cni: [canal]
 
 # Validate system configuration against the selected benchmark
-# (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25)
+# (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25 or "cis" for rke2 1.30+)
 rke2_cis_profile: ""
 
 # Download Kubernetes config file to the Ansible controller
@@ -334,11 +336,11 @@ rke2_debug: false
 # The value for the node-name configuration item
 rke2_node_name: "{{ inventory_hostname }}"
 
-# the network to use for Pods.. Set to '10.42.0.0/16' by default.
+# default pod network range for rke2
 rke2_cluster_cidr:
   - 10.42.0.0/16
 
-# the network to use for ClusterIP Services. Set to '10.43.0.0/16' by default.
+# default service network range for rke2
 rke2_service_cidr:
   - 10.43.0.0/16
 

@@ -1,5 +1,4 @@
 ---
-
 - name: Create the RKE2 config dir
   ansible.builtin.file:
     state: directory
@@ -118,15 +117,15 @@
   changed_when: false
   register: node_status
   until:
-  - '"kubelet has sufficient memory available"  in node_status.stdout_lines'
-  - '"kubelet has no disk pressure"  in node_status.stdout_lines'
-  - '"kubelet has sufficient PID available"  in node_status.stdout_lines'
-  - ('"cni plugin not initialized" in node_status.stdout' or '"kubelet is posting ready status." in node_status.stdout')
+    - '"kubelet has sufficient memory available"  in node_status.stdout_lines'
+    - '"kubelet has no disk pressure"  in node_status.stdout_lines'
+    - '"kubelet has sufficient PID available"  in node_status.stdout_lines'
+    - ('"cni plugin not initialized" in node_status.stdout' or '"kubelet is posting ready status." in node_status.stdout')
   retries: 100
   delay: 15
   when:
-  - not ansible_check_mode
-  - rke2_cni == 'none'
+    - not ansible_check_mode
+    - rke2_cni == 'none'
 
 - name: Wait for the first server be ready - with CNI
   ansible.builtin.shell: |
@@ -136,21 +135,22 @@
     executable: /bin/bash
   changed_when: false
   register: first_server
-  until:
-    '" Ready "  in first_server.stdout'
+  until: '" Ready "  in first_server.stdout'
   retries: 40
   delay: 15
   when:
-  - not ansible_check_mode
-  - rke2_cni != 'none'
+    - not ansible_check_mode
+    - rke2_cni != 'none'
 
 - name: Restore etcd
   when: do_etcd_restore is defined or do_etcd_restore_from_s3 is defined
   block:
     - name: Get registered nodes
-      ansible.builtin.shell: |
-        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-        get nodes --no-headers | awk '{print $1}'
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+          get nodes --no-headers | awk '{print $1}'
       args:
         executable: /bin/bash
       changed_when: false
@@ -162,7 +162,7 @@
       run_once: true
       register: node_names
 
-    - name: remove old <node>.node-password.rke2 secrets
+    - name: Remove old <node>.node-password.rke2 secrets
       ansible.builtin.shell: |
         {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
         delete secret {{ item }}.node-password.rke2 -n kube-system 2>&1 || true
@@ -171,7 +171,7 @@
       with_items: "{{ registered_node_names.stdout_lines | difference(node_names) }}"
       changed_when: false
 
-    - name: remove old nodes
+    - name: Remove old nodes
       ansible.builtin.shell: |
         {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
         delete node {{ item }} 2>&1 || true
