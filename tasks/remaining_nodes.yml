@@ -1,5 +1,4 @@
 ---
-
 - name: Create the RKE2 config dir
   ansible.builtin.file:
     state: directory
@@ -25,6 +24,16 @@
     owner: root
     group: root
     mode: 0600
+  notify: "Config file changed"
+
+- name: Copy kubelet config
+  ansible.builtin.template:
+    src: templates/kubelet-config.yaml.j2
+    dest: /etc/rancher/rke2/kubelet-config.yaml
+    owner: root
+    group: root
+    mode: 0600
+  when: rke2_kubelet_config | length > 0
   notify: "Config file changed"
 
 - name: Copy Containerd Registry Configuration file
@@ -85,8 +94,7 @@
     executable: /bin/bash
   changed_when: false
   register: all_ready_nodes
-  until:
-    "groups[rke2_cluster_group_name] | length == all_ready_nodes.stdout | int"
+  until: "groups[rke2_cluster_group_name] | length == all_ready_nodes.stdout | int"
   retries: 100
   delay: 15
   when:

@@ -17,6 +17,16 @@
     mode: 0600
   notify: "Config file changed"
 
+- name: Copy kubelet config
+  ansible.builtin.template:
+    src: templates/kubelet-config.yaml.j2
+    dest: /etc/rancher/rke2/kubelet-config.yaml
+    owner: root
+    group: root
+    mode: 0600
+  when: rke2_kubelet_config | length > 0
+  notify: "Config file changed"
+
 - name: Copy Containerd Registry Configuration file
   ansible.builtin.template:
     src: "{{ rke2_custom_registry_path }}"
