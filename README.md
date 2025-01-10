@@ -346,6 +346,15 @@ rke2_service_cidr:
 
 # Enable SELinux for rke2
 rke2_selinux: false
+
+# (Optional) Customize kubelet config using KubeletConfiguration - https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/
+# rke2_kubelet_config:
+#   imageGCHighThresholdPercent: 80
+#   imageGCLowThresholdPercent: 70
+# Note that you also need to add the following to kubelet args:
+# rke2_kubelet_arg:
+#   - "--config=/etc/rancher/rke2/kubelet-config.yaml"
+rke2_kubelet_config: {}
 ```
 
 ## Inventory file example
