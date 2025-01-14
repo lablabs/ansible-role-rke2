@@ -83,6 +83,11 @@
 
     nodes=$({{ rke2_data_path }}/bin/kubectl get pods -n infra -l app.kubernetes.io/name=rabbitmq-cluster --no-headers -o Name | cut -d'/' -f2)
 
+    if [ -z "$nodes" ]; then
+        echo "No RabbitMQ nodes found"
+        exit 0
+    fi
+
     for node in $nodes; do
         {{ rke2_data_path }}/bin/kubectl exec -it $node -n infra -c rabbitmq -- rabbitmq-diagnostics check_running
         {{ rke2_data_path }}/bin/kubectl exec -it $node -n infra -c rabbitmq -- rabbitmq-diagnostics check_port_connectivity
