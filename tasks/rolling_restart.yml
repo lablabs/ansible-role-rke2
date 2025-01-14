@@ -75,3 +75,26 @@
       delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true
   when: longhorn | bool
+
+- name: Check RabbitMQ Cluster State
+  ansible.builtin.shell: |
+    set -e
+    set -o pipefail
+
+    nodes=$({{ rke2_data_path }}/bin/kubectl get pods -n infra -l app.kubernetes.io/name=rabbitmq-cluster --no-headers -o Name | cut -d'/' -f2)
+
+    for node in $nodes; do
+        {{ rke2_data_path }}/bin/kubectl exec -it $node -n infra -c rabbitmq -- rabbitmq-diagnostics check_running
+        {{ rke2_data_path }}/bin/kubectl exec -it $node -n infra -c rabbitmq -- rabbitmq-diagnostics check_port_connectivity
+        {{ rke2_data_path }}/bin/kubectl exec -it $node -n infra -c rabbitmq -- rabbitmqctl await_online_nodes 3
+    done
+  args:
+    executable: /bin/bash
+  environment:
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+  changed_when: false
+  retries: 100
+  delay: 15
+  delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
+  run_once: true
+  when: inventory_hostname in groups[rke2_agents_group_name]
