@@ -79,7 +79,6 @@
 - name: Check RabbitMQ Cluster State
   ansible.builtin.shell: |
     set -e
-    set -o pipefail
 
     nodes=$({{ rke2_data_path }}/bin/kubectl get pods -n infra -l app.kubernetes.io/name=rabbitmq-cluster --no-headers -o Name | cut -d'/' -f2)
 
