@@ -102,3 +102,64 @@
   delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true
   when: inventory_hostname in groups[rke2_agents_group_name]
+
+- name: Check Redis Cluster State
+  ansible.builtin.shell: |
+    set -e
+
+    return_code=0
+    namespaces=$({{ rke2_data_path }}/bin/kubectl get ns --output jsonpath={.items[*].metadata.name})
+
+    for namespace in $namespaces; do
+
+      nodes=$({{ rke2_data_path }}/bin/kubectl get pods -n $namespace -l app.kubernetes.io/name=redis-cluster --no-headers -o Name | cut -d'/' -f2)
+
+      if [ -z "$nodes" ]; then
+        echo "No Redis cluster found in namespace $namespace"
+        continue
+      fi
+
+      echo "Checking Redis cluster in namespace $namespace"
+
+      for node in $nodes; do
+
+        state=$({{ rke2_data_path }}/bin/kubectl exec $node -n $namespace -- redis-cli CLUSTER INFO | grep cluster_state | cut -d':' -f2 | tr -d '\r')
+        if [ $state != "ok" ]; then
+          echo "FAIL $node in namespace $namespace"
+          return_code=1
+        else
+          echo "OK $node in namespace $namespace"
+        fi
+
+        failed_nodes=$({{ rke2_data_path }}/bin/kubectl exec $node -n $namespace -- redis-cli CLUSTER NODES | grep -iE "fail|handshake|noaddr|disconnected" | wc -l)
+        if [ $failed_nodes -ne 0 ]; then
+          echo "FAIL - $failed_nodes FAILED nodes in namespace $namespace"
+          return_code=1
+        else
+          echo "OK - $failed_nodes FAILED nodes in namespace $namespace"
+        fi
+
+        sync_status=$({{ rke2_data_path }}/bin/kubectl exec $node -n $namespace -- redis-cli INFO REPLICATION | grep master_sync_in_progress | cut -d':' -f2 | tr -d '\r')
+        if [ -n "$sync_status" ]; then
+          if [ $sync_status -ne 0 ]; then
+            echo "FAIL - $node currently syncing from master"
+            return_code=1
+          else
+            echo "OK - $node syncronized"
+          fi
+        fi
+
+      done
+    done
+
+    exit $return_code
+  args:
+    executable: /bin/bash
+  environment:
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+  changed_when: false
+  retries: 100
+  delay: 15
+  delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
+  run_once: true
+  when: inventory_hostname in groups[rke2_agents_group_name]
