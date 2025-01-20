@@ -88,9 +88,9 @@
     fi
 
     for node in $nodes; do
-        {{ rke2_data_path }}/bin/kubectl exec -it $node -n infra -c rabbitmq -- rabbitmq-diagnostics check_running
-        {{ rke2_data_path }}/bin/kubectl exec -it $node -n infra -c rabbitmq -- rabbitmq-diagnostics check_port_connectivity
-        {{ rke2_data_path }}/bin/kubectl exec -it $node -n infra -c rabbitmq -- rabbitmqctl await_online_nodes 3
+        {{ rke2_data_path }}/bin/kubectl exec $node -n infra -c rabbitmq -- rabbitmq-diagnostics check_running
+        {{ rke2_data_path }}/bin/kubectl exec $node -n infra -c rabbitmq -- rabbitmq-diagnostics check_port_connectivity
+        {{ rke2_data_path }}/bin/kubectl exec $node -n infra -c rabbitmq -- rabbitmqctl await_online_nodes 3
     done
   args:
     executable: /bin/bash
