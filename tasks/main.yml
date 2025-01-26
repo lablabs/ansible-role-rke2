@@ -85,6 +85,7 @@
     loop_var: _host_item
   when:
     - hostvars[_host_item].inventory_hostname == inventory_hostname
+    - inventory_hostname not in groups[rke2_servers_group_name]
     - installed_version is defined
     - installed_version != "not installed"
     - rke2_version is defined
