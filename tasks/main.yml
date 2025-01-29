@@ -1,5 +1,4 @@
 ---
-
 - name: Install Keepalived when HA mode is enabled
   ansible.builtin.include_tasks: keepalived.yml
   when:
@@ -30,7 +29,6 @@
     - rke2_ha_mode | bool
     - rke2_ha_mode_kubevip | bool
     - not rke2_ha_mode_keepalived | bool
-
 
 - name: Copy kube-vip manifests to the masternode
   ansible.builtin.include_tasks: kubevip.yml
