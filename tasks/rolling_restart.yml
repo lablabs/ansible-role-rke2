@@ -67,15 +67,6 @@
   run_once: true
   when: rke2_wait_for_all_pods_to_be_ready
 
-- name: Check if all Longhorn volumes are healthy
-  ansible.builtin.include_tasks:
-    file: tasks/check_lh_volumes.yml
-  args:
-    apply:
-      delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
-  run_once: true
-  when: longhorn | bool
-
 - name: Check RabbitMQ Cluster State
   ansible.builtin.shell: |
     set -e
