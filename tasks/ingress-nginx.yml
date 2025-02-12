@@ -14,4 +14,4 @@
     owner: root
     group: root
     mode: 0664
-    validate: "{{ ansible_playbook_python }} -c 'import yaml; yaml.safe_load(%s)'"
+    validate: "{{ ansible_playbook_python }} -c 'import yaml; list(yaml.safe_load(open(\"%s\").read()))'"
