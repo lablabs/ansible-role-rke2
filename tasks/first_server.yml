@@ -19,6 +19,7 @@
     owner: root
     group: root
     mode: 0600
+    validate: "{{ ansible_playbook_python }} -c 'import yaml; yaml.safe_load(%s)'"
   notify: "Config file changed"
 
 - name: Copy kubelet config
@@ -28,6 +29,7 @@
     owner: root
     group: root
     mode: 0600
+    validate: "{{ ansible_playbook_python }} -c 'import yaml; yaml.safe_load(%s)'"
   when: rke2_kubelet_config | length > 0
   notify: "Config file changed"
 
@@ -38,6 +40,7 @@
     owner: root
     group: root
     mode: 0600
+    validate: "{{ ansible_playbook_python }} -c 'import yaml; yaml.safe_load(%s)'"
   when: (rke2_custom_registry_mirrors | length > 0 or rke2_custom_registry_configs | length > 0)
   notify: "Config file changed"
 
