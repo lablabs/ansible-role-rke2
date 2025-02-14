@@ -14,7 +14,7 @@
     owner: root
     group: root
     mode: 0664
-    validate: "{{ ansible_playbook_python }} -c 'import yaml; list(yaml.safe_load_all(open(\"%s\").read()))'"
+    validate: "{{ ansible_playbook_python }} -c 'import yaml, sys; sys.tracebacklimit=0; list(yaml.safe_load_all(open(\"%s\").read()))'"
   with_fileglob:
     - "templates/kube-vip/kube-vip.yml.j2"
     - "templates/kube-vip/kube-vip-rbac.yml.j2"
@@ -26,7 +26,7 @@
     owner: root
     group: root
     mode: 0664
-    validate: "{{ ansible_playbook_python }} -c 'import yaml; list(yaml.safe_load_all(open(\"%s\").read()))'"
+    validate: "{{ ansible_playbook_python }} -c 'import yaml, sys; sys.tracebacklimit=0; list(yaml.safe_load_all(open(\"%s\").read()))'"
   with_fileglob:
     - "templates/kube-vip/kube-vip-cloud-*.j2"
   when:
