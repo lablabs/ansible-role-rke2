@@ -15,6 +15,7 @@
     owner: root
     group: root
     mode: 0600
+    validate: "{{ ansible_python.executable }} -c 'import yaml, sys; sys.tracebacklimit=0; list(yaml.safe_load_all(open(\"%s\").read()))'"
   notify: "Config file changed"
 
 - name: Copy kubelet config
@@ -24,6 +25,7 @@
     owner: root
     group: root
     mode: 0600
+    validate: "{{ ansible_python.executable }} -c 'import yaml, sys; sys.tracebacklimit=0; list(yaml.safe_load_all(open(\"%s\").read()))'"
   when: rke2_kubelet_config | length > 0
   notify: "Config file changed"
 
@@ -34,6 +36,7 @@
     owner: root
     group: root
     mode: 0600
+    validate: "{{ ansible_python.executable }} -c 'import yaml, sys; sys.tracebacklimit=0; list(yaml.safe_load_all(open(\"%s\").read()))'"
   when: rke2_custom_registry_mirrors.0.endpoint | length > 0
   notify: "Config file changed"
 
