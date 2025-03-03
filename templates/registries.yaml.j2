@@ -1,21 +1,23 @@
 {% if rke2_custom_registry_mirrors | length > 0 %}
 mirrors:
-{% for mirror in rke2_custom_registry_mirrors %}
+  {% for mirror in rke2_custom_registry_mirrors %}
   "{{ mirror.name }}":
+    {% if mirror.endpoint is defined %}
     endpoint:
-{% for endpoint in mirror.endpoint %}
+      {% for endpoint in mirror.endpoint %}
       - "{{ endpoint }}"
-{% endfor %}
-{% if mirror.rewrite is defined %}
+      {% endfor %}
+    {% endif %}
+    {% if mirror.rewrite is defined %}
     rewrite:
       {{ mirror.rewrite }}
-{% endif %}
-{% endfor %}
+    {% endif %}
+  {% endfor %}
 {% endif %}
 {% if rke2_custom_registry_configs | length > 0 %}
 configs:
-{% for config in rke2_custom_registry_configs %}
+  {% for config in rke2_custom_registry_configs %}
   {{ config.endpoint }}:
     {{ config.config | to_nice_yaml(indent=2) | indent(4) }}
-{%- endfor %}
+  {%- endfor %}
 {% endif %}
