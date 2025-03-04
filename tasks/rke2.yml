@@ -181,6 +181,7 @@
   changed_when: false
   register: partition_result
   failed_when: partition_result.rc >= 2
+  check_mode: false
 
 - name: Set RKE2 bin path
   ansible.builtin.set_fact:
