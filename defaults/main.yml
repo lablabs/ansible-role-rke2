@@ -79,7 +79,8 @@ rke2_additional_sans: []
 rke2_apiserver_dest_port: 6443
 
 # Server nodes taints
-rke2_server_node_taints: []
+rke2_server_node_taints:
+  []
   # - 'CriticalAddonsOnly=true:NoExecute'
 
 # Agent nodes taints
@@ -165,7 +166,8 @@ rke2_custom_manifests:
 rke2_static_pods:
 
 # Configure custom Containerd Registry
-rke2_custom_registry_mirrors: []
+rke2_custom_registry_mirrors:
+  []
   # - name:
   #   endpoint: {}
 #   rewrite: '"^rancher/(.*)": "mirrorproject/rancher-images/$1"'
@@ -198,21 +200,38 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
 # Set either all these values or `rke2_etcd_snapshot_file` and `rke2_etcd_snapshot_source_dir`
 
 # rke2_etcd_snapshot_s3_options:
-  # s3_endpoint: "" # required
-  # access_key: "" # required
-  # secret_key: "" # required
-  # bucket: "" # required
-  # snapshot_name: "" # required.
-  # skip_ssl_verify: false # optional
-  # endpoint_ca: "" # optional. Can skip if using defaults
-  # region: "" # optional - defaults to us-east-1
-  # folder: "" # optional - defaults to top level of bucket
+# s3_endpoint: "" # required
+# access_key: "" # required
+# secret_key: "" # required
+# bucket: "" # required
+# snapshot_name: "" # required.
+# skip_ssl_verify: false # optional
+# endpoint_ca: "" # optional. Can skip if using defaults
+# region: "" # optional - defaults to us-east-1
+# folder: "" # optional - defaults to top level of bucket
 # Override default containerd snapshotter
 rke2_snapshotter: "{{ rke2_snapshooter }}"
 rke2_snapshooter: overlayfs # legacy variable that only exists to keep backward compatibility with previous configurations
 
 # Deploy RKE2 with default CNI canal
 rke2_cni: [canal]
+
+# (Optional) Configure CNI Cilium via HelmChartConfig.
+# Find accepted values at: https://github.com/rancher/rke2-charts/tree/main/charts/rke2-cilium/rke2-cilium/
+# rke2_cilium_values:
+#   hubble:
+#     enabled: true
+#     relay:
+#       enabled: true
+#     ui:
+#       enabled: true
+#       standalone:
+#         enabled: true
+#       ingress:
+#         enabled: true
+#         hosts:
+#           - "hubble.exmaple.com"
+#         tls: [] # Uses default TLS
 
 # Validate system configuration against the selected benchmark
 # (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25 or "cis" for rke2 1.30+)
