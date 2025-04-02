@@ -252,6 +252,23 @@ rke2_snapshooter: overlayfs # legacy variable that only exists to keep backward 
 # Deploy RKE2 with default CNI canal
 rke2_cni: [canal]
 
+# (Optional) Configure CNI Cilium via HelmChartConfig.
+# Find accepted values at: https://github.com/rancher/rke2-charts/tree/main/charts/rke2-cilium/rke2-cilium/
+# rke2_cilium_values:
+#   hubble:
+#     enabled: true
+#     relay:
+#       enabled: true
+#     ui:
+#       enabled: true
+#       standalone:
+#         enabled: true
+#       ingress:
+#         enabled: true
+#         hosts:
+#           - "hubble.exmaple.com"
+#         tls: [] # Uses default TLS
+
 # Validate system configuration against the selected benchmark
 # (Supported value is "cis-1.23" or eventually "cis-1.6" if you are running RKE2 prior 1.25 or "cis" for rke2 1.30+)
 rke2_cis_profile: ""
