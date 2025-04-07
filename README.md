@@ -37,6 +37,9 @@ This is a copy of `defaults/main.yml`
 
 ```yaml
 ---
+# Allow to run rke2 install script if local rke2 version is greater than rke2_variable
+rke2_allow_downgrade: false
+
 # The node type - server or agent
 rke2_type: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' if inventory_hostname in groups[rke2_agents_group_name] }}"
 

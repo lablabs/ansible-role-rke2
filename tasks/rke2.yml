@@ -1,4 +1,37 @@
 ---
+- name: Check if RKE2 is installed
+  command: rke2 --version
+  register: rke2_version_installed
+  ignore_errors: yes
+
+- name: Set current RKE2 version
+  set_fact:
+    current_rke2_version: "{{ rke2_version_installed.stdout | regex_search('v([0-9]+\\.[0-9]+\\.[0-9]+)(.+)', '\\1') }}"
+  when: rke2_version_installed.rc == 0
+
+
+- name: Set playbook version number
+  set_fact:
+    desired_version_clean: "{{ rke2_version | regex_search('v([0-9]+\\.[0-9]+\\.[0-9]+)(.+)', '\\1') }}"
+
+- name: Debug current_rke2_version
+  debug:
+    var: current_rke2_version
+
+
+- name: Debug rke2_version
+  debug:
+    var:  desired_version_clean
+
+- name: Check condtions
+  assert:
+    that:
+      - current_rke2_version is defined
+      - not rke2_allow_downgrade
+      - current_rke2_version is version(desired_version_clean, '<=')
+    fail_msg: "Current version is greater than or equal to desired version. Skipping installation."
+    success_msg: "Version check passed."
+
 - name: Download RKE2 installation script
   ansible.builtin.get_url:
     url: "{{ rke2_install_bash_url }}"
