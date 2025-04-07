@@ -14,15 +14,6 @@
   set_fact:
     desired_version_clean: "{{ rke2_version | regex_search('v([0-9]+\\.[0-9]+\\.[0-9]+)(.+)', '\\1') }}"
 
-- name: Debug current_rke2_version
-  debug:
-    var: current_rke2_version
-
-
-- name: Debug rke2_version
-  debug:
-    var:  desired_version_clean
-
 - name: Check condtions
   assert:
     that:
