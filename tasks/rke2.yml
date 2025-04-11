@@ -17,12 +17,12 @@
 - name: Check condtions
   assert:
     that:
-      - current_rke2_version is defined
       - >
         (desired_version_clean is version(current_rke2_version, '>=')) or
         (desired_version_clean is version(current_rke2_version, '<') and rke2_allow_downgrade)
     fail_msg: "Current version is greater than or equal to desired version. Skipping installation."
     success_msg: "Version check passed."
+  when: current_rke2_version is defined
 
 - name: Download RKE2 installation script
   ansible.builtin.get_url:
