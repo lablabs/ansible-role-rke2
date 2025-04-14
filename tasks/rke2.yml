@@ -1,29 +1,4 @@
 ---
-- name: Check if RKE2 is installed
-  command: rke2 --version
-  register: rke2_version_installed
-  ignore_errors: yes
-
-- name: Set current RKE2 version
-  set_fact:
-    current_rke2_version: "{{ rke2_version_installed.stdout | regex_search('v([0-9]+\\.[0-9]+\\.[0-9]+)(.+)', '\\1') }}"
-  when: rke2_version_installed.rc == 0
-
-
-- name: Set playbook version number
-  set_fact:
-    desired_version_clean: "{{ rke2_version | regex_search('v([0-9]+\\.[0-9]+\\.[0-9]+)(.+)', '\\1') }}"
-
-- name: Check condtions
-  assert:
-    that:
-      - >
-        (desired_version_clean is version(current_rke2_version, '>=')) or
-        (desired_version_clean is version(current_rke2_version, '<') and rke2_allow_downgrade)
-    fail_msg: "Current version is greater than or equal to desired version. Skipping installation."
-    success_msg: "Version check passed."
-  when: current_rke2_version is defined
-
 - name: Download RKE2 installation script
   ansible.builtin.get_url:
     url: "{{ rke2_install_bash_url }}"
@@ -252,6 +227,25 @@
     running_version: "{{ versions.running_version }}"
   vars:
     versions: "{{ versions_check.stdout | from_json }}"
+
+- name: Prevent accidental RKE2 downgrade
+  when: not ansible_check_mode and installed_version != "not installed" and not rke2_allow_downgrade
+  ansible.builtin.assert:
+    that:
+      - >
+        (rke2_version_clean is version(running_version_clean, '>=')) or
+        (rke2_version_clean is version(running_version_clean, '<') and rke2_allow_downgrade)
+    fail_msg: >
+      Version downgrade is not allowed unless explicitly permitted.
+      Current running version: {{ running_version_clean }},
+      desired version: {{ rke2_version_clean }}.
+      Set 'rke2_allow_downgrade: true' to allow downgrades.
+    success_msg: >
+      Version check passed. Current running version: {{ running_version_clean }},
+      desired version: {{ rke2_version_clean }}."
+  vars:
+    rke2_version_clean: "{{ rke2_version | regex_search('v([0-9]+\\.[0-9]+\\.[0-9]+)', '\\1') }}"
+    running_version_clean: "{{ running_version | regex_search('v([0-9]+\\.[0-9]+\\.[0-9]+)', '\\1') }}"
 
 - name: Run RKE2 install script
   when: not ansible_check_mode and rke2_version != installed_version
