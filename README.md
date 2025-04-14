@@ -37,7 +37,10 @@ This is a copy of `defaults/main.yml`
 
 ```yaml
 ---
-# Allow to run rke2 install script if local rke2 version is greater than rke2_variable
+# Determines whether downgrades of the RKE2 version are allowed.
+# If set to `false`, the role will prevent downgrades unless explicitly permitted.
+# Set to `true` to allow downgrades of the RKE2 version.
+# Note: This setting is ignored in Ansible check mode, and the related prevention task will be skipped.
 rke2_allow_downgrade: false
 
 # The node type - server or agent
