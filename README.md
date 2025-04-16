@@ -324,9 +324,17 @@ rke2_ingress_nginx_values: {}
 
 # Cordon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
 rke2_drain_node_during_upgrade: false
+# Additional args that will be passed to the kubectl drain command e.g. --pod-selector
+rke2_drain_additional_args: ""
 
-# Wait for all pods to be ready after rke2-service restart during rolling restart.
+# Wait for all pods to be have a status of running or succeeded after rke2-service restart during rolling restart.
 rke2_wait_for_all_pods_to_be_ready: false
+# Wait for all pods to be ready after rke2-service restart during rolling restart.
+# Named "healthy" to keep backwards compatibility with existing variable names.
+rke2_wait_for_all_pods_to_be_healthy: false
+# The args passed to the kubectl wait command
+rke2_wait_for_all_pods_to_be_healthy_args: --for=condition=Ready -A --all pod --field-selector=metadata.namespace!=kube-system,status.phase!=Succeeded
+
 
 # Enable debug mode (rke2-service)
 rke2_debug: false
