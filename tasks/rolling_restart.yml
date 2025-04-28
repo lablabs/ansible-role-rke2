@@ -5,7 +5,7 @@
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
     cordon "{{ rke2_node_name }}" && \
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
-    drain "{{ rke2_node_name }}" --ignore-daemonsets --delete-emptydir-data
+    drain "{{ rke2_node_name }}" --ignore-daemonsets --delete-emptydir-data {{ rke2_drain_additional_args }}
   args:
     executable: /bin/bash
   register: drain
@@ -66,3 +66,15 @@
   delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true
   when: rke2_wait_for_all_pods_to_be_ready
+
+- name: Wait for all pods to pass readiness checks
+  ansible.builtin.shell: |
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml wait {{ rke2_wait_for_all_pods_to_be_healthy_args }}
+  args:
+    executable: /bin/bash
+  changed_when: false
+  retries: 100
+  delay: 15
+  delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
+  run_once: true
+  when: rke2_wait_for_all_pods_to_be_healthy
