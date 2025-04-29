@@ -24,8 +24,9 @@ rke2_ha_mode_kubevip: false
 # Or if the keepalived is disabled, use IP address of your LB.
 rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
 
-# optional option for RKE2 Server to listen on a private IP address on port 9345
+# optional option for RKE2 Server to listen on a private IP address & port
 # rke2_api_private_ip:
+rke2_api_private_port: 9345
 
 # optional option for kubevip IP subnet
 # rke2_api_cidr: 24
