@@ -53,11 +53,13 @@ spec:
         - name: vip_leaderelection
           value: "true"
         - name: vip_leaseduration
-          value: "5"
+          value: "{{ rke2_kubevip_leaseduration | default('5') }}"
         - name: vip_renewdeadline
-          value: "3"
+          value: "{{ rke2_kubevip_renewdeadline | default('3') }}"
         - name: vip_retryperiod
-          value: "1"
+          value: "{{ rke2_kubevip_retryperiod | default('1') }}"
+        - name: vip_loglevel
+          value: "{{ rke2_kubevip_loglevel | default('4') }}"
         - name: address
           value: "{{ rke2_api_ip }}"
         - name: prometheus_server
