@@ -64,6 +64,12 @@ rke2_kubevip_service_election_enable: true
 # this means that every service can end up on a different node when it is created in theory preventing a bottleneck in the initial deployment.
 # minimum kube-vip version 0.5.0
 
+# (Optional) Change parameters for leader election - see upstream install flags link below
+# rke2_kubevip_leaseduration: 5
+# rke2_kubevip_renewdeadline: 3
+# rke2_kubevip_retryperiod: 1
+# rke2_kubevip_loglevel: 4
+
 # (Optional) A list of kube-vip flags
 # All flags can be found here https://kube-vip.io/docs/installation/flags/
 # rke2_kubevip_args: []
