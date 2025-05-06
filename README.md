@@ -194,7 +194,7 @@ rke2_channel: stable
 
 # Do not deploy packaged components and delete any deployed components
 # Valid items: rke2-canal, rke2-coredns, rke2-ingress-nginx, rke2-metrics-server
-rke2_disable:
+rke2_disable: []
 
 # Option to disable kube-proxy
 disable_kube_proxy: false
@@ -210,10 +210,10 @@ rke2_cloud_provider_name: "external"
 
 # Path to custom manifests deployed during the RKE2 installation
 # It is possible to use Jinja2 templating in the manifests
-rke2_custom_manifests:
+rke2_custom_manifests: []
 
 # Path to static pods deployed during the RKE2 installation
-rke2_static_pods:
+rke2_static_pods: []
 
 # Configure custom Containerd Registry
 rke2_custom_registry_mirrors: []
