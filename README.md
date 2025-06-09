@@ -491,6 +491,10 @@ If the playbook starts to hang at the `Start RKE2 service on the rest of the nod
 
 Please check the required *Inbound Rules for RKE2 Server Nodes* at the following link: <https://docs.rke2.io/install/requirements/#networking>.
 
+### RKE2 upgrade playbook failed due to an interrupted upgrade
+
+In case the new RKE2 version was installed but not started, rerun the playbook with the variable `rke2_allow_downgrade: true` to bypass the downgrade prevention check.
+
 ## License
 
 MIT
