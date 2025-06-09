@@ -196,7 +196,7 @@
     rke2_version="{{ rke2_version }}"
 
     if [ -f "$rke2_bin_path" ]; then
-      installed_version="$($rke2_bin_path --version | grep -E "rke2 version" | awk '{print $3}')"
+      installed_version="$($rke2_bin_path --version | awk '/version/ {print $3; exit}')"
     else
       installed_version="not installed"
     fi
@@ -207,7 +207,7 @@
 
     # Linux appends the target of removed proc exe with ' (deleted)', making the path unavailable.
     if [ -f "$rke2_bin_path" ]; then
-      running_version="$($rke2_bin_path --version | grep -E "rke2 version" | awk '{print $3}')"
+      running_version="$($rke2_bin_path --version | awk '/version/ {print $3; exit}')"
     elif [ "$installed_version" = "not installed" ]; then
       running_version="$rke2_version"
     else
