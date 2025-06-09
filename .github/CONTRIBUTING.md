@@ -23,11 +23,13 @@ Install [Pre-commit](https://pre-commit.com/#install) software
 
 Do the changes in your own GitHub namespace.
 
-## 5. Test the changes
+## 5. Define new variables in argument_specs.yml
 
-**Note:** I will test the role again, so you don't need to do that if you don't want to.
+If you introduce any new variables, **you must also define them in the `meta/argument_specs.yml` file** with appropriate type, default, and description. This ensures proper validation and documentation for all role variables. Additionally, **add all new variables to the `README.md` file** (usually by updating the variables section, which is a copy of `defaults/main.yml`).
 
-Install [molecule](https://molecule.readthedocs.io/en/stable/) and run the test:
+## 6. Test the changes
+
+You can use Molecule for testing. Install [molecule](https://molecule.readthedocs.io/en/stable/) and run the test:
 
 ```bash
 pip install molecule molecule-docker ansible-lint docker
@@ -37,11 +39,11 @@ molecule test
 
 > You will need to edit the files in `molecule/default` directory (please do not commit those changes)
 
-## 6. Create a pull request
+## 7. Create a pull request
 
 Please create a pull request into the `main` branch. Here is [how to do it](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork).
 
-## 7. Semantic Commits
+## 8. Semantic Commits
 
 Commits must follow conventional specs below:
 

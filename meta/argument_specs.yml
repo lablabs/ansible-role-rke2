@@ -1,0 +1,488 @@
+---
+argument_specs:
+  main:
+    short_description: "This is the main entrypoint for the lablabs.rke2 role."
+    description:
+      - "This role installs and configures RKE2 Kubernetes distribution."
+      - "It is designed to be used in a standalone mode or as a part of a larger playbook."
+      - "It can be used to deploy RKE2 in HA mode with Keepalived or kube-vip."
+      - "Role can be used to deploy RKE2 in airgap mode."
+      - "Also you can update the RKE2 Kubernetes cluster by setting newer rke2_version variable."
+    author:
+      - Michal Muransky
+    options:
+      rke2_allow_downgrade:
+        type: bool
+        default: false
+        description: "Determines whether downgrades of the RKE2 version are allowed"
+
+      rke2_type:
+        type: str
+        choices: ['server', 'agent']
+        default: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' if inventory_hostname in groups[rke2_agents_group_name] }}"
+        description: "The node type - server or agent"
+
+      rke2_ha_mode:
+        type: bool
+        default: false
+        description: "Deploy the control plane in HA mode"
+
+      rke2_ha_mode_keepalived:
+        type: bool
+        default: true
+        description: "Install and configure Keepalived on Server nodes. Can be disabled if you are using pre-configured Load Balancer"
+
+      rke2_ha_mode_kubevip:
+        type: bool
+        default: false
+        description: "Install and configure kube-vip LB and VIP for cluster. rke2_ha_mode_keepalived needs to be false"
+
+      rke2_api_ip:
+        type: str
+        default: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
+        description: "Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node. In HA mode choose a static IP which will be set as VIP in keepalived. Or if the keepalived is disabled, use IP address of your LB."
+
+      rke2_api_private_ip:
+        type: str
+        required: false
+        description: "Optional option for RKE2 Server to listen on a private IP address on port 9345"
+
+      rke2_api_private_port:
+        type: int
+        default: 9345
+        description: "Optional option for RKE2 Server to listen on a private port"
+
+      rke2_api_cidr:
+        type: int
+        required: false
+        description: "Optional option for kubevip IP subnet"
+
+      rke2_interface:
+        type: str
+        required: false
+        description: "Optional option for kubevip"
+
+      rke2_bind_address:
+        type: str
+        required: false
+        description: "Optional option for IPv4/IPv6 addresses to advertise for node"
+
+      rke2_loadbalancer_ip_range:
+        type: dict
+        default: {}
+        description: "kubevip load balancer IP range"
+
+      rke2_kubevip_cloud_provider_enable:
+        type: bool
+        default: true
+        description: "Install kubevip cloud provider if rke2_ha_mode_kubevip is true"
+
+      rke2_kubevip_svc_enable:
+        type: bool
+        default: true
+        description: "Enable kube-vip to watch Services of type LoadBalancer"
+
+      rke2_kubevip_image:
+        type: str
+        default: "ghcr.io/kube-vip/kube-vip:v0.6.4"
+        description: "Specify which image is used for kube-vip container"
+
+      rke2_kubevip_cloud_provider_image:
+        type: str
+        default: "ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.4"
+        description: "Specify which image is used for kube-vip cloud provider container"
+
+      rke2_kubevip_ipvs_lb_enable:
+        type: bool
+        default: false
+        description: "Enable kube-vip IPVS load balancer for control plane"
+
+      rke2_kubevip_service_election_enable:
+        type: bool
+        default: true
+        description: "Enable leader election per service for kube-vip"
+
+      rke2_kubevip_leaseduration:
+        type: int
+        default: 5
+        description: "Change parameters for leader election - see upstream install flags link below"
+
+      rke2_kubevip_renewdeadline:
+        type: int
+        default: 3
+        description: "Change parameters for leader election - see upstream install flags link below"
+
+      rke2_kubevip_retryperiod:
+        type: int
+        default: 1
+        description: "Change parameters for leader election - see upstream install flags link below"
+
+      rke2_kubevip_loglevel:
+        type: int
+        default: 4
+        description: "Change parameters for leader election - see upstream install flags link below"
+
+      rke2_kubevip_args:
+        type: list
+        default: []
+        elements: dict
+        description: "A list of kube-vip flags. All flags can be found here https://kube-vip.io/docs/installation/flags/"
+
+      rke2_kubevip_metrics_port:
+        type: int
+        default: 2112
+        description: "Prometheus metrics port for kube-vip"
+
+      rke2_additional_sans:
+        type: list
+        default: []
+        description: "Add additional SANs in k8s API TLS cert"
+
+      rke2_cluster_domain:
+        type: str
+        required: false
+        description: "Configure cluster domain"
+
+      rke2_apiserver_dest_port:
+        type: int
+        default: 6443
+        description: "API Server destination port"
+
+      rke2_server_node_taints:
+        type: list
+        default: []
+        elements: str
+        description: "Server nodes taints"
+
+      rke2_agent_node_taints:
+        type: list
+        default: []
+        elements: str
+        description: "Agent nodes taints"
+
+      rke2_token:
+        type: str
+        default: "defaultSecret12345"
+        description: "Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster"
+
+      rke2_version:
+        type: str
+        default: "v1.25.3+rke2r1"
+        description: "RKE2 version"
+
+      rke2_channel_url:
+        type: str
+        default: "https://update.rke2.io/v1-release/channels"
+        description: "URL to RKE2 repository"
+
+      rke2_install_bash_url:
+        type: str
+        default: "https://get.rke2.io"
+        description: "URL to RKE2 install bash script"
+
+      rke2_data_path:
+        type: str
+        default: "/var/lib/rancher/rke2"
+        description: "Local data directory for RKE2"
+
+      rke2_artifact_url:
+        type: str
+        default: "https://github.com/rancher/rke2/releases/download/"
+        description: "Default URL to fetch artifacts"
+
+      rke2_artifact_path:
+        type: str
+        default: "/rke2/artifact"
+        description: "Local path to store artifacts"
+
+      rke2_artifact:
+        type: list
+        default: ["sha256sum-{{ rke2_architecture }}.txt", "rke2.linux-{{ rke2_architecture }}.tar.gz", "rke2-images.linux-{{ rke2_architecture }}.tar.zst"]
+        elements: str
+        description: "Airgap required artifacts"
+
+      rke2_airgap_mode:
+        type: bool
+        default: false
+        description: "Changes the deploy strategy to install based on local artifacts"
+
+      rke2_airgap_implementation:
+        type: str
+        choices: ['download', 'copy', 'exists']
+        default: "download"
+        description: "Airgap implementation type - download, copy or exists"
+
+      rke2_airgap_copy_sourcepath:
+        type: str
+        default: "local_artifacts"
+        description: "Local source path where artifacts are stored"
+
+      rke2_airgap_copy_additional_tarballs:
+        type: list
+        default: []
+        elements: str
+        description: "Tarball images for additional components to be copied from rke2_airgap_copy_sourcepath to the nodes"
+
+      rke2_tarball_images_path:
+        type: str
+        default: "{{ rke2_data_path }}/agent/images"
+        description: "Destination for airgap additional images tarballs"
+
+      rke2_architecture:
+        type: str
+        choices: ['amd64', 's390x']
+        default: "amd64"
+
+        description: "Architecture to be downloaded, currently there are releases for amd64 and s390x"
+
+      rke2_install_script_dir:
+        type: str
+        default: "/var/tmp"
+        description: "Destination directory for RKE2 installation script"
+
+      rke2_channel:
+        type: str
+        default: "stable"
+        description: "RKE2 channel"
+
+      rke2_disable:
+        type: list
+        default: []
+        elements: str
+        description: "Do not deploy packaged components and delete any deployed components"
+
+      disable_kube_proxy:
+        type: bool
+        default: false
+        description: "Option to disable kube-proxy"
+
+      rke2_disable_cloud_controller:
+        type: bool
+        default: false
+        description: "Option to disable builtin cloud controller when working with aws, azure, gce etc"
+
+      rke2_cloud_provider_name:
+        type: str
+        default: "external"
+        description: "Cloud provider to use for the cluster (aws, azure, gce, openstack, vsphere, external)"
+
+      rke2_custom_manifests:
+        type: list
+        default: []
+        elements: str
+        description: "Path to custom manifests deployed during the RKE2 installation"
+
+      rke2_static_pods:
+        type: list
+        default: []
+        elements: str
+        description: "Path to static pods deployed during the RKE2 installation"
+
+      rke2_custom_registry_mirrors:
+        type: list
+        default: []
+        elements: str
+        description: "Configure custom Containerd Registry"
+
+      rke2_custom_registry_configs:
+        type: list
+        default: []
+        elements: str
+        description: "Configure custom Containerd Registry additional configuration"
+
+      rke2_custom_registry_path:
+        type: str
+        default: "templates/registries.yaml.j2"
+        description: "Path to Container registry config file template"
+
+      rke2_config:
+        type: str
+        default: "templates/config.yaml.j2"
+        description: "Path to RKE2 config file template"
+
+      rke2_etcd_snapshot_source_dir:
+        type: str
+        default: "etcd_snapshots"
+        description: "Etcd snapshot source directory"
+
+      rke2_etcd_snapshot_file:
+        type: str
+        required: false
+        description: "Etcd snapshot file name. When the file name is defined, the etcd will be restored on initial deployment Ansible run."
+
+      rke2_etcd_snapshot_destination_dir:
+        type: str
+        default: "{{ rke2_data_path }}/server/db/snapshots"
+        description: "Etcd snapshot location"
+
+      rke2_etcd_snapshot_s3_options:
+        type: dict
+        required: false
+        description: "Etcd snapshot s3 options"
+
+      rke2_snapshotter:
+        type: str
+        default: "{{ rke2_snapshooter }}"
+        description: "Override default containerd snapshotter"
+
+      rke2_snapshooter:
+        type: str
+        default: "overlayfs"
+        description: "Legacy variable that only exists to keep backward compatibility with previous configurations"
+
+      rke2_cni:
+        type: list
+        default: ["canal"]
+        elements: str
+        description: "Deploy RKE2 with default CNI canal"
+
+      rke2_cis_profile:
+        type: str
+        default: ""
+        description: "Validate system configuration against the selected benchmark"
+
+      rke2_download_kubeconf:
+        type: bool
+        default: false
+        description: "Download Kubernetes config file to the Ansible controller"
+
+      rke2_download_kubeconf_file_name:
+        type: str
+        default: "rke2.yaml"
+        description: "Name of the Kubernetes config file will be downloaded to the Ansible controller"
+
+      rke2_download_kubeconf_path:
+        type: str
+        default: "/tmp"
+        description: "Destination directory where the Kubernetes config file will be downloaded to the Ansible controller"
+
+      rke2_cluster_group_name:
+        type: str
+        default: "k8s_cluster"
+        description: "Default Ansible Inventory Group name for RKE2 cluster"
+
+      rke2_servers_group_name:
+        type: str
+        default: "masters"
+        description: "Default Ansible Inventory Group name for RKE2 Servers"
+
+      rke2_agents_group_name:
+        type: str
+        default: "workers"
+        description: "Default Ansible Inventory Group name for RKE2 Agents"
+
+      rke2_kube_apiserver_args:
+        type: list
+        default: []
+        elements: str
+        required: false
+        description: "A list of Kubernetes API server flags"
+
+      k8s_node_label:
+        type: list
+        default: []
+        elements: str
+        required: false
+        description: "List of Node labels"
+
+      rke2_server_options:
+        type: list
+        default: []
+        elements: str
+        required: false
+        description: "Additional RKE2 server configuration options. You could find the flags at https://docs.rke2.io/reference/server_config"
+
+      rke2_agent_options:
+        type: list
+        default: []
+        elements: str
+        required: false
+        description: "Additional RKE2 agent configuration options. You could find the flags at https://docs.rke2.io/reference/agent_config"
+
+      rke2_environment_options:
+        type: list
+        default: []
+        elements: str
+        required: false
+        description: "Additional RKE2 environment configuration options. All flags can be found here https://docs.rke2.io/advanced#configuring-an-http-proxy"
+
+      rke2_kube_controller_manager_arg:
+        type: list
+        default: []
+        elements: str
+        required: false
+        description: "Customize default kube-controller-manager arguments."
+
+      rke2_kube_scheduler_arg:
+        type: list
+        default: []
+        elements: str
+        required: false
+        description: "Customize default kube-scheduler arguments."
+
+      rke2_ingress_nginx_values:
+        type: dict
+        default: {}
+        description: "Configure nginx via HelmChartConfig"
+
+      rke2_drain_node_during_upgrade:
+        type: bool
+        default: false
+        description: "Cordon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded"
+
+      rke2_drain_additional_args:
+        type: str
+        default: ""
+        description: "Additional args that will be passed to the kubectl drain command e.g. --pod-selector"
+
+      rke2_wait_for_all_pods_to_be_ready:
+        type: bool
+        default: false
+        description: "Wait for all pods to be ready after rke2-service restart during rolling restart."
+
+      rke2_wait_for_all_pods_to_be_healthy:
+        type: bool
+        default: false
+        description: "Wait for all pods to have a status of running or succeeded after rke2-service restart during rolling restart."
+
+      rke2_wait_for_all_pods_to_be_healthy_args:
+        type: str
+        default: "--for=condition=Ready -A --all pod --field-selector=metadata.namespace!=kube-system,status.phase!=Succeeded"
+        description: "The args passed to the kubectl wait command"
+
+      rke2_debug:
+        type: bool
+        default: false
+        description: "Enable debug mode (rke2-service)"
+
+      rke2_kubelet_config:
+        type: dict
+        default: {}
+        description: "Customize kubelet config using KubeletConfiguration"
+
+      rke2_kube_proxy_arg:
+        type: list
+        default: []
+        elements: str
+        required: false
+        description: "Customize default kube-proxy arguments."
+
+      rke2_node_name:
+        type: str
+        default: "{{ inventory_hostname }}"
+        description: "The value for the node-name configuration item"
+
+      rke2_cluster_cidr:
+        type: list
+        default: ["10.42.0.0/16"]
+        description: "Default pod network range for rke2"
+
+      rke2_service_cidr:
+        type: list
+        default: ["10.43.0.0/16"]
+        description: "Default service network range for rke2"
+
+      rke2_selinux:
+        type: bool
+        default: false
+        description: "Enable SELinux for rke2"
