@@ -84,12 +84,12 @@ argument_specs:
 
       rke2_kubevip_image:
         type: str
-        default: "ghcr.io/kube-vip/kube-vip:v0.6.4"
+        default: "ghcr.io/kube-vip/kube-vip:v0.9.2"
         description: "Specify which image is used for kube-vip container"
 
       rke2_kubevip_cloud_provider_image:
         type: str
-        default: "ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.4"
+        default: "ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.12"
         description: "Specify which image is used for kube-vip cloud provider container"
 
       rke2_kubevip_ipvs_lb_enable:
