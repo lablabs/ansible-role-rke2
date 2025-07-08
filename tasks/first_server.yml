@@ -168,9 +168,7 @@
 
     - name: Get all node names
       ansible.builtin.set_fact:
-        node_names: "{{ hostvars | dict2items | map(attribute='value.rke2_node_name') }}"
-      run_once: true
-      register: node_names
+        node_names: "{{ groups[rke2_cluster_group_name] | map('extract', hostvars) | map(attribute='rke2_node_name') }}"
 
     - name: Remove old <node>.node-password.rke2 secrets
       ansible.builtin.shell: |
