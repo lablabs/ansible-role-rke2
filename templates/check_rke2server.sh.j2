@@ -3,13 +3,16 @@ errorExit() {
     echo "*** $*" 1>&2
     exit 1
 }
-curl --silent --max-time 2 --insecure https://localhost:9345/ -o /dev/null || errorExit "Error GET https://localhost:9345/"
+testUrl() {
+    curl --silent --max-time 2 --insecure "$1" -o /dev/null || errorExit "Error GET $1"
+}
+testUrl https://localhost:9345/
 {% if rke2_api_private_ip is defined %}
-if ip addr | grep -wq {{rke2_api_private_ip}}; then
-    curl --silent --max-time 2 --insecure https://{{rke2_api_private_ip}}:{{ rke2_api_private_port }}/ -o /dev/null || errorExit "Error GET https://{{rke2_api_private_ip}}:{{ rke2_api_private_port }}/"
+if ip addr | grep -wq '{{rke2_api_private_ip}}'; then
+    testUrl 'https://{{rke2_api_private_ip | ansible.utils.ipwrap}}:{{ rke2_api_private_port }}/'
 fi
 {% else %}
-if ip addr | grep -wq {{rke2_api_ip}}; then
-    curl --silent --max-time 2 --insecure https://{{rke2_api_ip}}:9345/ -o /dev/null || errorExit "Error GET https://{{rke2_api_ip}}:9345/"
+if ip addr | grep -wq '{{rke2_api_ip}}'; then
+    testUrl 'https://{{rke2_api_ip | ansible.utils.ipwrap}}:9345/'
 fi
 {% endif %}
