@@ -176,7 +176,7 @@
         delete secret {{ item }}.node-password.rke2 -n kube-system 2>&1 || true
       args:
         executable: /bin/bash
-      with_items: "{{ registered_node_names.stdout_lines | difference(node_names) }}"
+      with_items: "{{ registered_node_names.stdout_lines | difference([rke2_node_name]) }}"
       changed_when: false
 
     - name: Remove old nodes
