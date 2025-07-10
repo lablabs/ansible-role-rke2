@@ -51,6 +51,7 @@
     - name: Get list of existing node secrets
       when: inventory_hostname is active_server
       ansible.builtin.shell: |
+        set -o pipefail
         {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
         get secrets -n kube-system -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep -E 'node-password\.rke2$' | sed s/.node-password.rke2//g
       args:
