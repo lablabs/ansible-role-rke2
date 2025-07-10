@@ -55,10 +55,10 @@
         get secrets -n kube-system -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep -E 'node-password\.rke2$' | sed s/.node-password.rke2//g
       args:
         executable: /bin/bash
-      register: nodes_with_existing_passwords # A node name on each line
+      register: nodes_with_passwords # A node name on each line
     - name: Set fact for existing node passwords
       ansible.builtin.set_fact:
-        existing_node_passwords: "{{ nodes_with_existing_passwords.stdout_lines }}"
+        nodes_with_existing_passwords: "{{ nodes_with_passwords.stdout_lines }}"
       when: inventory_hostname is active_server
     - name: Warn if the node password already exists and /etc/rancher/node/password does not exist on the node
       ansible.builtin.fail:
@@ -69,7 +69,7 @@
               - The cluster etcd was restored from a backup from before the node was correctly removed from the cluster.\n\n\
               To join this node, please recreate the file with the password, use a different node name (rke2_node_name), or remove the secret from the cluster using:\n\
               kubectl delete secret {{ rke2_node_name}}.node-password.rke2 -n kube-system"
-      when: rke2_node_name in nodes_with_existing_passwords.stdout_lines
+      when: rke2_node_name in nodes_with_existing_passwords
             and not ansible.builtin.stat(path="/etc/rancher/node/password").stat.exists
 
 - name: Start RKE2 service on the rest of the nodes
