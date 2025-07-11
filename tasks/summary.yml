@@ -13,8 +13,8 @@
   ansible.builtin.replace:
     path: "{{ rke2_download_kubeconf_path }}/{{ rke2_download_kubeconf_file_name }}"
     mode: '0600'
-    regexp: '127.0.0.1'
-    replace: "{{ rke2_api_ip | default(hostvars[groups[rke2_servers_group_name].0].ansible_host) }}"
+    regexp: '127\.0\.0\.1|\[::1\]'
+    replace: "{{ rke2_api_ip | default(hostvars[groups[rke2_servers_group_name].0].ansible_host) | ansible.utils.ipwrap }}"
   delegate_to: localhost
   become: false
   when:
