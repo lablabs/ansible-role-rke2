@@ -58,6 +58,7 @@
       args:
         executable: /bin/bash
       register: nodes_with_passwords # A node name on each line
+      changed_when: false
     - name: Set fact for existing node passwords
       ansible.builtin.set_fact:
         nodes_with_existing_passwords: "{{ nodes_with_passwords.stdout_lines }}"
