@@ -18,6 +18,13 @@
   run_once: true
   when: rke2_drain_node_during_upgrade
 
+- name: Remove BGP label from node
+  ansible.builtin.shell:
+    cmd: "{{ rke2_data_path }}/bin/kubectl label nodes {{ inventory_hostname }} {{ cilium_bgp_label | split('=') | first }}-"
+  environment:
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+  when: inventory_hostname in groups[cilium_bgp_nodes]
+
 - name: Restart RKE2 service on {{ rke2_node_name }}
   ansible.builtin.service:
     name: "{{ rke2_service_name }}"
@@ -67,6 +74,19 @@
   run_once: true
   when: rke2_wait_for_all_pods_to_be_ready
 
+- name: Wait for Cilium to be running and ready
+  ansible.builtin.command: "{{ cilium_cli_bin_path }} status --wait --wait-duration 15m"
+  environment:
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+  changed_when: true
+
+- name: Add BGP label to node
+  ansible.builtin.shell:
+    cmd: "{{ rke2_data_path }}/bin/kubectl label nodes {{ inventory_hostname }} {{ cilium_bgp_label }}"
+  environment:
+    KUBECONFIG: /etc/rancher/rke2/rke2.yaml
+  when: inventory_hostname in groups[cilium_bgp_nodes]
+
 - name: Check RabbitMQ Cluster State
   ansible.builtin.shell: |
     set -e
@@ -93,6 +113,10 @@
   delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true
   when: inventory_hostname in groups[rke2_agents_group_name]
+
+# vrati bgp peer labelu
+
+# proveri cilium
 
 - name: Check Redis Cluster State
   ansible.builtin.shell: |
