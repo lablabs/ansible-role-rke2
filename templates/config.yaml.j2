@@ -1,8 +1,8 @@
 {% if active_server is defined %}
 {% if rke2_api_private_ip is defined %}
-server: https://{{ rke2_api_private_ip }}:{{ rke2_api_private_port }}
+server: https://{{ rke2_api_private_ip | ansible.utils.ipwrap }}:{{ rke2_api_private_port }}
 {% else %}
-server: https://{{ rke2_api_ip }}:9345
+server: https://{{ rke2_api_ip | ansible.utils.ipwrap }}:9345
 {% endif %}
 {% endif %}
 {% if rke2_bind_address is defined %}

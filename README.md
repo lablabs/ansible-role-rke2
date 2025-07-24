@@ -60,7 +60,7 @@ rke2_ha_mode_kubevip: false
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in keepalived.
 # Or if the keepalived is disabled, use IP address of your LB.
-rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
+rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] | default(hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv6']['address'] ) }}"
 
 # optional option for RKE2 Server to listen on a private IP address & port
 # rke2_api_private_ip:
@@ -86,10 +86,10 @@ rke2_kubevip_cloud_provider_enable: true
 rke2_kubevip_svc_enable: true
 
 # Specify which image is used for kube-vip container
-rke2_kubevip_image: ghcr.io/kube-vip/kube-vip:v0.6.4
+rke2_kubevip_image: ghcr.io/kube-vip/kube-vip:v0.9.2
 
 # Specify which image is used for kube-vip cloud provider container
-rke2_kubevip_cloud_provider_image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.4
+rke2_kubevip_cloud_provider_image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.12
 
 # Enable kube-vip IPVS load balancer for control plane
 rke2_kubevip_ipvs_lb_enable: false

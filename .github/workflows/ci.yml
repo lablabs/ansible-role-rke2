@@ -42,7 +42,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies
-        run: pip3 install ansible docker molecule molecule-plugins[docker] "requests<2.29.2"
+        run: pip3 install ansible docker molecule molecule-plugins[docker] netaddr "requests<2.29.2"
 
       - name: Run Molecule tests
         run: molecule test
@@ -77,7 +77,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies
-        run: pip3 install ansible docker molecule molecule-plugins[docker] "requests<2.29.2"
+        run: pip3 install ansible docker molecule molecule-plugins[docker] netaddr "requests<2.29.2"
 
       - name: Run Molecule tests
         run: molecule test --scenario-name cluster
