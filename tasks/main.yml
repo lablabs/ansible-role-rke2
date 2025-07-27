@@ -49,7 +49,7 @@
   ansible.builtin.include_tasks: first_server.yml
   when:
     - inventory_hostname == groups[rke2_servers_group_name].0
-    - active_server is not defined
+    - active_server is not defined or groups[rke2_cluster_group_name] | length | int == 1
 
 - name: Restore etcd specific tasks
   ansible.builtin.include_tasks: first_server_restore.yml
