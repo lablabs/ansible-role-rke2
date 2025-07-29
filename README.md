@@ -323,8 +323,8 @@ rke2_agents_group_name: workers
 # rke2_kube_scheduler_arg:
 #   - "bind-address=0.0.0.0"
 
-# Configure Ingress Controller (allowed values: nginx-ingress, traefik, none)
-rke2_ingress_controller: nginx-ingress
+# Configure Ingress Controller (allowed values: ingress-nginx, traefik, none)
+rke2_ingress_controller: ingress-nginx
 
 # (Optional) Configure nginx via HelmChartConfig: https://docs.rke2.io/networking/networking_services#nginx-ingress-controller
 # rke2_ingress_nginx_values:
