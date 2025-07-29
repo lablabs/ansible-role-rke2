@@ -78,7 +78,7 @@
 
 - name: Rolling cordon and drain restart when version changes - agents
   ansible.builtin.include_tasks: rolling_restart.yml
-  with_items: "{{ groups[rke2_agents_group_name] | default([] ) }}"
+  with_items: "{{ groups[rke2_agents_group_name] | default([]) }}"
   loop_control:
     loop_var: _host_item
   when:

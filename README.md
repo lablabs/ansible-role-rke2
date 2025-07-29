@@ -22,9 +22,10 @@ The Role can install the RKE2 in 3 modes:
 
 > It is possible to upgrade RKE2 by changing `rke2_version` variable and re-running the playbook with this role. During the upgrade process the RKE2 service on the nodes will be restarted one by one. The Ansible Role will check if the node on which the service was restarted is in Ready state and only then proceed with restarting service on another Kubernetes node.
 
-## Requirements
+## Requirements for Anisble Controller
 
 * Ansible 2.10+
+* `netaddr` Python package
 
 ## Tested on
 
@@ -321,6 +322,9 @@ rke2_agents_group_name: workers
 # This functionality allows appending the argument if it is not present by default or replacing it if it already exists.
 # rke2_kube_scheduler_arg:
 #   - "bind-address=0.0.0.0"
+
+# Configure Ingress Controller (allowed values: nginx-ingress, traefik, none)
+rke2_ingress_controller: nginx-ingress
 
 # (Optional) Configure nginx via HelmChartConfig: https://docs.rke2.io/networking/networking_services#nginx-ingress-controller
 # rke2_ingress_nginx_values:
