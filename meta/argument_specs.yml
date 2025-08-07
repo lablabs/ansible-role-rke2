@@ -307,7 +307,7 @@ argument_specs:
 
       rke2_etcd_snapshot_file:
         type: str
-        required: false
+        default: ""
         description: "Etcd snapshot file name. When the file name is defined, the etcd will be restored on initial deployment Ansible run."
 
       rke2_etcd_snapshot_destination_dir:
