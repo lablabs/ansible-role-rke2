@@ -315,6 +315,11 @@ argument_specs:
         default: "{{ rke2_data_path }}/server/db/snapshots"
         description: "Etcd snapshot location"
 
+      rke2_etcd_snapshot_schedule:
+        type: str
+        default: "0 */6 * * *"
+        description: "Etcd snapshot schedule in cron format"
+
       rke2_etcd_snapshot_s3_options:
         type: dict
         required: false
