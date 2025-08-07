@@ -202,7 +202,7 @@ rke2_etcd_snapshot_source_dir: etcd_snapshots
 # The etcd will be restored only during the initial run, so even if you will leave the the file name specified,
 # the etcd will remain untouched during the next runs.
 # You can either use this or set options in `rke2_etcd_snapshot_s3_options`
-rke2_etcd_snapshot_file:
+rke2_etcd_snapshot_file: ""
 
 # Etcd snapshot location
 rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"

@@ -241,7 +241,7 @@ rke2_etcd_snapshot_source_dir: etcd_snapshots
 # The etcd will be restored only during the initial run, so even if you will leave the the file name specified,
 # the etcd will remain untouched during the next runs.
 # You can either use this or set options in `rke2_etcd_snapshot_s3_options`
-rke2_etcd_snapshot_file:
+rke2_etcd_snapshot_file: ""
 
 # Etcd snapshot location
 rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
@@ -345,7 +345,6 @@ rke2_wait_for_all_pods_to_be_ready: false
 rke2_wait_for_all_pods_to_be_healthy: false
 # The args passed to the kubectl wait command
 rke2_wait_for_all_pods_to_be_healthy_args: --for=condition=Ready -A --all pod --field-selector=metadata.namespace!=kube-system,status.phase!=Succeeded
-
 
 # Enable debug mode (rke2-service)
 rke2_debug: false
