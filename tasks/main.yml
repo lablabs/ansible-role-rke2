@@ -58,6 +58,12 @@
     - inventory_hostname == active_server or inventory_hostname == groups[rke2_servers_group_name].0
     - do_etcd_restore is defined or do_etcd_restore_from_s3 is defined
 
+- name: Download kubeconfig to ansible localhost
+  ansible.builtin.include_tasks: download_kubeconfig.yaml
+  when:
+    - rke2_download_kubeconf | bool
+    - inventory_hostname == groups[rke2_servers_group_name].0
+
 - name: Prepare and join remaining nodes of the cluster
   ansible.builtin.include_tasks: remaining_nodes.yml
   when:

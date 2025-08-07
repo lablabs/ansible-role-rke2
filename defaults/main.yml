@@ -207,6 +207,10 @@ rke2_etcd_snapshot_file: ""
 # Etcd snapshot location
 rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
 
+# (Optional) Etcd snapshot schedule
+# The schedule is in cron format, e.g. "0 */12 * * *"
+# rke2_etcd_snapshot_schedule: "0 */12 * * *"
+
 # Etcd snapshot s3 options
 # Set either all these values or `rke2_etcd_snapshot_file` and `rke2_etcd_snapshot_source_dir`
 

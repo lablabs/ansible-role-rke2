@@ -44,6 +44,9 @@ node-label:
 {% endfor %}
 {% endif %}
 snapshotter: {{ rke2_snapshotter }}
+{% if rke2_etcd_snapshot_schedule is defined %}
+etcd-snapshot-schedule-cron: "{{ rke2_etcd_snapshot_schedule }}"
+{% endif %}
 node-name: {{ rke2_node_name }}
 {% if ( disable_kube_proxy | bool ) %}
 disable-kube-proxy: true
