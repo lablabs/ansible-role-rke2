@@ -1,8 +1,8 @@
 {% if active_server is defined %}
 {% if rke2_api_private_ip is defined %}
-server: https://{{ rke2_api_private_ip }}:{{ rke2_api_private_port }}
+server: https://{{ rke2_api_private_ip | ansible.utils.ipwrap }}:{{ rke2_api_private_port }}
 {% else %}
-server: https://{{ rke2_api_ip }}:9345
+server: https://{{ rke2_api_ip | ansible.utils.ipwrap }}:9345
 {% endif %}
 {% endif %}
 {% if rke2_bind_address is defined %}
@@ -44,6 +44,9 @@ node-label:
 {% endfor %}
 {% endif %}
 snapshotter: {{ rke2_snapshotter }}
+{% if rke2_etcd_snapshot_schedule is defined %}
+etcd-snapshot-schedule-cron: "{{ rke2_etcd_snapshot_schedule }}"
+{% endif %}
 node-name: {{ rke2_node_name }}
 {% if ( disable_kube_proxy | bool ) %}
 disable-kube-proxy: true
@@ -98,4 +101,7 @@ cluster-cidr: "{% for network in rke2_cluster_cidr %}{{ network }}{% if not loop
 service-cidr: "{% for network in rke2_service_cidr %}{{ network }}{% if not loop['last'] %},{% endif %}{% endfor %}"
 {% if (rke2_selinux | bool ) %}
 selinux: true
+{% endif %}
+{% if rke2_type == 'server' %}
+ingress-controller: {{ rke2_ingress_controller }}
 {% endif %}

@@ -22,9 +22,10 @@ The Role can install the RKE2 in 3 modes:
 
 > It is possible to upgrade RKE2 by changing `rke2_version` variable and re-running the playbook with this role. During the upgrade process the RKE2 service on the nodes will be restarted one by one. The Ansible Role will check if the node on which the service was restarted is in Ready state and only then proceed with restarting service on another Kubernetes node.
 
-## Requirements
+## Requirements for Anisble Controller
 
 * Ansible 2.10+
+* `netaddr` Python package
 
 ## Tested on
 
@@ -60,7 +61,7 @@ rke2_ha_mode_kubevip: false
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in keepalived.
 # Or if the keepalived is disabled, use IP address of your LB.
-rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
+rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] | default(hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv6']['address'] ) }}"
 
 # optional option for RKE2 Server to listen on a private IP address & port
 # rke2_api_private_ip:
@@ -86,10 +87,10 @@ rke2_kubevip_cloud_provider_enable: true
 rke2_kubevip_svc_enable: true
 
 # Specify which image is used for kube-vip container
-rke2_kubevip_image: ghcr.io/kube-vip/kube-vip:v0.6.4
+rke2_kubevip_image: ghcr.io/kube-vip/kube-vip:v0.9.2
 
 # Specify which image is used for kube-vip cloud provider container
-rke2_kubevip_cloud_provider_image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.4
+rke2_kubevip_cloud_provider_image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.12
 
 # Enable kube-vip IPVS load balancer for control plane
 rke2_kubevip_ipvs_lb_enable: false
@@ -240,7 +241,7 @@ rke2_etcd_snapshot_source_dir: etcd_snapshots
 # The etcd will be restored only during the initial run, so even if you will leave the the file name specified,
 # the etcd will remain untouched during the next runs.
 # You can either use this or set options in `rke2_etcd_snapshot_s3_options`
-rke2_etcd_snapshot_file:
+rke2_etcd_snapshot_file: ""
 
 # Etcd snapshot location
 rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
@@ -322,6 +323,9 @@ rke2_agents_group_name: workers
 # rke2_kube_scheduler_arg:
 #   - "bind-address=0.0.0.0"
 
+# Configure Ingress Controller (allowed values: ingress-nginx, traefik, none)
+rke2_ingress_controller: ingress-nginx
+
 # (Optional) Configure nginx via HelmChartConfig: https://docs.rke2.io/networking/networking_services#nginx-ingress-controller
 # rke2_ingress_nginx_values:
 #   controller:
@@ -341,7 +345,6 @@ rke2_wait_for_all_pods_to_be_ready: false
 rke2_wait_for_all_pods_to_be_healthy: false
 # The args passed to the kubectl wait command
 rke2_wait_for_all_pods_to_be_healthy_args: --for=condition=Ready -A --all pod --field-selector=metadata.namespace!=kube-system,status.phase!=Succeeded
-
 
 # Enable debug mode (rke2-service)
 rke2_debug: false

@@ -278,7 +278,7 @@
     group: root
     mode: 0644
   with_items: "{{ rke2_custom_manifests }}"
-  when: rke2_custom_manifests
+  when: rke2_custom_manifests | length > 0
 
 - name: Copy Static Pods
   ansible.builtin.copy:

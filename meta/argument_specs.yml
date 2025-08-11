@@ -39,7 +39,7 @@ argument_specs:
 
       rke2_api_ip:
         type: str
-        default: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
+        default: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] | default(hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv6']['address'] ) }}"
         description: "Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node. In HA mode choose a static IP which will be set as VIP in keepalived. Or if the keepalived is disabled, use IP address of your LB."
 
       rke2_api_private_ip:
@@ -84,12 +84,12 @@ argument_specs:
 
       rke2_kubevip_image:
         type: str
-        default: "ghcr.io/kube-vip/kube-vip:v0.6.4"
+        default: "ghcr.io/kube-vip/kube-vip:v0.9.2"
         description: "Specify which image is used for kube-vip container"
 
       rke2_kubevip_cloud_provider_image:
         type: str
-        default: "ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.4"
+        default: "ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.12"
         description: "Specify which image is used for kube-vip cloud provider container"
 
       rke2_kubevip_ipvs_lb_enable:
@@ -307,13 +307,18 @@ argument_specs:
 
       rke2_etcd_snapshot_file:
         type: str
-        required: false
+        default: ""
         description: "Etcd snapshot file name. When the file name is defined, the etcd will be restored on initial deployment Ansible run."
 
       rke2_etcd_snapshot_destination_dir:
         type: str
         default: "{{ rke2_data_path }}/server/db/snapshots"
         description: "Etcd snapshot location"
+
+      rke2_etcd_snapshot_schedule:
+        type: str
+        default: "0 */6 * * *"
+        description: "Etcd snapshot schedule in cron format"
 
       rke2_etcd_snapshot_s3_options:
         type: dict
@@ -419,6 +424,11 @@ argument_specs:
         elements: str
         required: false
         description: "Customize default kube-scheduler arguments."
+
+      rke2_ingress_controller:
+        type: str
+        default: "nginx-ingress"
+        description: "Ingress controller to use (nginx-ingress, traefik, or none)"
 
       rke2_ingress_nginx_values:
         type: dict

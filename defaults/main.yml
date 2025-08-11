@@ -22,7 +22,7 @@ rke2_ha_mode_kubevip: false
 # Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node.
 # In HA mode choose a static IP which will be set as VIP in keepalived.
 # Or if the keepalived is disabled, use IP address of your LB.
-rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] }}"
+rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] | default(hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv6']['address'] ) }}"
 
 # optional option for RKE2 Server to listen on a private IP address & port
 # rke2_api_private_ip:
@@ -48,10 +48,10 @@ rke2_kubevip_cloud_provider_enable: true
 rke2_kubevip_svc_enable: true
 
 # Specify which image is used for kube-vip container
-rke2_kubevip_image: ghcr.io/kube-vip/kube-vip:v0.6.4
+rke2_kubevip_image: ghcr.io/kube-vip/kube-vip:v0.9.2
 
 # Specify which image is used for kube-vip cloud provider container
-rke2_kubevip_cloud_provider_image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.4
+rke2_kubevip_cloud_provider_image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.12
 
 # Enable kube-vip IPVS load balancer for control plane
 rke2_kubevip_ipvs_lb_enable: false
@@ -202,10 +202,14 @@ rke2_etcd_snapshot_source_dir: etcd_snapshots
 # The etcd will be restored only during the initial run, so even if you will leave the the file name specified,
 # the etcd will remain untouched during the next runs.
 # You can either use this or set options in `rke2_etcd_snapshot_s3_options`
-rke2_etcd_snapshot_file:
+rke2_etcd_snapshot_file: ""
 
 # Etcd snapshot location
 rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
+
+# (Optional) Etcd snapshot schedule
+# The schedule is in cron format, e.g. "0 */12 * * *"
+# rke2_etcd_snapshot_schedule: "0 */12 * * *"
 
 # Etcd snapshot s3 options
 # Set either all these values or `rke2_etcd_snapshot_file` and `rke2_etcd_snapshot_source_dir`
@@ -286,6 +290,9 @@ rke2_agents_group_name: workers
 # This functionality allows appending the argument if it is not present by default or replacing it if it already exists.
 # rke2_kube_scheduler_arg:
 #   - "bind-address=0.0.0.0"
+
+# Configure Ingress Controller (allowed values: ingress-nginx, traefik, none)
+rke2_ingress_controller: ingress-nginx
 
 # (Optional) Configure nginx via HelmChartConfig: https://docs.rke2.io/networking/networking_services#nginx-ingress-controller
 # rke2_ingress_nginx_values:

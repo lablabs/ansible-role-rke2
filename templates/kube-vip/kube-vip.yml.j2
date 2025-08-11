@@ -33,7 +33,7 @@ spec:
         - name: vip_arp
           value: "true"
         - name: vip_interface
-          value: "{{ rke2_interface | default(ansible_default_ipv4.interface) }}"
+          value: "{{ rke2_interface | default(ansible_default_ipv4.interface | default(ansible_default_ipv6.interface)) }}"
         - name: port
           value: "{{ rke2_api_port | default('6443')}}"
         - name: vip_cidr

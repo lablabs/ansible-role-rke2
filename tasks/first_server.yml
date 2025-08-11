@@ -44,13 +44,13 @@
 - name: Register if we need to do a etcd restore from file
   ansible.builtin.set_fact:
     do_etcd_restore: true
-  when: rke2_etcd_snapshot_file and ((ansible_facts.services['rke2-server.service'] is not defined) or (ansible_facts.services['rke2-server.service']['status'] == 'disabled'))
+  when: (rke2_etcd_snapshot_file | length > 0) and ((ansible_facts.services['rke2-server.service'] is not defined) or (ansible_facts.services['rke2-server.service']['status'] == 'disabled'))
 
 - name: Register if we need to do a etcd restore from s3
   ansible.builtin.set_fact:
     do_etcd_restore_from_s3: true
   when:
-    - not rke2_etcd_snapshot_file
+    - rke2_etcd_snapshot_file | length > 0
     - rke2_etcd_snapshot_s3_options is defined
     - rke2_etcd_snapshot_s3_options.access_key
     - rke2_etcd_snapshot_s3_options.secret_key
