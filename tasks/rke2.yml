@@ -229,7 +229,7 @@
     versions: "{{ versions_check.stdout | from_json }}"
 
 - name: Prevent accidental RKE2 downgrade
-  when: not ansible_check_mode and installed_version != "not installed" and (not rke2_allow_downgrade or (rke2_version is defined and rke2_channel is undefined))
+  when: not ansible_check_mode and installed_version != "not installed" and not rke2_allow_downgrade and (rke2_version is defined and rke2_channel is undefined)
   ansible.builtin.assert:
     that:
       - >
