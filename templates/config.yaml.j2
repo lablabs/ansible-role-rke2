@@ -59,7 +59,7 @@ profile: {{ rke2_cis_profile }}
 {{ option }}
 {% endfor %}
 {% endif %}
-{% if rke2_agent_options is defined and inventory_hostname in groups[rke2_agents_group_name] %}
+{% if rke2_agent_options is defined and inventory_hostname in groups[rke2_agents_group_name] | default([]) %}
 {% for option in rke2_agent_options %}
 {{ option }}
 {% endfor %}
