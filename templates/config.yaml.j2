@@ -91,6 +91,12 @@ kube-proxy-arg:
   - {{ argument }}
 {% endfor %}
 {% endif %}
+{% if ( rke2_kube_proxy_extra_mount is defined ) %}
+kube-proxy-extra-mount:
+{% for mount in rke2_kube_proxy_extra_mount %}
+  - {{ mount }}
+{% endfor %}
+{% endif %}
 {% if (rke2_disable_cloud_controller | bool ) %}
 disable-cloud-controller: true
 {% if rke2_cloud_provider_name != false %}
