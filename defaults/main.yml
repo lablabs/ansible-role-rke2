@@ -126,6 +126,9 @@ rke2_artifact:
   - rke2.linux-{{ rke2_architecture }}.tar.gz
   - rke2-images.linux-{{ rke2_architecture }}.tar.zst
 
+# Timeout for fetching artifacts in seconds
+rke2_artifact_fetch_timeout: 30
+
 # Changes the deploy strategy to install based on local artifacts
 rke2_airgap_mode: false
 

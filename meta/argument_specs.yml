@@ -201,6 +201,11 @@ argument_specs:
         elements: str
         description: "Airgap required artifacts"
 
+      rke2_artifact_fetch_timeout:
+        type: int
+        default: 30
+        description: "Timeout for fetching artifacts in seconds"
+
       rke2_airgap_mode:
         type: bool
         default: false
