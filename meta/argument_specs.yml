@@ -477,6 +477,13 @@ argument_specs:
         required: false
         description: "Customize default kube-proxy arguments."
 
+      rke2_kube_proxy_extra_mount:
+        type: list
+        default: []
+        elements: str
+        required: false
+        description: "Customize default kube-proxy extra mounts."
+
       rke2_node_name:
         type: str
         default: "{{ inventory_hostname }}"

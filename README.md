@@ -366,6 +366,10 @@ rke2_kubelet_config: {}
 # rke2_kube_proxy_arg:
 #   - "proxy-mode=ipvs"
 
+# (Optional) Customize default kube-proxy extra mounts
+# rke2_kube_proxy_extra_mount:
+#   - "/lib/modules:/lib/modules:ro"
+
 # The value for the node-name configuration item
 rke2_node_name: "{{ inventory_hostname }}"
 
