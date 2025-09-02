@@ -300,6 +300,12 @@ argument_specs:
         default: "templates/registries.yaml.j2"
         description: "Path to Container registry config file template"
 
+      rke2_config_custom_parameters:
+        type: list
+        default: []
+        elements: str
+        description: Configure custom parameters for RKE2 config file
+
       rke2_config:
         type: str
         default: "templates/config.yaml.j2"

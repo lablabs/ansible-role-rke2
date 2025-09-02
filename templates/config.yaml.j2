@@ -112,7 +112,5 @@ selinux: true
 ingress-controller: {{ rke2_ingress_controller }}
 {% endif %}
 {% if rke2_config_custom_parameters %}
-{% for key, value in rke2_config_custom_parameters.items() %}
-{{ key }}: {{ value | lower }}
-{% endfor %}
+{{ rke2_config_custom_parameters | to_nice_yaml }}
 {% endif %}
