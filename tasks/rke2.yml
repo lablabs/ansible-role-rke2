@@ -4,6 +4,7 @@
     url: "{{ rke2_install_bash_url }}"
     dest: "{{ rke2_install_script_dir }}/rke2.sh"
     mode: 0700
+    timeout: "{{ rke2_artifact_fetch_timeout }}"
   when: not rke2_airgap_mode
 
 - name: Copy local RKE2 installation script
@@ -36,21 +37,21 @@
         dest: "{{ rke2_artifact_path }}/sha256sum-{{ rke2_architecture }}.txt"
         force: yes
         mode: 0640
-        timeout: 30
+        timeout: "{{ rke2_artifact_fetch_timeout }}"
     - name: Download RKE2 artifacts and compare with checksums ( airgap mode )
       ansible.builtin.get_url:
         url: "{{ rke2_artifact_url }}/{{ rke2_version }}/{{ item }}"
         dest: "{{ rke2_artifact_path }}/{{ item }}"
         mode: 0640
         checksum: "sha256:{{ rke2_artifact_url }}/{{ rke2_version }}/sha256sum-{{ rke2_architecture }}.txt"
-        timeout: 30
+        timeout: "{{ rke2_artifact_fetch_timeout }}"
       with_items: "{{ rke2_artifact | reject('search', 'sha256sum') | list }}"
     - name: Download RKE2 install script ( airgap mode )
       ansible.builtin.get_url:
         url: "{{ rke2_install_bash_url }}"
         dest: "{{ rke2_install_script_dir }}/rke2.sh"
         mode: 0700
-        timeout: 30
+        timeout: "{{ rke2_artifact_fetch_timeout }}"
   rescue:
     - name: "Remote downloading failed: Downloading locally and pushing to remote hosts ( airgap mode - download locally and push to remote )"
       ansible.builtin.pause: # Slight delay to make sure you know it's gonna happen and have time to cancel
@@ -73,7 +74,7 @@
         force: yes
         mode: 0640
         owner: "{{ lookup('env', 'USER') }}"
-        timeout: 30
+        timeout: "{{ rke2_artifact_fetch_timeout }}"
     - name: Downloading RKE2 artifacts locally
       delegate_to: localhost
       run_once: true
@@ -83,6 +84,7 @@
         dest: "{{ rke2_airgap_copy_sourcepath }}/"
         mode: 0640
         owner: "{{ lookup('env', 'USER') }}"
+        timeout: "{{ rke2_artifact_fetch_timeout }}"
       with_items: "{{ [rke2_artifact_url + '/' + rke2_version + '/'] | product(rke2_artifact) | map('join') | list + [rke2_install_bash_url] }}"
     - name: Download RKE2 install script locally
       delegate_to: localhost
@@ -92,6 +94,7 @@
         dest: "{{ rke2_airgap_copy_sourcepath }}/rke2.sh"
         mode: 0700
         owner: "{{ lookup('env', 'USER') }}"
+        timeout: "{{ rke2_artifact_fetch_timeout }}"
     - name: Copy local RKE2 files to remote hosts
       ansible.builtin.copy:
         src: "{{ rke2_airgap_copy_sourcepath }}/"
