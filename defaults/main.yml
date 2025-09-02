@@ -126,6 +126,9 @@ rke2_artifact:
   - rke2.linux-{{ rke2_architecture }}.tar.gz
   - rke2-images.linux-{{ rke2_architecture }}.tar.zst
 
+# Timeout for fetching artifacts in seconds
+rke2_artifact_fetch_timeout: 30
+
 # Changes the deploy strategy to install based on local artifacts
 rke2_airgap_mode: false
 
@@ -335,6 +338,10 @@ rke2_kubelet_config: {}
 # (Optional) Customize default kube-proxy arguments
 # rke2_kube_proxy_arg:
 #   - "proxy-mode=ipvs"
+
+# (Optional) Customize default kube-proxy extra mounts
+# rke2_kube_proxy_extra_mount:
+#   - "/lib/modules:/lib/modules:ro"
 
 # The value for the node-name configuration item
 rke2_node_name: "{{ inventory_hostname }}"

@@ -201,6 +201,11 @@ argument_specs:
         elements: str
         description: "Airgap required artifacts"
 
+      rke2_artifact_fetch_timeout:
+        type: int
+        default: 30
+        description: "Timeout for fetching artifacts in seconds"
+
       rke2_airgap_mode:
         type: bool
         default: false
@@ -476,6 +481,13 @@ argument_specs:
         elements: str
         required: false
         description: "Customize default kube-proxy arguments."
+
+      rke2_kube_proxy_extra_mount:
+        type: list
+        default: []
+        elements: str
+        required: false
+        description: "Customize default kube-proxy extra mounts."
 
       rke2_node_name:
         type: str
