@@ -224,15 +224,18 @@
   when: rke2_channel is defined
   block:
   - name: Get RKE2 channel json
+    run_once: true
+    delegate_to: localhost
     ansible.builtin.uri:
       url: "{{ rke2_channel_url }}"
       method: GET
       return_content: true
-    register: rke2_channels_response
+    register: rke2_channels_resonse
   - name: Set latest RKE2 version
     ansible.builtin.set_fact:
-      rke2_version: "{{ rke2_channels_response.json.data | selectattr('name', 'equalto', rke2_channel) | map(attribute='latest') | first }}"
+      rke2_version: "{{ hostvars.localhost.rke2_channels_response.json.data | selectattr('name', 'equalto', rke2_channel) | map(attribute='latest') | first }}"
   - name: Display latest RKE2 version
+    run_once: true
     ansible.builtin.debug:
       msg: "Latest RKE2 version for channel '{{ rke2_channel }}' is '{{ rke2_version }}'"
 
