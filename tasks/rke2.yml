@@ -220,6 +220,19 @@
   changed_when: false
   register: versions_check
 
+- name: Get latest RKE2 version from channel
+  when: rke2_channel is defined
+  block:
+  - name: Get RKE2 channel json
+    ansible.builtin.uri:
+      url: "{{ rke2_channel_url }}"
+      method: GET
+      return_content: true
+    register: rke2_channels_response
+  - name: Set latest RKE2 version
+    ansible.builtin.set_fact:
+      rke2_version: "{{ rke2_channels_response.json | selectattr('name', 'equalto', rke2_channel) | map(attribute='latest'))[0] }}"
+
 - name: Set RKE2 versions
   when: not ansible_check_mode
   ansible.builtin.set_fact:
@@ -229,7 +242,7 @@
     versions: "{{ versions_check.stdout | from_json }}"
 
 - name: Prevent accidental RKE2 downgrade
-  when: not ansible_check_mode and installed_version != "not installed" and not rke2_allow_downgrade and (rke2_version is defined and rke2_channel is undefined)
+  when: not ansible_check_mode and installed_version != "not installed" and not rke2_allow_downgrade
   ansible.builtin.assert:
     that:
       - >
@@ -248,7 +261,7 @@
     running_version_clean: "{{ running_version | regex_search('v([0-9]+\\.[0-9]+\\.[0-9]+)', '\\1') }}"
 
 - name: Run RKE2 install script
-  when: not ansible_check_mode and ((rke2_version is undefined and rke2_channel is defined) or rke2_version != installed_version)
+  when: not ansible_check_mode and rke2_version != installed_version
   block:
     - name: Run RKE2 install script with airgap variables
       ansible.builtin.command:
@@ -263,7 +276,7 @@
       ansible.builtin.command:
         cmd: "{{ rke2_install_script_dir }}/rke2.sh"
       environment:
-        INSTALL_RKE2_VERSION: "{{ rke2_version }}"
+        INSTALL_RKE2_VERSION: "{{ '' if rke2_channel is defined else rke2_version }}"
         INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
         INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
         INSTALL_RKE2_METHOD: "{{ rke2_method }}"
