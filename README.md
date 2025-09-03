@@ -20,7 +20,7 @@ The Role can install the RKE2 in 3 modes:
 ---
 - Additionally it is possible to install the RKE2 Cluster (all 3 modes) in Air-Gapped functionality with the use of local artifacts.
 
-> It is possible to upgrade RKE2 by changing `rke2_version` variable and re-running the playbook with this role. During the upgrade process the RKE2 service on the nodes will be restarted one by one. The Ansible Role will check if the node on which the service was restarted is in Ready state and only then proceed with restarting service on another Kubernetes node.
+> It is possible to upgrade RKE2 by re-running the playbook with this role, using the `rke2_channel` (or `rke2_version`, if `rke2_channel` is not defined). During the upgrade process the RKE2 service on the nodes will be restarted one by one. The Ansible Role will check if the node on which the service was restarted is in Ready state and only then proceed with restarting service on another Kubernetes node.
 
 ## Requirements for Anisble Controller
 
@@ -140,7 +140,7 @@ rke2_agent_node_taints: []
 # Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
 rke2_token: defaultSecret12345
 
-# RKE2 version
+# RKE2 version (rke2_channel overrides this!)
 rke2_version: v1.25.3+rke2r1
 
 # URL to RKE2 repository
@@ -190,7 +190,7 @@ rke2_architecture: amd64
 # Destination directory for RKE2 installation script
 rke2_install_script_dir: /var/tmp
 
-# RKE2 channel
+# RKE2 channel (overrides rke2_version!)
 rke2_channel: stable
 
 # Do not deploy packaged components and delete any deployed components
