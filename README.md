@@ -190,8 +190,8 @@ rke2_architecture: amd64
 # Destination directory for RKE2 installation script
 rke2_install_script_dir: /var/tmp
 
-# RKE2 channel (overrides rke2_version!)
-rke2_channel: stable
+# RKE2 channel (overrides rke2_version!) - use "stable" or "latest" or a specific version - see https://update.rke2.io/v1-release/channels
+# rke2_channel: stable
 
 # Do not deploy packaged components and delete any deployed components
 # Valid items: rke2-canal, rke2-coredns, rke2-ingress-nginx, rke2-metrics-server
