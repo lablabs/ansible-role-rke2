@@ -231,7 +231,10 @@
     register: rke2_channels_response
   - name: Set latest RKE2 version
     ansible.builtin.set_fact:
-      rke2_version: "{{ rke2_channels_response.json | selectattr('name', 'equalto', rke2_channel) | map(attribute='latest') | first }}"
+      rke2_version: "{{ rke2_channels_response.json.data | selectattr('name', 'equalto', rke2_channel) | map(attribute='latest') | first }}"
+  - name: Display latest RKE2 version
+    ansible.builtin.debug:
+      msg: "Latest RKE2 version for channel '{{ rke2_channel }}' is '{{ rke2_version }}'"
 
 - name: Set RKE2 versions
   when: not ansible_check_mode
