@@ -83,6 +83,7 @@
   delay: 15
   loop: "{{ groups[rke2_cluster_group_name] }}"
   when:
+    - not ansible_check_mode
     - rke2_cni == 'none'
     - inventory_hostname == active_server or inventory_hostname == groups[rke2_servers_group_name].0
 
