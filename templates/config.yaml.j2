@@ -56,12 +56,24 @@ profile: {{ rke2_cis_profile }}
 {%endif%}
 {% if rke2_server_options is defined and inventory_hostname in groups[rke2_servers_group_name] %}
 {% for option in rke2_server_options %}
+{% if option is mapping %}
+{% for key, value in option.items() %}
+{{ key }}: {{ value }}
+{% endfor %}
+{% else %}
 {{ option }}
+{% endif %}
 {% endfor %}
 {% endif %}
 {% if rke2_agent_options is defined and inventory_hostname in groups[rke2_agents_group_name] | default([]) %}
 {% for option in rke2_agent_options %}
+{% if option is mapping %}
+{% for key, value in option.items() %}
+{{ key }}: {{ value }}
+{% endfor %}
+{% else %}
 {{ option }}
+{% endif %}
 {% endfor %}
 {% endif %}
 {% if ( rke2_kube_controller_manager_arg is defined ) %}
