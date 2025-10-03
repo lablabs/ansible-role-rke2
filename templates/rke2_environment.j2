@@ -1,3 +1,9 @@
 {% for option in rke2_environment_options %}
+{% if option is mapping %}
+{% for key, value in option.items() %}
+{{ key }}: {{ value }}
+{% endfor %}
+{% else %}
 {{ option }}
+{% endif %}
 {% endfor %}
