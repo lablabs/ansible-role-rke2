@@ -3,17 +3,17 @@ name: molecule test
 on:
   pull_request:
     branches:
-        - main
+      - main
     types: [opened, synchronize, reopened]
     paths:
-      - 'defaults/**'
-      - 'handlers/**'
-      - 'molecule/**'
-      - 'tasks/**'
-      - 'templates/**'
-      - 'vars/**'
+      - "defaults/**"
+      - "handlers/**"
+      - "molecule/**"
+      - "tasks/**"
+      - "templates/**"
+      - "vars/**"
   schedule:
-    - cron: '0 1 1 * *'
+    - cron: "0 1 1 * *"
   workflow_dispatch:
 
 jobs:
@@ -34,12 +34,12 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
         with:
-          path: 'lablabs.rke2'
+          path: "lablabs.rke2"
 
       - name: Set up Python 3
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install test dependencies
         run: pip3 install ansible docker molecule molecule-plugins[docker] netaddr "requests<2.29.2"
@@ -48,8 +48,8 @@ jobs:
         run: molecule test
         working-directory: ./lablabs.rke2
         env:
-          PY_COLORS: '1'
-          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
           MOLECULE_IMAGE: ${{ matrix.config.image }}
           MOLECULE_DOCKER_CGROUPS_MODE: ${{ matrix.config.cgroup_mode }}
           MOLECULE_DOCKER_VOLUMES: ${{ matrix.config.volumes }}
@@ -69,12 +69,12 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
         with:
-          path: 'lablabs.rke2'
+          path: "lablabs.rke2"
 
       - name: Set up Python 3
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install test dependencies
         run: pip3 install ansible docker molecule molecule-plugins[docker] netaddr "requests<2.29.2"
@@ -83,8 +83,8 @@ jobs:
         run: molecule test --scenario-name cluster
         working-directory: ./lablabs.rke2
         env:
-          PY_COLORS: '1'
-          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
           MOLECULE_IMAGE: ${{ matrix.config.image }}
           MOLECULE_TAG: ${{ matrix.config.tag }}
           MOLECULE_DOCKER_CGROUPS_MODE: ${{ matrix.config.cgroup_mode }}
