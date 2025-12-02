@@ -257,11 +257,15 @@ rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
   # access_key: "" # required
   # secret_key: "" # required
   # bucket: "" # required
-  # snapshot_name: "" # required.
+  # snapshot_name: "" # optional - if specified, etcd will be restored upon the first initialization, that is, when starting from a clean slate
   # skip_ssl_verify: false # optional
   # endpoint_ca: "" # optional. Can skip if using defaults
   # region: "" # optional - defaults to us-east-1
   # folder: "" # optional - defaults to top level of bucket
+  # proxy: "" # optional - Proxy server to use when connecting to S3, overriding any proxy-related environment variables
+  # insecure: false # optional - Disables S3 over HTTPS
+  # timeout: "" # optional - S3 timeout (default: 5m0s)
+  # s3_retention: 5 # optional - Number of snapshots in S3 to retain (default: 5)
 # Override default containerd snapshotter
 rke2_snapshotter: "{{ rke2_snapshooter }}"
 rke2_snapshooter: overlayfs # legacy variable that only exists to keep backward compatibility with previous configurations

@@ -47,6 +47,45 @@ snapshotter: {{ rke2_snapshotter }}
 {% if rke2_etcd_snapshot_schedule is defined %}
 etcd-snapshot-schedule-cron: "{{ rke2_etcd_snapshot_schedule }}"
 {% endif %}
+{% if rke2_etcd_snapshot_s3_options is defined %}
+etcd-s3: true
+{% if rke2_etcd_snapshot_s3_options.s3_endpoint is defined %}
+etcd-s3-endpoint: {{ rke2_etcd_snapshot_s3_options.s3_endpoint }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.endpoint_ca is defined %}
+etcd-s3-endpoint-ca: {{ rke2_etcd_snapshot_s3_options.endpoint_ca }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.skip_ssl_verify is defined %}
+etcd-s3-skip-ssl-verify: {{ rke2_etcd_snapshot_s3_options.skip_ssl_verify }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.access_key is defined %}
+etcd-s3-access-key: {{ rke2_etcd_snapshot_s3_options.access_key }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.secret_key is defined %}
+etcd-s3-secret-key: {{ rke2_etcd_snapshot_s3_options.secret_key }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.bucket is defined %}
+etcd-s3-bucket: {{ rke2_etcd_snapshot_s3_options.bucket }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.region is defined %}
+etcd-s3-region: {{ rke2_etcd_snapshot_s3_options.region }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.folder is defined %}
+etcd-s3-folder: {{ rke2_etcd_snapshot_s3_options.folder }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.proxy is defined %}
+etcd-s3-proxy: {{ rke2_etcd_snapshot_s3_options.proxy }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.insecure is defined %}
+etcd-s3-insecure: {{ rke2_etcd_snapshot_s3_options.insecure }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.timeout is defined %}
+etcd-s3-timeout: {{ rke2_etcd_snapshot_s3_options.timeout }}
+{% endif %}
+{% if rke2_etcd_snapshot_s3_options.s3_retention is defined %}
+etcd-s3-retention: {{ rke2_etcd_snapshot_s3_options.s3_retention | default(5) }}
+{% endif %}
+{% endif %}
 node-name: {{ rke2_node_name }}
 {% if ( disable_kube_proxy | bool ) %}
 disable-kube-proxy: true
