@@ -35,9 +35,9 @@ spec:
         - name: vip_nodename
           valueFrom:
             fieldRef:
-              fieldPath: spec.nodeName          
+              fieldPath: spec.nodeName
         - name: vip_interface
-          value: "{{ rke2_interface | default(ansible_default_ipv4.interface | default(ansible_default_ipv6.interface)) }}"
+          value: "{{ rke2_interface | default(ansible_facts.default_ipv4.interface | default(ansible_facts.default_ipv6.interface)) }}"
         - name: port
           value: "{{ rke2_api_port | default('6443')}}"
         - name: vip_cidr

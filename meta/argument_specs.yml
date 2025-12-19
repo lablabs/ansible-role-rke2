@@ -18,7 +18,7 @@ argument_specs:
 
       rke2_type:
         type: str
-        choices: ['server', 'agent']
+        choices: ["server", "agent"]
         default: "{{ 'server' if inventory_hostname in groups[rke2_servers_group_name] else 'agent' if inventory_hostname in groups[rke2_agents_group_name] }}"
         description: "The node type - server or agent"
 
@@ -39,7 +39,7 @@ argument_specs:
 
       rke2_api_ip:
         type: str
-        default: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv4']['address'] | default(hostvars[groups[rke2_servers_group_name].0]['ansible_default_ipv6']['address'] ) }}"
+        default: "{{ hostvars[groups[rke2_servers_group_name].0].ansible_facts['default_ipv4']['address'] | default(hostvars[groups[rke2_servers_group_name].0].ansible_facts['default_ipv6']['address'] ) }}"
         description: "Kubernetes API and RKE2 registration IP address. The default Address is the IPv4 of the Server/Master node. In HA mode choose a static IP which will be set as VIP in keepalived. Or if the keepalived is disabled, use IP address of your LB."
 
       rke2_api_private_ip:
@@ -197,7 +197,12 @@ argument_specs:
 
       rke2_artifact:
         type: list
-        default: ["sha256sum-{{ rke2_architecture }}.txt", "rke2.linux-{{ rke2_architecture }}.tar.gz", "rke2-images.linux-{{ rke2_architecture }}.tar.zst"]
+        default:
+          [
+            "sha256sum-{{ rke2_architecture }}.txt",
+            "rke2.linux-{{ rke2_architecture }}.tar.gz",
+            "rke2-images.linux-{{ rke2_architecture }}.tar.zst",
+          ]
         elements: str
         description: "Airgap required artifacts"
 
@@ -213,7 +218,7 @@ argument_specs:
 
       rke2_airgap_implementation:
         type: str
-        choices: ['download', 'copy', 'exists']
+        choices: ["download", "copy", "exists"]
         default: "download"
         description: "Airgap implementation type - download, copy or exists"
 
@@ -235,7 +240,7 @@ argument_specs:
 
       rke2_architecture:
         type: str
-        choices: ['amd64', 's390x']
+        choices: ["amd64", "s390x"]
         default: "amd64"
 
         description: "Architecture to be downloaded, currently there are releases for amd64 and s390x"
