@@ -1,14 +1,13 @@
 ---
-
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
-  when: ansible_pkg_mgr == 'apt'
+  when: ansible_facts['pkg_mgr'] == 'apt'
 
 - name: Update dnf cache
   ansible.builtin.dnf:
     update_cache: true
-  when: ansible_pkg_mgr == 'dnf'
+  when: ansible_facts['pkg_mgr'] == 'dnf'
 
 - name: Install packages
   ansible.builtin.package:
@@ -29,7 +28,7 @@
     owner: root
     group: root
     mode: 0755
-  when:  ansible_facts['os_family'] == "Debian"
+  when: ansible_facts['os_family'] == "Debian"
   notify: Restart keepalived
 
 - name: Create Kubernetes API health check script for RedHat OS famliy
@@ -39,7 +38,7 @@
     owner: root
     group: root
     mode: 0755
-  when:  ansible_facts['os_family'] == "RedHat"
+  when: ansible_facts['os_family'] == "RedHat"
   notify: Restart keepalived
 
 - name: Create RKE2 Server health check script for Debian OS family
@@ -49,7 +48,7 @@
     owner: root
     group: root
     mode: 0755
-  when:  ansible_facts['os_family'] == "Debian"
+  when: ansible_facts['os_family'] == "Debian"
   notify: Restart keepalived
 
 - name: Create RKE2 Server health check script for RedHat OS family
@@ -59,7 +58,7 @@
     owner: root
     group: root
     mode: 0755
-  when:  ansible_facts['os_family'] == "RedHat"
+  when: ansible_facts['os_family'] == "RedHat"
   notify: Restart keepalived
 
 - name: Create keepalived config file
