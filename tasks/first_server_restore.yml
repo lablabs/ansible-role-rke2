@@ -5,13 +5,22 @@
   args:
     executable: /bin/bash
   changed_when: false
-  register: node_names
+  register: registered_node_names
 
-- name: Restore etcd - remove old nodes
+- name: Restore etcd - cleanup <node>.node-password.rke2 secrets 
+  ansible.builtin.shell: |
+    {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
+    delete secret {{ item }}.node-password.rke2 -n kube-system 2>&1 || true
+  args:
+    executable: /bin/bash
+  with_items: "{{ registered_node_names.stdout_lines }}"
+  when: item != rke2_node_name
+
+- name: Restore etcd - remove old (not existing) nodes
   ansible.builtin.shell: |
     {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml \
     delete node {{ item }} 2>&1 || true
   args:
     executable: /bin/bash
-  with_items: "{{ node_names.stdout_lines | difference(groups[rke2_cluster_group_name]) }}"
+  with_items: "{{ registered_node_names.stdout_lines | difference(groups[rke2_cluster_group_name]) }}"
   changed_when: false
