@@ -22,7 +22,7 @@ The Role can install the RKE2 in 3 modes:
 
 > It is possible to upgrade RKE2 by changing `rke2_version` variable and re-running the playbook with this role. During the upgrade process the RKE2 service on the nodes will be restarted one by one. The Ansible Role will check if the node on which the service was restarted is in Ready state and only then proceed with restarting service on another Kubernetes node.
 
-## Requirements for Anisble Controller
+## Requirements for Ansible Controller
 
 * Ansible 2.10+
 * `netaddr` Python package
