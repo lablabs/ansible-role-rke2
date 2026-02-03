@@ -436,9 +436,9 @@ argument_specs:
         description: "Customize default kube-scheduler arguments."
 
       rke2_ingress_controller:
-        type: str
-        default: "nginx-ingress"
-        description: "Ingress controller to use (nginx-ingress, traefik, or none)"
+        type: any
+        default: "ingress-nginx"
+        description: "Ingress controller to use (ingress-nginx, traefik, or none) (string or array)"
 
       rke2_ingress_nginx_values:
         type: dict

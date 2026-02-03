@@ -38,10 +38,16 @@
     - rke2_ha_mode_kubevip | bool
     - not rke2_ha_mode_keepalived | bool
 
+- name: Fail if rke2_ingress_controller is not string or list
+  fail:
+    msg: "rke2_ingress_controller must be a string or a list"
+  when: rke2_ingress_controller is not string and rke2_ingress_controller is not sequence
+
 - name: Copy ingress-nginx manifests to the masternode
   ansible.builtin.include_tasks: ingress-nginx.yml
   when:
     - inventory_hostname == groups[rke2_servers_group_name].0
+    - rke2_ingress_controller == "ingress-nginx"
     - rke2_ingress_nginx_values is defined
     - rke2_ingress_nginx_values | length > 0
 
