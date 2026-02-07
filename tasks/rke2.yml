@@ -152,7 +152,14 @@
       register: install_script
     - name: Register artifact facts
       ansible.builtin.set_fact:
-        artifacts_writeable: "{{ artifacts.values() | map(attribute='writeable') | list | bool }}"
+        artifacts_writeable: >-
+          {{
+            (artifacts.results
+             | map(attribute='stat.writeable')
+             | select('equalto', true)
+             | list
+             | length) > 0
+          }}
     - name: Make the artifacts read-only
       ansible.builtin.file:
         path: "{{ rke2_artifact_path }}/{{ item }}"
