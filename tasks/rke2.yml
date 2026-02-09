@@ -230,6 +230,25 @@
   changed_when: false
   register: versions_check
 
+- name: Get latest RKE2 version from channel
+  when: rke2_channel is defined
+  block:
+  - name: Get RKE2 channel json
+    run_once: true
+    delegate_to: localhost
+    ansible.builtin.uri:
+      url: "{{ rke2_channel_url }}"
+      method: GET
+      return_content: true
+    register: rke2_channels_response
+  - name: Set latest RKE2 version
+    ansible.builtin.set_fact:
+      rke2_version: "{{ rke2_channels_response.json.data | selectattr('name', 'equalto', rke2_channel) | map(attribute='latest') | first }}"
+  - name: Display latest RKE2 version
+    run_once: true
+    ansible.builtin.debug:
+      msg: "Latest RKE2 version for channel '{{ rke2_channel }}' is '{{ rke2_version }}'"
+
 - name: Set RKE2 versions
   when: not ansible_check_mode
   ansible.builtin.set_fact:
@@ -273,7 +292,7 @@
       ansible.builtin.command:
         cmd: "{{ rke2_install_script_dir }}/rke2.sh"
       environment:
-        INSTALL_RKE2_VERSION: "{{ rke2_version }}"
+        INSTALL_RKE2_VERSION: "{{ '' if rke2_channel is defined else rke2_version }}"
         INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
         INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
         INSTALL_RKE2_METHOD: "{{ rke2_method }}"
