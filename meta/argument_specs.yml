@@ -436,14 +436,19 @@ argument_specs:
         description: "Customize default kube-scheduler arguments."
 
       rke2_ingress_controller:
-        type: str
-        default: "nginx-ingress"
-        description: "Ingress controller to use (nginx-ingress, traefik, or none)"
+        type: raw
+        default: "ingress-nginx"
+        description: "Ingress controller to use (ingress-nginx, traefik, or none) (string or array)"
 
       rke2_ingress_nginx_values:
         type: dict
         default: {}
         description: "Configure nginx via HelmChartConfig"
+
+      rke2_traefik_values:
+        type: dict
+        default: {}
+        description: "Configure traefik via HelmChartConfig"
 
       rke2_drain_node_during_upgrade:
         type: bool
