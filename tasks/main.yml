@@ -50,6 +50,13 @@
     - rke2_ingress_nginx_values is defined
     - rke2_ingress_nginx_values | length > 0
 
+- name: Copy traefik manifests to the masternode
+  ansible.builtin.include_tasks: traefik.yml
+  when:
+    - inventory_hostname == groups[rke2_servers_group_name].0
+    - rke2_traefik_values is defined
+    - rke2_traefik_values | length > 0
+
 - name: Prepare very first server node in the cluster
   ansible.builtin.include_tasks: first_server.yml
   when:

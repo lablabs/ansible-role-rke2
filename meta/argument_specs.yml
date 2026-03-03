@@ -445,6 +445,11 @@ argument_specs:
         default: {}
         description: "Configure nginx via HelmChartConfig"
 
+      rke2_traefik_values:
+        type: dict
+        default: {}
+        description: "Configure traefik via HelmChartConfig"
+
       rke2_drain_node_during_upgrade:
         type: bool
         default: false
