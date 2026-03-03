@@ -341,6 +341,12 @@ rke2_ingress_controller: ingress-nginx
 rke2_ingress_nginx_values: {}
 
 # (Optional) Configure traefik via HelmChartConfig: https://docs.rke2.io/networking/networking_services
+# rke2_traefik_values:
+#   providers:
+#     kubernetesIngressNginx:
+#       enabled: true
+#       ingressClass: "rke2-ingress-nginx-migration"
+#       controllerClass: 'rke2.cattle.io/ingress-nginx-migration'
 rke2_traefik_values: {}
 
 # Cordon, drain the node which is being upgraded. Uncordon the node once the RKE2 upgraded
