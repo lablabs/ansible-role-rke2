@@ -160,5 +160,12 @@ service-cidr: "{% for network in rke2_service_cidr %}{{ network }}{% if not loop
 selinux: true
 {% endif %}
 {% if rke2_type == 'server' %}
+{% if rke2_ingress_controller is string %}
 ingress-controller: {{ rke2_ingress_controller }}
+{% elif rke2_ingress_controller is sequence %}
+ingress-controller:
+{% for item in rke2_ingress_controller %}
+  - {{ item }}
+{% endfor %}
+{% endif %}
 {% endif %}
