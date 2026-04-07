@@ -202,7 +202,7 @@ rke2_etcd_snapshot_source_dir: etcd_snapshots
 
 # Etcd snapshot file name.
 # When the file name is defined, the etcd will be restored on initial deployment Ansible run.
-# The etcd will be restored only during the initial run, so even if you will leave the the file name specified,
+# The etcd will be restored only during the initial run, so even if you will leave the file name specified,
 # the etcd will remain untouched during the next runs.
 # You can either use this or set options in `rke2_etcd_snapshot_s3_options`
 rke2_etcd_snapshot_file: ""
@@ -296,7 +296,8 @@ rke2_agents_group_name: workers
 # rke2_kube_scheduler_arg:
 #   - "bind-address=0.0.0.0"
 
-# Configure Ingress Controller (allowed values: ingress-nginx, traefik, none)
+# Ingress controller selection - single value or list of values. Supported: ingress-nginx, traefik, none
+# NOTE: The default value will change to `traefik` in role release 1.52.0
 rke2_ingress_controller: ingress-nginx
 
 # (Optional) Configure nginx via HelmChartConfig: https://docs.rke2.io/networking/networking_services#nginx-ingress-controller
@@ -320,7 +321,7 @@ rke2_drain_node_during_upgrade: false
 # Additional args that will be passed to the kubectl drain command e.g. --pod-selector
 rke2_drain_additional_args: ""
 
-# Wait for all pods to be have a status of running or succeeded after rke2-service restart during rolling restart.
+# Wait for all pods to have a status of running or succeeded after rke2-service restart during rolling restart.
 rke2_wait_for_all_pods_to_be_ready: false
 # Wait for all pods to be ready after rke2-service restart during rolling restart.
 # Named "healthy" to keep backwards compatibility with existing variable names.
