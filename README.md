@@ -147,7 +147,7 @@ rke2_version: v1.25.3+rke2r1
 rke2_channel_url: https://update.rke2.io/v1-release/channels
 
 # URL to RKE2 install bash script
-# e.g. rancher chinase mirror http://rancher-mirror.rancher.cn/rke2/install.sh
+# e.g. rancher Chinese mirror http://rancher-mirror.rancher.cn/rke2/install.sh
 rke2_install_bash_url: https://get.rke2.io
 
 # Local data directory for RKE2
@@ -241,7 +241,7 @@ rke2_etcd_snapshot_source_dir: etcd_snapshots
 
 # Etcd snapshot file name.
 # When the file name is defined, the etcd will be restored on initial deployment Ansible run.
-# The etcd will be restored only during the initial run, so even if you will leave the the file name specified,
+# The etcd will be restored only during the initial run, so even if you will leave the file name specified,
 # the etcd will remain untouched during the next runs.
 # You can either use this or set options in `rke2_etcd_snapshot_s3_options`
 rke2_etcd_snapshot_file: ""
@@ -249,17 +249,22 @@ rke2_etcd_snapshot_file: ""
 # Etcd snapshot location
 rke2_etcd_snapshot_destination_dir: "{{ rke2_data_path }}/server/db/snapshots"
 
+# (Optional) Etcd snapshot schedule
+# The schedule is in cron format, e.g. "0 */12 * * *"
+# rke2_etcd_snapshot_schedule: "0 */12 * * *"
+
 # Etcd snapshot s3 options
 # Set either all these values or `rke2_etcd_snapshot_file` and `rke2_etcd_snapshot_source_dir`
 
 # rke2_etcd_snapshot_s3_options:
+  # https://docs.rke2.io/datastore/backup_restore?_highlight=restore&_highlight=sna&etcdsnap=Multiple+Servers#s3-compatible-object-store-support
   # s3_endpoint: "" # required
   # access_key: "" # required
   # secret_key: "" # required
   # bucket: "" # required
   # snapshot_name: "" # optional - if specified, etcd will be restored upon the first initialization, that is, when starting from a clean slate
   # skip_ssl_verify: false # optional
-  # endpoint_ca: "" # optional. Can skip if using defaults
+  # endpoint_ca: "" # optional
   # region: "" # optional - defaults to us-east-1
   # folder: "" # optional - defaults to top level of bucket
   # proxy: "" # optional - Proxy server to use when connecting to S3, overriding any proxy-related environment variables
@@ -330,7 +335,8 @@ rke2_agents_group_name: workers
 # rke2_kube_scheduler_arg:
 #   - "bind-address=0.0.0.0"
 
-# Configure Ingress Controller (allowed values: ingress-nginx, traefik, none)
+# Ingress controller selection - single value or list of values. Supported: ingress-nginx, traefik, none
+# NOTE: The default value will change to `traefik` in role release 1.52.0
 rke2_ingress_controller: ingress-nginx
 
 # (Optional) Configure nginx via HelmChartConfig: https://docs.rke2.io/networking/networking_services#nginx-ingress-controller
@@ -354,7 +360,7 @@ rke2_drain_node_during_upgrade: false
 # Additional args that will be passed to the kubectl drain command e.g. --pod-selector
 rke2_drain_additional_args: ""
 
-# Wait for all pods to be have a status of running or succeeded after rke2-service restart during rolling restart.
+# Wait for all pods to have a status of running or succeeded after rke2-service restart during rolling restart.
 rke2_wait_for_all_pods_to_be_ready: false
 # Wait for all pods to be ready after rke2-service restart during rolling restart.
 # Named "healthy" to keep backwards compatibility with existing variable names.
@@ -425,29 +431,31 @@ workers
 
 ## Playbook example
 
-This playbook will deploy RKE2 to a single node acting as both server and agent.
+This playbook will deploy RKE2 to a single node acting as both server and agent, using the RKE2 version defined in the role defaults.
 
 ```yaml
 - name: Deploy RKE2
-  hosts: node
+  hosts: node01
   become: yes
   roles:
      - role: lablabs.rke2
 
 ```
 
-This playbook will deploy RKE2 to a cluster with one server(master) and several agent(worker) nodes.
+This playbook will update an already deployed RKE2 cluster (inventory contains one server and multiple workers) to a specific version.
 
 ```yaml
 - name: Deploy RKE2
   hosts: all
   become: yes
+  vars:
+    rke2_version: v1.35.1+rke2r1
   roles:
      - role: lablabs.rke2
 
 ```
 
-This playbook will deploy RKE2 to a cluster with one server(master) and several agent(worker) nodes in air-gapped mode. It will use Multus and Calico as CNI.
+This playbook will deploy RKE2 to a cluster with one server(master) and several agent(worker) nodes in air-gapped mode using the `copy` implementation, which transfers local artifact files from the Ansible controller to the target nodes. It will use Multus and Calico as CNI
 
 ```yaml
 - name: Deploy RKE2
@@ -455,7 +463,7 @@ This playbook will deploy RKE2 to a cluster with one server(master) and several 
   become: yes
   vars:
     rke2_airgap_mode: true
-    rke2_airgap_implementation: download
+    rke2_airgap_implementation: copy
     rke2_cni:
       - multus
       - calico
@@ -488,6 +496,29 @@ This playbook will deploy RKE2 to a cluster with HA server(master) control-plane
 
 ```
 
+This playbook will deploy RKE2 to a cluster with HA server(master) control-plane and several agent(worker) nodes using kube-vip for VIP management and LoadBalancer services, and Traefik as the ingress controller instead of the default ingress-nginx. It will also download the Kubernetes config file to the local machine.
+
+```yaml
+- name: Deploy RKE2
+  hosts: all
+  become: yes
+  vars:
+    rke2_ha_mode: true
+    rke2_ha_mode_keepalived: false
+    rke2_ha_mode_kubevip: true
+    rke2_api_ip: 192.168.123.100
+    rke2_loadbalancer_ip_range:
+      range-global: 192.168.123.200-192.168.123.250
+    rke2_ingress_controller: traefik
+    rke2_traefik_values:
+      logs:
+        general:
+          level: "DEBUG"
+    rke2_download_kubeconf: true
+  roles:
+     - role: lablabs.rke2
+```
+
 ## Having separate token for agent nodes
 
 As per [server configuration documentation](https://docs.rke2.io/reference/server_config) it is possible to define an agent token, which will be used by agent nodes to connect to cluster, giving them less access to cluster than server nodes have.
@@ -510,7 +541,7 @@ While changing server token is problematic, agent token can be rotated at will, 
 
 ### Playbook stuck while starting the RKE2 service on agents
 
-If the playbook starts to hang at the `Start RKE2 service on the rest of the nodes` task and then fails at the `Wait for remaining nodes to be ready` task, you probably have some limitations on you nodes' network.
+If the playbook starts to hang at the `Start RKE2 service on the rest of the nodes` task and then fails at the `Wait for remaining nodes to be ready` task, you probably have some limitations on your nodes' network.
 
 Please check the required *Inbound Rules for RKE2 Server Nodes* at the following link: <https://docs.rke2.io/install/requirements/#networking>.
 
