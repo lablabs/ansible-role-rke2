@@ -31,7 +31,7 @@ spec:
         - manager
         env:
         - name: vip_arp
-          value: "true"
+          value: "{{ rke2_kubevip_arp_enable | default('true') }}"
         - name: vip_nodename
           valueFrom:
             fieldRef:
@@ -43,19 +43,19 @@ spec:
         - name: vip_cidr
           value: "{{ rke2_api_cidr | default('24') }}"
         - name: cp_enable
-          value: "true"
+          value: "{{ rke2_kubevip_cp_enable | default('true') }}"
         - name: cp_namespace
-          value: kube-system
+          value: "{{ rke2_kubevip_cp_namespace | default('kube-system') }}"
         - name: vip_ddns
-          value: "false"
+          value: "{{ rke2_kubevip_ddns_enable | default('false') }}"
         - name: enableUPNP
-          value: "false"
+          value: "{{ rke2_kubevip_upnp_enable | default('false') }}"
         - name: svc_enable
           value: "{{ rke2_kubevip_svc_enable }}"
         - name: svc_election
           value: "{{ rke2_kubevip_service_election_enable }}"
         - name: vip_leaderelection
-          value: "true"
+          value: "{{ rke2_kubevip_leaderelection_enable | default('true') }}"
         - name: vip_leaseduration
           value: "{{ rke2_kubevip_leaseduration | default('5') }}"
         - name: vip_renewdeadline
@@ -73,7 +73,12 @@ spec:
 {% if rke2_kubevip_args  is defined %}
 {% for item in rke2_kubevip_args %}
         - name: {{ item.param }}
+          {%if item.value is defined %}
           value: {{ item.value }}
+          {% endif %}
+          {%if item.valueFrom is defined %}
+          valueFrom: {{ item.valueFrom }}
+          {% endif %}
 {% endfor %}
 {% endif %}
         image: "{{ rke2_kubevip_image }}"
