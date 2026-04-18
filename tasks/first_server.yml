@@ -117,7 +117,7 @@
   ansible.builtin.systemd:
     name: "rke2-agent.service"
     enabled: false
-    masked: true
+    masked: "{{ (not usr_local.stat.writeable) or (partition_result.rc == 1) }}"
 
 - name: Wait for the first server be ready - no CNI
   ansible.builtin.shell: |

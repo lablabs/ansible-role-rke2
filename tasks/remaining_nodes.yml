@@ -63,7 +63,7 @@
   ansible.builtin.systemd:
     name: "rke2-{{ item }}.service"
     enabled: false
-    masked: true
+    masked: "{{ (not usr_local.stat.writeable) or (partition_result.rc == 1) }}"
   with_items:
     - "{{ (['agent', 'server'] | reject('match', rke2_type) | list) }}"
 
