@@ -81,7 +81,8 @@ spec:
         ports:
         - name: metrics
           containerPort: {{ rke2_kubevip_metrics_port | int }}
-        resources: {}
+        resources:
+{{ rke2_kubevip_daemonset_resources | to_nice_yaml | indent(10, first=True) }}
         securityContext:
           capabilities:
             add:
