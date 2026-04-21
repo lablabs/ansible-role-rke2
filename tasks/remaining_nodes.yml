@@ -46,6 +46,46 @@
   when: (rke2_custom_registry_mirrors | length > 0 or rke2_custom_registry_configs | length > 0)
   notify: "Config file changed"
 
+- name: Get current nodes secrets
+  delegate_to: "{{ active_server }}"
+  run_once: true
+  block:
+    - name: Get list of existing node secrets
+      ansible.builtin.shell: |
+        set -o pipefail
+        "{{ rke2_data_path }}/bin/kubectl" --kubeconfig /etc/rancher/rke2/rke2.yaml \
+        get secrets -n kube-system -o jsonpath="{.items[*].metadata.name}" | tr ' ' '\n' | grep -E 'node-password\.rke2$' | sed 's/\.node-password\.rke2//g'
+      args:
+        executable: /bin/bash
+      register: nodes_with_passwords # A node name on each line
+      changed_when: false
+    - name: Set fact for existing node passwords
+      ansible.builtin.set_fact:
+        nodes_with_existing_passwords: "{{ nodes_with_passwords.stdout_lines }}"
+
+
+- name: Validate presence of node password file when secret exists
+  block:
+    - name: Register if rke2 password file exists
+      ansible.builtin.stat:
+        path: /etc/rancher/node/password
+      register: node_password_file
+
+    - name: Fail if the cluster already has a <hostname>.node-password.rke2 secret and the node doesn't have a password file
+      ansible.builtin.fail:
+        msg: |
+          The node password secret already exists for node name {{ rke2_node_name }}, but no password file exists in /etc/rancher/node/password!
+          The node will not be able to join the cluster with this node name without a password file matching the secret.
+          This can happen for a few reasons:
+          - The node was previously part of the cluster and RKE2 was removed without running `kubectl delete node {{ rke2_node_name }}`.
+          - The cluster etcd was restored from a backup from before the node was correctly removed from the cluster.
+          
+          To join this node, please recreate the file with the password, use a different node name (rke2_node_name), or remove the secret from the cluster using:
+          kubectl delete secret {{ rke2_node_name}}.node-password.rke2 -n kube-system
+      when: 
+        - rke2_node_name in nodes_with_existing_passwords
+        - not node_password_file.stat.exists
+
 - name: Start RKE2 service on the rest of the nodes
   ansible.builtin.systemd:
     name: "{{ rke2_service_name }}"
