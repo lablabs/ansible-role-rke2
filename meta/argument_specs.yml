@@ -133,6 +133,36 @@ argument_specs:
         default: 2112
         description: "Prometheus metrics port for kube-vip"
 
+      rke2_kubevip_arp_enable:
+        type: bool
+        default: true
+        description: "Enable ARP for kube-vip"
+
+      rke2_kubevip_cp_enable:
+        type: bool
+        default: true
+        description: "Enable kube-vip control plane load balancer"
+
+      rke2_kubevip_cp_namespace:
+        type: str
+        default: "kube-system"
+        description: "Namespace for kube-vip control plane load balancer"
+
+      rke2_kubevip_ddns_enable:
+        type: bool
+        default: false
+        description: "Enable kube-vip DDNS functionality"
+
+      rke2_kubevip_upnp_enable:
+        type: bool
+        default: false
+        description: "Enable kube-vip UPnP functionality"
+
+      rke2_kubevip_leaderelection_enable:
+        type: bool
+        default: true
+        description: "Enable kube-vip leader election"
+
       rke2_additional_sans:
         type: list
         default: []
