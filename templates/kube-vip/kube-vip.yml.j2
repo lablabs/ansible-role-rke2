@@ -79,6 +79,7 @@ spec:
           {%if item.valueFrom is defined %}
           valueFrom: {{ item.valueFrom }}
           {% endif %}
+          value: {{ item.value | string | to_json }}
 {% endfor %}
 {% endif %}
         image: "{{ rke2_kubevip_image }}"
