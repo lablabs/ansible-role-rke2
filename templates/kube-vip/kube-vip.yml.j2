@@ -74,12 +74,11 @@ spec:
 {% for item in rke2_kubevip_args %}
         - name: {{ item.param }}
           {%if item.value is defined %}
-          value: {{ item.value }}
+          value: {{ item.value | string | to_json }}
           {% endif %}
           {%if item.valueFrom is defined %}
-          valueFrom: {{ item.valueFrom }}
+          valueFrom: {{ item.valueFrom | string | to_json }}
           {% endif %}
-          value: {{ item.value | string | to_json }}
 {% endfor %}
 {% endif %}
         image: "{{ rke2_kubevip_image }}"
