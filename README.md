@@ -187,6 +187,12 @@ rke2_airgap_copy_additional_tarballs: []
 # Destination for airgap additional images tarballs ( see https://docs.rke2.io/install/airgap#tarball-method )
 rke2_tarball_images_path: "{{ rke2_data_path }}/agent/images"
 
+# Enable Conditional Image Imports - create a .cache.json file in the images directory so that
+# RKE2 only reimports tarballs that have changed (by size or mtime) since the last import, even
+# across restarts. Speeds up startup at the cost of guaranteed image reimport on every boot.
+# See https://docs.rke2.io/install/airgap?airgap-load-images=Manually+Deploy+Images#enable-conditional-image-imports
+rke2_conditional_image_imports: false
+
 # Architecture to be downloaded, currently there are releases for amd64 and s390x
 rke2_architecture: amd64
 
