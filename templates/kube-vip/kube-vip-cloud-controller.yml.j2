@@ -61,7 +61,8 @@ spec:
         image: "{{ rke2_kubevip_cloud_provider_image }}"
         name: kube-vip-cloud-provider
         imagePullPolicy: Always
-        resources: {}
+        resources:
+{{ rke2_kubevip_cloud_controller_resources | to_nice_yaml | indent(10, first=True) }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
