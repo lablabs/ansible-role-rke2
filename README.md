@@ -121,6 +121,16 @@ rke2_kubevip_service_election_enable: true
 # Prometheus metrics port for kube-vip
 rke2_kubevip_metrics_port: 2112
 
+# Resources for kubevip DaemonSet Pods.
+rke2_kubevip_daemonset_resources: {}
+#  requests:
+#    memory: 40Mi
+
+# Resources for kubevip cloud controller Pods.
+rke2_kubevip_cloud_controller_resources: {}
+#  requests:
+#    memory: 40Mi
+
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
 
@@ -405,7 +415,6 @@ rke2_service_cidr:
 
 # Enable SELinux for rke2
 rke2_selinux: false
-
 ```
 
 ## Inventory file example

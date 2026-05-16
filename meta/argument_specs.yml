@@ -128,6 +128,18 @@ argument_specs:
         elements: dict
         description: "A list of kube-vip flags. All flags can be found here https://kube-vip.io/docs/installation/flags/"
 
+      rke2_kubevip_daemonset_resources:
+        type: dict
+        default: {}
+        required: false
+        description: "Resources for kubevip DaemonSet Pods"
+
+      rke2_kubevip_cloud_controller_resources:
+        type: dict
+        default: {}
+        required: false
+        description: "Resources for kubevip cloud controller Pods"
+
       rke2_kubevip_metrics_port:
         type: int
         default: 2112
