@@ -139,6 +139,16 @@ rke2_kubevip_upnp_enable: false
 # Enable kube-vip leader election for control plane load balancer
 rke2_kubevip_leaderelection_enable: true
 
+# Resources for kubevip DaemonSet Pods.
+rke2_kubevip_daemonset_resources: {}
+#  requests:
+#    memory: 40Mi
+
+# Resources for kubevip cloud controller Pods.
+rke2_kubevip_cloud_controller_resources: {}
+#  requests:
+#    memory: 40Mi
+
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
 
@@ -429,7 +439,6 @@ rke2_service_cidr:
 
 # Enable SELinux for rke2
 rke2_selinux: false
-
 ```
 
 ## Inventory file example
