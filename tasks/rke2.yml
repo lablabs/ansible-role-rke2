@@ -311,10 +311,19 @@
     - rke2_environment_options is defined
     - rke2_environment_options|length > 0
 
-- name: Enable Conditional Image Imports
-  when: rke2_conditional_image_imports
-  ansible.builtin.copy:
-    content: ""
-    dest: "{{ rke2_tarball_images_path }}/.cache.json"
-    mode: 0640
-    force: false
+- name: Conditional Image Imports
+  when: rke2_conditional_image_imports is defined
+  block:
+    - name: Enable Conditional Image Imports
+      ansible.builtin.copy:
+        content: ""
+        dest: "{{ rke2_tarball_images_path }}/.cache.json"
+        mode: 0640
+        force: false
+      when: rke2_conditional_image_imports
+
+    - name: Disable Conditional Image Imports
+      ansible.builtin.file:
+        path: "{{ rke2_tarball_images_path }}/.cache.json"
+        state: absent
+      when: not rke2_conditional_image_imports
