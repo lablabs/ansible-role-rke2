@@ -39,7 +39,7 @@
     - not rke2_ha_mode_keepalived | bool
 
 - name: Fail if rke2_ingress_controller is not string or list
-  fail:
+  ansible.builtin.fail:
     msg: "rke2_ingress_controller must be a string or a list"
   when: rke2_ingress_controller is not string and rke2_ingress_controller is not sequence
 
