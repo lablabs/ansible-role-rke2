@@ -50,7 +50,7 @@
   ansible.builtin.set_fact:
     do_etcd_restore_from_s3: true
   when:
-    - rke2_etcd_snapshot_file | length > 0
+    - rke2_etcd_snapshot_file | length == 0
     - rke2_etcd_snapshot_s3_options is defined
     - rke2_etcd_snapshot_s3_options.access_key
     - rke2_etcd_snapshot_s3_options.secret_key
@@ -168,9 +168,8 @@
 
     - name: Get all node names
       ansible.builtin.set_fact:
-        node_names: "{{ hostvars | dict2items | map(attribute='value.rke2_node_name') }}"
+        node_names: "{{ hostvars | dict2items | map(attribute='value.rke2_node_name') | list }}"
       run_once: true
-      register: node_names
 
     - name: Remove old <node>.node-password.rke2 secrets
       ansible.builtin.shell: |
@@ -179,7 +178,9 @@
       args:
         executable: /bin/bash
       with_items: "{{ registered_node_names.stdout_lines | difference(node_names) }}"
-      changed_when: false
+      changed_when: true
+      when:
+        - item != rke2_node_name
 
     - name: Remove old nodes
       ansible.builtin.shell: |
@@ -188,7 +189,9 @@
       args:
         executable: /bin/bash
       with_items: "{{ registered_node_names.stdout_lines | difference(node_names) }}"
-      changed_when: false
+      changed_when: true
+      when:
+        - item != rke2_node_name
 
 - name: Set an Active Server variable
   ansible.builtin.set_fact:
