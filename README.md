@@ -131,7 +131,7 @@ rke2_kubevip_cp_enable: true
 rke2_kubevip_cp_namespace: "kube-system"
 
 # Enable kube-vip DDNS for control plane load balancer
-rke2_kubevip_ddns_enable: falseEnable kube-vip control plane load balancer to use unicast instead of ARP
+rke2_kubevip_ddns_enable: false
 
 # Enable kube-vip UPnP for control plane load balancer
 rke2_kubevip_upnp_enable: false
