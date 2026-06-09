@@ -179,7 +179,7 @@
         executable: /bin/bash
       with_items: "{{ registered_node_names.stdout_lines | difference(node_names) }}"
       changed_when: true
-      when: 
+      when:
         - item != rke2_node_name
 
     - name: Remove old nodes
@@ -190,7 +190,7 @@
         executable: /bin/bash
       with_items: "{{ registered_node_names.stdout_lines | difference(node_names) }}"
       changed_when: true
-      when: 
+      when:
         - item != rke2_node_name
 
 - name: Set an Active Server variable
