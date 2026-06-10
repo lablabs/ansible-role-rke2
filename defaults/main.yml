@@ -82,6 +82,24 @@ rke2_kubevip_service_election_enable: true
 # Prometheus metrics port for kube-vip
 rke2_kubevip_metrics_port: 2112
 
+# Enable ARP for kube-vip load balancer
+rke2_kubevip_arp_enable: true
+
+# Enable kube-vip control plane load balancer for RKE2
+rke2_kubevip_cp_enable: true
+
+# Namespace for kube-vip control plane load balancer
+rke2_kubevip_cp_namespace: "kube-system"
+
+# Enable kube-vip DDNS for control plane load balancer
+rke2_kubevip_ddns_enable: false
+
+# Enable kube-vip UPnP for control plane load balancer
+rke2_kubevip_upnp_enable: false
+
+# Enable kube-vip leader election for control plane load balancer
+rke2_kubevip_leaderelection_enable: true
+
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
 
