@@ -31,7 +31,7 @@ spec:
         - manager
         env:
         - name: vip_arp
-          value: "{{ rke2_kubevip_arp_enable | default('true') }}"
+          value: "{{ rke2_kubevip_arp_enable | default('true') | to_json }}"
         - name: vip_nodename
           valueFrom:
             fieldRef:
@@ -39,23 +39,23 @@ spec:
         - name: vip_interface
           value: "{{ rke2_interface | default(ansible_facts.default_ipv4.interface | default(ansible_facts.default_ipv6.interface)) }}"
         - name: port
-          value: "{{ rke2_api_port | default('6443')}}"
+          value: "{{ rke2_api_port | default('6443') }}"
         - name: vip_cidr
           value: "{{ rke2_api_cidr | default('24') }}"
         - name: cp_enable
-          value: "{{ rke2_kubevip_cp_enable | default('true') }}"
+          value: "{{ rke2_kubevip_cp_enable | default('true') | to_json }}"
         - name: cp_namespace
           value: "{{ rke2_kubevip_cp_namespace | default('kube-system') }}"
         - name: vip_ddns
-          value: "{{ rke2_kubevip_ddns_enable | default('false') }}"
+          value: "{{ rke2_kubevip_ddns_enable | default('false') | to_json  }}"
         - name: enableUPNP
-          value: "{{ rke2_kubevip_upnp_enable | default('false') }}"
+          value: "{{ rke2_kubevip_upnp_enable | default('false') | to_json  }}"
         - name: svc_enable
-          value: "{{ rke2_kubevip_svc_enable }}"
+          value: "{{ rke2_kubevip_svc_enable | to_json }}"
         - name: svc_election
-          value: "{{ rke2_kubevip_service_election_enable }}"
+          value: "{{ rke2_kubevip_service_election_enable | to_json }}"
         - name: vip_leaderelection
-          value: "{{ rke2_kubevip_leaderelection_enable | default('true') }}"
+          value: "{{ rke2_kubevip_leaderelection_enable | default('true') | to_json }}"
         - name: vip_leaseduration
           value: "{{ rke2_kubevip_leaseduration | default('5') }}"
         - name: vip_renewdeadline
@@ -69,7 +69,7 @@ spec:
         - name: prometheus_server
           value: ":{{ rke2_kubevip_metrics_port }}"
         - name: lb_enable
-          value: "{{ rke2_kubevip_ipvs_lb_enable }}"
+          value: "{{ rke2_kubevip_ipvs_lb_enable | to_json }}"
 {% if rke2_kubevip_args  is defined %}
 {% for item in rke2_kubevip_args %}
         - name: {{ item.param }}
