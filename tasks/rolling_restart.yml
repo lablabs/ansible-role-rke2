@@ -16,13 +16,22 @@
   changed_when: false
   delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true
-  when: rke2_drain_node_during_upgrade
+  when: rke2_drain_node_during_upgrade or rke2_reboot_node_after_upgrade
 
 - name: Restart RKE2 service on {{ rke2_node_name }}
   ansible.builtin.service:
     name: "{{ rke2_service_name }}"
     state: restarted
   notify: "Service (re)started"
+  when: not rke2_reboot_node_after_upgrade
+
+- name: Reboot {{ rke2_node_name }} and wait for it to come back
+  ansible.builtin.reboot:
+    reboot_timeout: "{{ rke2_reboot_timeout }}"
+    msg: "Rebooting to complete RKE2 upgrade to {{ rke2_version }} (ansible-role-rke2)"
+  when:
+    - rke2_reboot_node_after_upgrade
+    - not ansible_check_mode
 
 - name: Wait for all nodes to be ready again
   ansible.builtin.shell: |
@@ -49,7 +58,7 @@
   changed_when: false
   delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true
-  when: rke2_drain_node_during_upgrade
+  when: rke2_drain_node_during_upgrade or rke2_reboot_node_after_upgrade
 
 - name: Wait for all pods to be ready again
   ansible.builtin.shell: |

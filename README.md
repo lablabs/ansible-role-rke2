@@ -21,6 +21,8 @@ The Role can install the RKE2 in 3 modes:
 - Additionally it is possible to install the RKE2 Cluster (all 3 modes) in Air-Gapped functionality with the use of local artifacts.
 
 > It is possible to upgrade RKE2 by changing `rke2_version` variable and re-running the playbook with this role. During the upgrade process the RKE2 service on the nodes will be restarted one by one. The Ansible Role will check if the node on which the service was restarted is in Ready state and only then proceed with restarting service on another Kubernetes node.
+>
+> Optionally, set `rke2_reboot_node_after_upgrade: true` to reboot each node (instead of only restarting the RKE2 service) after it has been upgraded, still one by one. The node is cordoned and drained first (implied automatically, regardless of `rke2_drain_node_during_upgrade`), then rebooted, and the role waits for it to come back and for all nodes to be `Ready` before proceeding to the next one. Use `rke2_reboot_timeout` (default `600` seconds) to bound how long to wait for a node to return.
 
 ## Requirements for Ansible Controller
 
@@ -393,6 +395,13 @@ rke2_traefik_values: {}
 rke2_drain_node_during_upgrade: false
 # Additional args that will be passed to the kubectl drain command e.g. --pod-selector
 rke2_drain_additional_args: ""
+
+# Reboot each node after it has been upgraded, one at a time, as part of the rolling
+# upgrade. Enabling this implies cordon+drain of the node regardless of
+# rke2_drain_node_during_upgrade, so workloads are evacuated before the reboot.
+rke2_reboot_node_after_upgrade: false
+# Maximum time in seconds to wait for a rebooted node to become reachable again
+rke2_reboot_timeout: 600
 
 # Wait for all pods to have a status of running or succeeded after rke2-service restart during rolling restart.
 rke2_wait_for_all_pods_to_be_ready: false

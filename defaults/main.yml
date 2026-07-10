@@ -355,6 +355,16 @@ rke2_drain_node_during_upgrade: false
 # Additional args that will be passed to the kubectl drain command e.g. --pod-selector
 rke2_drain_additional_args: ""
 
+# Reboot each node after it has been upgraded, one at a time, as part of the rolling
+# upgrade (triggered when rke2_version changes). Instead of only restarting the RKE2
+# service, the whole node is rebooted and the play waits for it to come back and for
+# all nodes to be Ready before moving on to the next one. Enabling this implies
+# cordon+drain of the node regardless of rke2_drain_node_during_upgrade, so workloads
+# are evacuated before the reboot.
+rke2_reboot_node_after_upgrade: false
+# Maximum time in seconds to wait for a rebooted node to become reachable again
+rke2_reboot_timeout: 600
+
 # Wait for all pods to have a status of running or succeeded after rke2-service restart during rolling restart.
 rke2_wait_for_all_pods_to_be_ready: false
 # Wait for all pods to be ready after rke2-service restart during rolling restart.
