@@ -363,6 +363,11 @@ rke2_wait_for_all_pods_to_be_healthy: false
 # The args passed to the kubectl wait command
 rke2_wait_for_all_pods_to_be_healthy_args: --for=condition=Ready -A --all pod --field-selector=metadata.namespace!=kube-system,status.phase!=Succeeded
 
+# (Optional) Task file to run BEFORE a node is drained
+rke2_rolling_restart_pre_tasks_file: ""
+# (Optional) Task file to run AFTER an node is uncordoned
+rke2_rolling_restart_post_tasks_file: ""
+
 # Enable debug mode (rke2-service)
 rke2_debug: false
 
