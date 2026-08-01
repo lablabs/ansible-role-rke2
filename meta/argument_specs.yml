@@ -282,10 +282,10 @@ argument_specs:
 
       rke2_architecture:
         type: str
-        choices: ["amd64", "s390x"]
+        choices: ["amd64", "arm64", "s390x"]
         default: "amd64"
 
-        description: "Architecture to be downloaded, currently there are releases for amd64 and s390x"
+        description: "Architecture to be downloaded, currently there are releases for amd64, arm64 and s390x"
 
       rke2_install_script_dir:
         type: str
