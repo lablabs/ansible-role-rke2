@@ -502,6 +502,16 @@ argument_specs:
         default: ""
         description: "Additional args that will be passed to the kubectl drain command e.g. --pod-selector"
 
+      rke2_reboot_node_after_upgrade:
+        type: bool
+        default: false
+        description: "Reboot each node one at a time after it has been upgraded, as part of the rolling upgrade. Implies cordon+drain of the node regardless of rke2_drain_node_during_upgrade."
+
+      rke2_reboot_timeout:
+        type: int
+        default: 600
+        description: "Maximum time in seconds to wait for a rebooted node to become reachable again."
+
       rke2_wait_for_all_pods_to_be_ready:
         type: bool
         default: false
