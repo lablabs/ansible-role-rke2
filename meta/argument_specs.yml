@@ -227,6 +227,11 @@ argument_specs:
         default: "/var/lib/rancher/rke2"
         description: "Local data directory for RKE2"
 
+      rke2_config_dir_mode:
+        type: str
+        default: "0755"
+        description: "Permissions of the RKE2 config directory (/etc/rancher/rke2)"
+
       rke2_artifact_url:
         type: str
         default: "https://github.com/rancher/rke2/releases/download/"

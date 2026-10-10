@@ -20,3 +20,14 @@
         that:
           - groups.all | length == nodes.stdout | int
         quiet: true
+
+    - name: Get RKE2 config directory status
+      stat:
+        path: /etc/rancher/rke2
+      register: rke2_config_dir
+
+    - name: Check RKE2 config directory mode
+      assert:
+        that:
+          - rke2_config_dir.stat.mode == "0750"
+        quiet: true
