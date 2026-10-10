@@ -151,6 +151,12 @@ rke2_kubevip_cloud_controller_resources: {}
 #  requests:
 #    memory: 40Mi
 
+# Keepalived virtual router id
+rke2_keepalived_router_id: 11
+
+# Keepalived authentication password
+rke2_keepalived_pass: 'rke2server'
+
 # Add additional SANs in k8s API TLS cert
 rke2_additional_sans: []
 
