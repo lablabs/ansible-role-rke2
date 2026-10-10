@@ -28,7 +28,7 @@ vrrp_script chk_rke2server {
 }
 
 vrrp_instance VI_1 {
-    interface {{ ansible_facts.default_ipv4.interface | default(ansible_facts.default_ipv6.interface) }}
+    interface {{ ansible_facts.get('default_ipv4', {}).get('interface') or ansible_facts.get('default_ipv6', {}).get('interface') }}
     virtual_router_id 11
 {% if groups[rke2_servers_group_name].0 == inventory_hostname|string() %}
     state MASTER
@@ -41,11 +41,11 @@ vrrp_instance VI_1 {
     {% endif -%}
 {% endfor %}
     advert_int 1
-    unicast_src_ip {{ ansible_facts.default_ipv4.address | default(ansible_facts.default_ipv6.address) }}
+    unicast_src_ip {{ ansible_facts.get('default_ipv4', {}).get('address') or ansible_facts.get('default_ipv6', {}).get('address') }}
     unicast_peer {
 {% for host in groups[rke2_servers_group_name] %}
 {% if host|string() != inventory_hostname|string() %}
-        {{ hostvars[host]['ansible_facts']['default_ipv4']['address'] | default(hostvars[host]['ansible_facts']['default_ipv6']['address'] ) }}
+        {{ hostvars[host]['ansible_facts'].get('default_ipv4', {}).get('address') or hostvars[host]['ansible_facts'].get('default_ipv6', {}).get('address') }}
 {% endif %}
 {% endfor %}
     }
