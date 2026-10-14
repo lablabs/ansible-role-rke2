@@ -1,4 +1,9 @@
 ---
+- name: Run pre-drain rolling-restart hook for {{ rke2_node_name }}
+  ansible.builtin.include_tasks: "{{ rke2_rolling_restart_pre_tasks_file }}"
+  run_once: true
+  when: rke2_rolling_restart_pre_tasks_file | length > 0
+
 - name: Cordon and Drain the node {{ rke2_node_name }}
   ansible.builtin.shell: |
     set -o pipefail
@@ -87,3 +92,8 @@
   delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
   run_once: true
   when: rke2_wait_for_all_pods_to_be_healthy
+
+- name: Run post-upgrade rolling-restart hook for {{ rke2_node_name }}
+  ansible.builtin.include_tasks: "{{ rke2_rolling_restart_post_tasks_file }}"
+  run_once: true
+  when: rke2_rolling_restart_post_tasks_file | length > 0

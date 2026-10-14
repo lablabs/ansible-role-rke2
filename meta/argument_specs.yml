@@ -527,6 +527,16 @@ argument_specs:
         default: "--for=condition=Ready -A --all pod --field-selector=metadata.namespace!=kube-system,status.phase!=Succeeded"
         description: "The args passed to the kubectl wait command"
 
+      rke2_rolling_restart_pre_tasks_file:
+        type: str
+        default: ""
+        description: "(Optional) Task file to include before a node is drained during rolling restart"
+
+      rke2_rolling_restart_post_tasks_file:
+        type: str
+        default: ""
+        description: "(Optional) Task file to include after a node is uncordoned during rolling restart"
+
       rke2_debug:
         type: bool
         default: false

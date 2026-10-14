@@ -411,6 +411,11 @@ rke2_wait_for_all_pods_to_be_healthy: false
 # The args passed to the kubectl wait command
 rke2_wait_for_all_pods_to_be_healthy_args: --for=condition=Ready -A --all pod --field-selector=metadata.namespace!=kube-system,status.phase!=Succeeded
 
+# (Optional) Task files run during a rolling restart, once per node.
+# Use them to wait for applications to finish rebuilding replicas (e.g. PostgreSQL, Longhorn, ...)
+rke2_rolling_restart_pre_tasks_file: ""
+rke2_rolling_restart_post_tasks_file: ""
+
 # Enable debug mode (rke2-service)
 rke2_debug: false
 
@@ -559,6 +564,36 @@ This playbook will deploy RKE2 to a cluster with HA server(master) control-plane
     rke2_download_kubeconf: true
   roles:
      - role: lablabs.rke2
+```
+
+This playbook will upgrade an already deployed cluster and run custom task files during the rolling restart, once per node. The pre hook is included before the node is drained and the post hook after it is uncordoned again. This is useful for waiting until stateful workloads (e.g. Longhorn, PostgreSQL, ...) have finished rebuilding their replicas before the next node is restarted. The task files are resolved relative to the playbook directory.
+
+```yaml
+- name: Upgrade RKE2
+  hosts: all
+  become: yes
+  vars:
+    rke2_version: v1.35.1+rke2r1
+    rke2_rolling_restart_post_tasks_file: hooks/wait_for_longhorn.yml
+  roles:
+     - role: lablabs.rke2
+```
+
+`hooks/wait_for_longhorn.yml`:
+
+```yaml
+- name: Wait until Prometheus reports all Longhorn volumes as healthy
+  ansible.builtin.uri:
+    url: "{{ prometheus_url }}/api/v1/query?query={{ 'count(longhorn_volume_robustness != 1) or vector(0)' | urlencode }}"
+    return_content: true
+  register: unhealthy_volumes
+  until: unhealthy_volumes.json.data.result[0].value[1] == "0"
+  retries: 60
+  delay: 30
+  delegate_to: localhost
+  become: false
+  vars:
+    prometheus_url: http://prometheus.example.com:9090
 ```
 
 ## Having separate token for agent nodes
