@@ -50,12 +50,12 @@
   ansible.builtin.set_fact:
     do_etcd_restore_from_s3: true
   when:
-    - rke2_etcd_snapshot_file | length == 0
+    - rke2_etcd_snapshot_file | default('') | length == 0
     - rke2_etcd_snapshot_s3_options is defined
-    - rke2_etcd_snapshot_s3_options.access_key
-    - rke2_etcd_snapshot_s3_options.secret_key
-    - rke2_etcd_snapshot_s3_options.bucket
-    - rke2_etcd_snapshot_s3_options.snapshot_name
+    - rke2_etcd_snapshot_s3_options.access_key | default('') | length > 0
+    - rke2_etcd_snapshot_s3_options.secret_key | default('') | length > 0
+    - rke2_etcd_snapshot_s3_options.bucket | default('') | length > 0
+    - rke2_etcd_snapshot_s3_options.snapshot_name | default('') | length > 0
 
 - name: Restore etcd from file
   when: do_etcd_restore is defined
