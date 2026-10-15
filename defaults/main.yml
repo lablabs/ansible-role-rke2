@@ -231,6 +231,13 @@ rke2_custom_registry_path: templates/registries.yaml.j2
 # Path to RKE2 config file template
 rke2_config: templates/config.yaml.j2
 
+# (Optional) Path to RKE2 audit policy file
+# Copys the configured file into /etc/rancher/rke2/audit-policy.yaml
+# Enable by setting rke2_kube_apiserver_args with following arguments
+#   - "audit-policy-file=/etc/rancher/rke2/audit-policy.yaml"
+#   - "audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log"
+# rke2_audit_policy_path: "templates/audit-policy.yaml"
+
 # Etcd snapshot source directory
 rke2_etcd_snapshot_source_dir: etcd_snapshots
 
