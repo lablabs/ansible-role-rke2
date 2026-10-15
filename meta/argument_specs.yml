@@ -352,6 +352,11 @@ argument_specs:
         default: "templates/config.yaml.j2"
         description: "Path to RKE2 config file template"
 
+      rke2_audit_policy_path:
+        type: str
+        default: ""
+        description: "Path to RKE2 audit policy file"
+
       rke2_etcd_snapshot_source_dir:
         type: str
         default: "etcd_snapshots"

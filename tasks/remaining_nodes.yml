@@ -36,6 +36,16 @@
   when: rke2_kubelet_config | length > 0
   notify: "Config file changed"
 
+- name: Copy audit policy file
+  ansible.builtin.copy:
+    src: "{{ rke2_audit_policy_path }}"
+    dest: "/etc/rancher/rke2/audit-policy.yaml"
+    owner: root
+    group: root
+    mode: 0600
+  when: rke2_audit_policy_path | length > 0
+  notify: "Config file changed"
+
 - name: Copy Containerd Registry Configuration file
   ansible.builtin.template:
     src: "{{ rke2_custom_registry_path }}"
