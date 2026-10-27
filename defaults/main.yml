@@ -364,6 +364,10 @@ rke2_drain_additional_args: ""
 rke2_reboot_node_after_upgrade: false
 # Maximum time in seconds to wait for a rebooted node to become reachable again
 rke2_reboot_timeout: 600
+# Number of agent (worker) nodes restarted/rebooted in parallel during rolling upgrade and config-change restarts.
+# Servers are always restarted one by one. When > 1, several nodes are drained at once - ensure cluster capacity
+# and PodDisruptionBudgets allow it, otherwise drains keep retrying until timeout.
+rke2_agents_upgrade_batch_size: 1
 
 # Wait for all pods to have a status of running or succeeded after rke2-service restart during rolling restart.
 rke2_wait_for_all_pods_to_be_ready: false

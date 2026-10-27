@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+  vars:
+    rke2_version: "{{ molecule_rke2_initial_version }}"
+    rke2_snapshotter: native
+    rke2_server_node_taints:
+      - 'CriticalAddonsOnly=true:NoExecute'
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"

@@ -1,0 +1,72 @@
+---
+
+- name: Verify
+  hosts: node1
+  gather_facts: false
+  vars:
+    rke2_data_path: /var/lib/rancher/rke2
+  tasks:
+    - name: Verify RKE2
+      shell: |
+        set -e
+        set -o pipefail
+        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep " Ready" | wc -l
+      args:
+        executable: /bin/bash
+      register: nodes
+
+    - name: Check Nodes
+      assert:
+        that:
+          - groups.all | length == nodes.stdout | int
+        quiet: true
+
+    - name: Get kubelet versions
+      shell: |
+        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes \
+        -o jsonpath='{range .items[*]}{.status.nodeInfo.kubeletVersion}{"\n"}{end}'
+      register: kubelet_versions
+      until: kubelet_versions.stdout_lines | unique == [molecule_rke2_batch_upgrade_version]
+      retries: 30
+      delay: 10
+      changed_when: false
+
+    - name: Check all nodes were upgraded
+      assert:
+        that:
+          - kubelet_versions.stdout_lines | length == groups.all | length
+          - kubelet_versions.stdout_lines | unique == [molecule_rke2_batch_upgrade_version]
+        fail_msg: "Unexpected kubelet versions: {{ kubelet_versions.stdout_lines }}"
+        quiet: true
+
+    - name: Get unschedulable nodes
+      shell: |
+        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes \
+        -o jsonpath='{range .items[?(@.spec.unschedulable==true)]}{.metadata.name}{"\n"}{end}'
+      register: cordoned_nodes
+      changed_when: false
+
+    - name: Check all nodes were uncordoned after upgrade
+      assert:
+        that:
+          - cordoned_nodes.stdout | trim | length == 0
+        fail_msg: "Nodes left cordoned: {{ cordoned_nodes.stdout_lines }}"
+        quiet: true
+
+    - name: Count nodes with the molecule label
+      shell: |
+        set -e
+        set -o pipefail
+        {{ rke2_data_path }}/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes \
+        -l {{ molecule_node_label }} --no-headers | wc -l
+      args:
+        executable: /bin/bash
+      register: labeled_nodes
+      changed_when: false
+
+    - name: Check all nodes have the molecule label
+      assert:
+        that:
+          - labeled_nodes.stdout | int == groups.all | length
+        fail_msg: "Expected {{ groups.all | length }} nodes labeled {{ molecule_node_label }}, got {{ labeled_nodes.stdout }}"
+        quiet: true

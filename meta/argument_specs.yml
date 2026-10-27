@@ -512,6 +512,11 @@ argument_specs:
         default: 600
         description: "Maximum time in seconds to wait for a rebooted node to become reachable again."
 
+      rke2_agents_upgrade_batch_size:
+        type: int
+        default: 1
+        description: "Number of agent (worker) nodes restarted/rebooted in parallel during rolling upgrade and config-change restarts."
+
       rke2_wait_for_all_pods_to_be_ready:
         type: bool
         default: false

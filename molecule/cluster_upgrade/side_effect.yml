@@ -1,0 +1,99 @@
+---
+- name: Validate rke2_agents_upgrade_batch_size rejects invalid values
+  hosts: node1
+  become: yes
+  gather_facts: true
+  tasks:
+    - name: Run role with an invalid batch size
+      block:
+        - name: Include role with rke2_agents_upgrade_batch_size=0
+          ansible.builtin.include_role:
+            name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+          vars:
+            rke2_agents_upgrade_batch_size: 0
+
+        - name: Role must not succeed
+          ansible.builtin.fail:
+            msg: "Role accepted rke2_agents_upgrade_batch_size=0"
+      rescue:
+        - name: Check the batch size assertion failed
+          ansible.builtin.assert:
+            that:
+              - ansible_failed_result.msg is search('rke2_agents_upgrade_batch_size must be an integer >= 1')
+            quiet: true
+
+- name: Upgrade RKE2 with default agent batch size
+  hosts: all
+  become: yes
+  vars:
+    rke2_version: "{{ molecule_rke2_upgrade_version }}"
+    rke2_snapshotter: native
+    rke2_server_node_taints:
+      - 'CriticalAddonsOnly=true:NoExecute'
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+  post_tasks:
+    - name: Get kubelet versions after default upgrade
+      ansible.builtin.shell: |
+        /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes \
+        -o jsonpath='{range .items[*]}{.status.nodeInfo.kubeletVersion}{"\n"}{end}'
+      register: _default_upgrade_versions
+      until: _default_upgrade_versions.stdout_lines | unique == [molecule_rke2_upgrade_version]
+      retries: 30
+      delay: 10
+      changed_when: false
+      run_once: true
+      delegate_to: node1
+
+    - name: Check all nodes were upgraded with default batch size
+      ansible.builtin.assert:
+        that:
+          - _default_upgrade_versions.stdout_lines | length == groups.all | length
+          - _default_upgrade_versions.stdout_lines | unique == [molecule_rke2_upgrade_version]
+        fail_msg: "Unexpected kubelet versions: {{ _default_upgrade_versions.stdout_lines }}"
+        quiet: true
+      run_once: true
+
+- name: Upgrade RKE2 with agents in batches
+  hosts: all
+  become: yes
+  vars:
+    rke2_version: "{{ molecule_rke2_batch_upgrade_version }}"
+    rke2_snapshotter: native
+    rke2_server_node_taints:
+      - 'CriticalAddonsOnly=true:NoExecute'
+    rke2_agents_upgrade_batch_size: 2
+    rke2_drain_node_during_upgrade: true
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+
+- name: Restart RKE2 on config change with agents in batches
+  hosts: all
+  become: yes
+  vars:
+    rke2_version: "{{ molecule_rke2_batch_upgrade_version }}"
+    rke2_snapshotter: native
+    rke2_server_node_taints:
+      - 'CriticalAddonsOnly=true:NoExecute'
+    rke2_agents_upgrade_batch_size: 2
+    k8s_node_label:
+      - "{{ molecule_node_label }}"
+  pre_tasks:
+    - name: Record RKE2 service start time before config change
+      ansible.builtin.command: systemctl show -p ActiveEnterTimestampMonotonic --value rke2-{{ rke2_type }}.service
+      register: _rke2_started_before
+      changed_when: false
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+  post_tasks:
+    - name: Record RKE2 service start time after config change
+      ansible.builtin.command: systemctl show -p ActiveEnterTimestampMonotonic --value rke2-{{ rke2_type }}.service
+      register: _rke2_started_after
+      changed_when: false
+
+    - name: Check RKE2 service was restarted on every node
+      ansible.builtin.assert:
+        that:
+          - _rke2_started_after.stdout | int > _rke2_started_before.stdout | int
+        fail_msg: "RKE2 service was not restarted on {{ inventory_hostname }} after config change"
+        quiet: true

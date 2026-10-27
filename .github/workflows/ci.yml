@@ -99,6 +99,46 @@ jobs:
           MOLECULE_TAG: ${{ matrix.config.tag }}
           MOLECULE_DOCKER_CGROUPS_MODE: ${{ matrix.config.cgroup_mode }}
 
+  cluster_upgrade:
+    name: Cluster upgrade
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' }}
+    runs-on: ubuntu-22.04
+    needs: standalone
+    strategy:
+      matrix:
+        config:
+          - image: "ubuntu2404"
+            cgroup_mode: "host"
+            volumes: "rw"
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          path: "lablabs.rke2"
+
+      - name: Remove unnecessary files
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - name: Install test dependencies
+        run: pip3 install ansible docker molecule molecule-plugins[docker] netaddr "requests<2.29.2"
+
+      - name: Run Molecule tests
+        run: molecule test --scenario-name cluster_upgrade
+        working-directory: ./lablabs.rke2
+        env:
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
+          MOLECULE_IMAGE: ${{ matrix.config.image }}
+          MOLECULE_TAG: ${{ matrix.config.tag }}
+          MOLECULE_DOCKER_CGROUPS_MODE: ${{ matrix.config.cgroup_mode }}
+
   # TODO: Fix HA Cluster molecule tests (dind deployment is failing from version 1.22.15+rke2r1)
   #
   # ha_cluster:

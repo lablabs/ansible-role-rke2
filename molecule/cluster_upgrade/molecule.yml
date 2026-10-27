@@ -1,0 +1,78 @@
+---
+dependency:
+  name: 'shell'
+  command: ansible-playbook ${MOLECULE_PROJECT_DIRECTORY}/molecule/cluster_upgrade/dependency.yml -i localhost,
+driver:
+  name: docker
+platforms:
+  - name: node1
+    image: "geerlingguy/docker-${MOLECULE_IMAGE:-ubuntu2204}-ansible:latest"
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-rw}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
+    cgroupns_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"host"} # Use "private" for cgroup v1 and "host" for cgroup v2
+    command: /usr/sbin/init
+    privileged: true
+    pre_build_image: true
+    networks:
+      - name: rke2net
+    groups:
+      - masters
+      - k8s_cluster
+  - name: node2
+    image: "geerlingguy/docker-${MOLECULE_IMAGE:-ubuntu2204}-ansible:latest"
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-rw}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
+    cgroupns_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"host"} # Use "private" for cgroup v1 and "host" for cgroup v2
+    command: /usr/sbin/init
+    privileged: true
+    pre_build_image: true
+    networks:
+      - name: rke2net
+    groups:
+      - workers
+      - k8s_cluster
+  - name: node3
+    image: "geerlingguy/docker-${MOLECULE_IMAGE:-ubuntu2204}-ansible:latest"
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:${MOLECULE_DOCKER_VOLUMES:-rw}" # Use "ro" for cgroup v1 and "rw" for cgroup v2
+    cgroupns_mode: ${MOLECULE_DOCKER_CGROUPS_MODE:-"host"} # Use "private" for cgroup v1 and "host" for cgroup v2
+    command: /usr/sbin/init
+    privileged: true
+    pre_build_image: true
+    networks:
+      - name: rke2net
+    groups:
+      - workers
+      - k8s_cluster
+provisioner:
+  name: ansible
+  playbooks:
+    side_effect: side_effect.yml
+  inventory:
+    group_vars:
+      all:
+        molecule_rke2_initial_version: v1.22.11+rke2r1
+        molecule_rke2_upgrade_version: v1.22.12+rke2r1
+        molecule_rke2_batch_upgrade_version: v1.22.13+rke2r1
+        molecule_node_label: molecule-batch=true
+      masters:
+        rke2_type: server
+      workers:
+        rke2_type: agent
+verifier:
+  name: ansible
+scenario:
+  name: cluster_upgrade
+  test_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    # - idempotence
+    - side_effect
+    - verify
+    - cleanup
+    - destroy

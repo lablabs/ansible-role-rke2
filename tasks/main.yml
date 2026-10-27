@@ -1,4 +1,11 @@
 ---
+- name: Validate rke2_agents_upgrade_batch_size
+  ansible.builtin.assert:
+    that:
+      - rke2_agents_upgrade_batch_size | int >= 1
+    fail_msg: "rke2_agents_upgrade_batch_size must be an integer >= 1."
+    quiet: true
+
 - name: Install Keepalived when HA mode is enabled
   ansible.builtin.include_tasks: keepalived.yml
   when:
@@ -96,12 +103,11 @@
 
 - name: Rolling cordon and drain restart when version changes - agents
   ansible.builtin.include_tasks: rolling_restart.yml
-  with_items: "{{ groups[rke2_agents_group_name] | default([]) }}"
+  loop: "{{ groups[rke2_agents_group_name] | default([]) | difference(groups[rke2_servers_group_name]) | batch(rke2_agents_upgrade_batch_size | int) | list }}"
   loop_control:
-    loop_var: _host_item
+    loop_var: _host_batch
   when:
-    - hostvars[_host_item].inventory_hostname == inventory_hostname
-    - inventory_hostname not in groups[rke2_servers_group_name]
+    - inventory_hostname in _host_batch
     - installed_version is defined
     - installed_version != "not installed"
     - rke2_version is defined
@@ -110,13 +116,22 @@
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
-- name: Rolling restart when config files change
+- name: Rolling restart when config files change - servers
   ansible.builtin.include_tasks: change_config.yml
-  with_items: "{{ groups[rke2_cluster_group_name] }}"
+  with_items: "{{ groups[rke2_servers_group_name] }}"
   loop_control:
     loop_var: _host_item
   when:
     - hostvars[_host_item].inventory_hostname == inventory_hostname
+    - rke2_restart_needed
+
+- name: Rolling restart when config files change - agents
+  ansible.builtin.include_tasks: change_config.yml
+  loop: "{{ groups[rke2_agents_group_name] | default([]) | difference(groups[rke2_servers_group_name]) | batch(rke2_agents_upgrade_batch_size | int) | list }}"
+  loop_control:
+    loop_var: _host_batch
+  when:
+    - inventory_hostname in _host_batch
     - rke2_restart_needed
 
 - name: Final steps

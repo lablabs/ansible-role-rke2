@@ -1,4 +1,4 @@
-- name: Restart RKE2 service on {{ rke2_node_name }}
+- name: Restart RKE2 service
   ansible.builtin.service:
     name: "{{ rke2_service_name }}"
     state: restarted
@@ -17,7 +17,6 @@
   retries: 100
   delay: 15
   delegate_to: "{{ active_server | default(groups[rke2_servers_group_name].0) }}"
-  run_once: true
   when: not ansible_check_mode
 
 - name: Wait for all pods to be ready again
