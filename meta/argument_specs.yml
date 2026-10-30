@@ -553,7 +553,7 @@ argument_specs:
 
       rke2_node_name:
         type: str
-        default: "{{ inventory_hostname }}"
+        default: "{{ inventory_hostname | lower }}"
         description: "The value for the node-name configuration item"
 
       rke2_cluster_cidr:
