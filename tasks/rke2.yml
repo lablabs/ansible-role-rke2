@@ -277,6 +277,7 @@
         INSTALL_RKE2_CHANNEL_URL: "{{ rke2_channel_url }}"
         INSTALL_RKE2_CHANNEL: "{{ rke2_channel }}"
         INSTALL_RKE2_METHOD: "{{ rke2_method }}"
+        INSTALL_RKE2_ARTIFACT_URL: "{{ rke2_artifact_url | regex_replace('/+$', '') }}"
       changed_when: false
       when: not rke2_airgap_mode
 
