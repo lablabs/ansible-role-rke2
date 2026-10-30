@@ -397,8 +397,9 @@ rke2_kubelet_config: {}
 # rke2_kube_proxy_extra_mount:
 #   - "/lib/modules:/lib/modules:ro"
 
-# The value for the node-name configuration item
-rke2_node_name: "{{ inventory_hostname }}"
+# The value for the node-name configuration item.
+# Lowercased because the kubelet lowercases the node name it registers.
+rke2_node_name: "{{ inventory_hostname | lower }}"
 
 # default pod network range for rke2
 rke2_cluster_cidr:
