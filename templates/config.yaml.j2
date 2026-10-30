@@ -149,7 +149,9 @@ kube-proxy-extra-mount:
 {% endfor %}
 {% endif %}
 {% if (rke2_disable_cloud_controller | bool ) %}
+{% if rke2_type == 'server' %}
 disable-cloud-controller: true
+{% endif %}
 {% if rke2_cloud_provider_name != false %}
 cloud-provider-name: "{{ rke2_cloud_provider_name }}"
 {% endif %}
