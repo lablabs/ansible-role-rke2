@@ -74,7 +74,7 @@
         force: true
     - name: Restore etcd from a snapshot
       ansible.builtin.shell: |
-        rke2 server \
+        {{ rke2_bin_path }} server \
         --cluster-reset \
         --cluster-reset-restore-path="{{ rke2_etcd_snapshot_destination_dir }}/{{ rke2_etcd_snapshot_file }}" \
         --token {{ rke2_token }}
@@ -87,7 +87,7 @@
   block:
     - name: Restore etcd from a s3 snapshot
       ansible.builtin.shell: |
-        rke2 server \
+        {{ rke2_bin_path }} server \
         --cluster-reset \
         --etcd-s3 \
         --cluster-reset-restore-path="{{ rke2_etcd_snapshot_s3_options.snapshot_name }}" \
