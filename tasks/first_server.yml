@@ -50,12 +50,13 @@
   ansible.builtin.set_fact:
     do_etcd_restore_from_s3: true
   when:
-    - rke2_etcd_snapshot_file | length == 0
+    - rke2_etcd_snapshot_file | default('') | length == 0
+    - (ansible_facts.services['rke2-server.service'] is not defined) or (ansible_facts.services['rke2-server.service']['status'] == 'disabled')
     - rke2_etcd_snapshot_s3_options is defined
-    - rke2_etcd_snapshot_s3_options.access_key
-    - rke2_etcd_snapshot_s3_options.secret_key
-    - rke2_etcd_snapshot_s3_options.bucket
-    - rke2_etcd_snapshot_s3_options.snapshot_name
+    - rke2_etcd_snapshot_s3_options.access_key | default('') | length > 0
+    - rke2_etcd_snapshot_s3_options.secret_key | default('') | length > 0
+    - rke2_etcd_snapshot_s3_options.bucket | default('') | length > 0
+    - rke2_etcd_snapshot_s3_options.snapshot_name | default('') | length > 0
 
 - name: Restore etcd from file
   when: do_etcd_restore is defined
@@ -74,12 +75,12 @@
         force: true
     - name: Restore etcd from a snapshot
       ansible.builtin.shell: |
-        rke2 server \
+        {{ rke2_bin_path }} server \
         --cluster-reset \
         --cluster-reset-restore-path="{{ rke2_etcd_snapshot_destination_dir }}/{{ rke2_etcd_snapshot_file }}" \
         --token {{ rke2_token }}
       register: task_output # <- Registers the command output.
-      changed_when: task_output.rc != 0 # <- Uses the return code to define when the task has changed.
+      changed_when: task_output.rc == 0 # <- Uses the return code to define when the task has changed.
       when: not ansible_check_mode
 
 - name: Restore etcd from s3
@@ -87,7 +88,7 @@
   block:
     - name: Restore etcd from a s3 snapshot
       ansible.builtin.shell: |
-        rke2 server \
+        {{ rke2_bin_path }} server \
         --cluster-reset \
         --etcd-s3 \
         --cluster-reset-restore-path="{{ rke2_etcd_snapshot_s3_options.snapshot_name }}" \
@@ -98,10 +99,11 @@
         {{ ('--etcd-s3-region=' + rke2_etcd_snapshot_s3_options.region) if rke2_etcd_snapshot_s3_options.region is defined else '' }} \
         {{ ('--etcd-s3-endpoint-ca=' + rke2_etcd_snapshot_s3_options.endpoint_ca) if rke2_etcd_snapshot_s3_options.endpoint_ca is defined else '' }} \
         {{ ('--etcd-s3-folder=' + rke2_etcd_snapshot_s3_options.folder) if rke2_etcd_snapshot_s3_options.folder is defined else '' }} \
-        {{ ('--etcd-s3-skip-ssl-verify=' + rke2_etcd_snapshot_s3_options.skip_ssl_verify) if rke2_etcd_snapshot_s3_options.skip_ssl_verify is defined else '' }} \
+        {{ ('--etcd-s3-skip-ssl-verify=' ~ rke2_etcd_snapshot_s3_options.skip_ssl_verify) if rke2_etcd_snapshot_s3_options.skip_ssl_verify is defined else '' }} \
         --token {{ rke2_token }}
       register: task_output # <- Registers the command output.
-      changed_when: task_output.rc != 0 # <- Uses the return code to define when the task has changed.
+      changed_when: task_output.rc == 0 # <- Uses the return code to define when the task has changed.
+      no_log: true
       when: not ansible_check_mode
 
 - name: Start RKE2 service on the first server
@@ -168,7 +170,13 @@
 
     - name: Get all node names
       ansible.builtin.set_fact:
-        node_names: "{{ hostvars | dict2items | map(attribute='value.rke2_node_name') | list }}"
+        # rke2_node_name is a role default (not visible via hostvars), so fall back to the inventory hostname
+        node_names: >-
+          {%- set names = [] -%}
+          {%- for host in groups[rke2_cluster_group_name] -%}
+          {%- set _ = names.append(hostvars[host]['rke2_node_name'] | default(host)) -%}
+          {%- endfor -%}
+          {{ names }}
       run_once: true
 
     - name: Remove old <node>.node-password.rke2 secrets
