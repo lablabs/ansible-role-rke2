@@ -40,8 +40,8 @@ spec:
           value: "{{ rke2_interface | default(ansible_facts.default_ipv4.interface | default(ansible_facts.default_ipv6.interface)) }}"
         - name: port
           value: "{{ rke2_api_port | default('6443') }}"
-        - name: vip_cidr
-          value: "{{ rke2_api_cidr | default('24') }}"
+        - name: vip_subnet
+          value: "{{ rke2_api_cidr | default('32') }}"
         - name: cp_enable
           value: "{{ rke2_kubevip_cp_enable | default('true') | to_json }}"
         - name: cp_namespace
