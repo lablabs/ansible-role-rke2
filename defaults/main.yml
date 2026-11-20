@@ -29,7 +29,7 @@ rke2_api_ip: "{{ hostvars[groups[rke2_servers_group_name].0]['ansible_default_ip
 rke2_api_private_port: 9345
 
 # optional option for kubevip IP subnet
-# rke2_api_cidr: 24
+# rke2_api_cidr: 32
 
 # optional option for kubevip
 # rke2_interface: eth0
